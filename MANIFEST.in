@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include field_force *.css
+recursive-include field_force *.csv
+recursive-include field_force *.html
+recursive-include field_force *.ico
+recursive-include field_force *.js
+recursive-include field_force *.json
+recursive-include field_force *.md
+recursive-include field_force *.png
+recursive-include field_force *.py
+recursive-include field_force *.svg
+recursive-include field_force *.txt
+recursive-exclude field_force *.pyc
