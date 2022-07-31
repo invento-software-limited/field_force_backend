@@ -1,4 +1,6 @@
 from . import __version__ as app_version
+import frappe.api
+from field_force.api import handle
 
 app_name = "field_force"
 app_title = "Field Force"
@@ -8,6 +10,10 @@ app_icon = "octicon octicon-file-directory"
 app_color = "grey"
 app_email = "fieldforce@invento.com.bd"
 app_license = "MIT"
+
+
+# overriding the handle function
+# frappe.api.handle = handle
 
 # Includes in <head>
 # ------------------
@@ -95,13 +101,17 @@ app_license = "MIT"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	# "*": {
+	# 	"on_update": "method",
+	# 	"on_cancel": "method",
+	# 	"on_trash": "method"
+	# },
+	"Item":{
+		"before_save": "field_force.field_force.hook_functions.item.set_item_name_to_description"
+	}
+
+}
 
 # Scheduled Tasks
 # ---------------
