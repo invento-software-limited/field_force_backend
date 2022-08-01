@@ -1,28 +1,34 @@
 import frappe
+from field_force.response import build_custom_response
 from frappe.auth import LoginManager
 import frappe.core.doctype.user
-from frappe.core.doctype.user.user import generate_keys
-
-# def auth(name):
-#     if name == 'get-access-token':
-#         get_api_access_token()
-
-@frappe.whitelist()
-def callback():
-    print(frappe.request)
 
 @frappe.whitelist(allow_guest=True)
-def login(usr, pwd):
+def login(username, password):
     login_manager = LoginManager()
-    login_manager.authenticate(usr,pwd)
-    login_manager.post_login()
+
+    try:
+        login_manager.authenticate(username, password)
+        login_manager.post_login()
+    except Exception as e:
+        print(e)
 
     if frappe.response['message'] == 'Logged In':
         user = frappe.session.user
         user_doc = frappe.get_doc('User', user)
+
+        del frappe.local.response['home_page']
+
         frappe.local.response.update({
+            "email": user_doc.email,
             "token": get_api_key_and_api_secret(user_doc),
         })
+        frappe.local.response['http_status_code'] = 200
+    else:
+        frappe.local.response['http_status_code'] = 402
+
+    return build_custom_response(response_type='custom')
+
 
 def get_api_key_and_api_secret(user_details):
     api_key = user_details.api_key
@@ -41,13 +47,3 @@ def get_api_key_and_api_secret(user_details):
         user_details.save()
 
     return f"{user_details.api_key}:{user_details.get_password('api_secret')}"
-
-
-    #     instructor = frappe.db.get_value("Instructor", {"user": login_manager.user}, "name")
-    #     if instructor: return instructor
-#
-# def get_api_access_token():
-
-#     user = frappe.session.user
-#     user_doc = frappe.get_doc('User', user)
-#     print("=======>>", user_doc.api_key)
