@@ -1,6 +1,6 @@
 from . import __version__ as app_version
-import frappe.api
-from field_force.api import handle
+# import frappe.api
+# from field_force.api import handle
 
 app_name = "field_force"
 app_title = "Field Force"
@@ -13,7 +13,7 @@ app_license = "MIT"
 
 
 # overriding the handle function
-frappe.api.handle = handle
+# frappe.api.handle = handle
 
 # Includes in <head>
 # ------------------
