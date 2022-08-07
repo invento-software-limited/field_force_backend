@@ -1,3 +1,5 @@
+import http
+
 import frappe
 import json
 from werkzeug.wrappers import Response
@@ -35,9 +37,18 @@ def as_custom():
     response.mimetype = 'application/json'
     response.charset = 'utf-8'
 
+    limit_start = frappe.local.form_dict.limit_start or 0
+    limit_page_length = frappe.local.form_dict.limit or frappe.local.form_dict.limit_page_length or 20
+
     data = {
-        'status_code': response.status_code
+        "status_code": response.status_code,
+        "message": "OK",
+        "errors": "",
+        "total_items": 0,
+        'limit_start': int(limit_start),
+        'limit_page_length': int(limit_page_length)
     }
+
     data.update(frappe.local.response)
 
     response.data = json.dumps(data, default=json_handler, separators=(',', ':'))

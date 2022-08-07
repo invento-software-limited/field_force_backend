@@ -7,6 +7,7 @@ import frappe
 import frappe.api
 import frappe.client
 import frappe.handler
+from field_force.response import build_custom_response
 from frappe import _
 from frappe.utils.response import build_response
 from frappe.utils.data import sbool
@@ -49,12 +50,12 @@ def handle():
     if len(parts) > 3:
         name = parts[3]
 
-    elif call=="method":
+    if call=="method":
         frappe.local.form_dict.cmd = doctype
         return frappe.handler.handle()
 
     elif call=="doctype":
-        custom_crud.execute(doctype, name)
+        return custom_crud.execute(doctype, name)
 
     elif call=="resource":
         if "run_method" in frappe.local.form_dict:

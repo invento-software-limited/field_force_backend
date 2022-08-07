@@ -11,7 +11,7 @@ def login(username, password):
         login_manager.authenticate(username, password)
         login_manager.post_login()
     except Exception as e:
-        print(e)
+        frappe.local.response['errors'] = e
 
     if frappe.response['message'] == 'Logged In':
         user = frappe.session.user
@@ -19,13 +19,15 @@ def login(username, password):
 
         del frappe.local.response['home_page']
 
-        frappe.local.response.update({
+        frappe.local.response.data = {
+            "full_name": frappe.local.response.pop('full_name'),
             "email": user_doc.email,
             "token": get_api_key_and_api_secret(user_doc),
-        })
+        }
+
         frappe.local.response['http_status_code'] = 200
     else:
-        frappe.local.response['http_status_code'] = 402
+        frappe.local.response['http_status_code'] = 401
 
     return build_custom_response(response_type='custom')
 

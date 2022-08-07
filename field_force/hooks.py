@@ -13,7 +13,7 @@ app_license = "MIT"
 
 
 # overriding the handle function
-# frappe.api.handle = handle
+frappe.api.handle = handle
 
 # Includes in <head>
 # ------------------
