@@ -1,3 +1,29 @@
 {
-  "Item": ["item_code", "item_name", "item_group", "brand", "description"]
+    "Item": [
+        "item_code",
+        "item_name",
+        "price_list_rate",
+        "description"
+    ],
+    "Employee": [
+        "first_name",
+        "last_name",
+        "gender",
+        "hello",
+        "hi"
+    ],
+    "d12ab5173e": [
+        "item_code",
+        "item_name",
+        "price_list_rate",
+        "description",
+        "kk"
+    ],
+    "Employee Checkin": [
+        "time",
+        "employee",
+        "employee_name",
+        "device_id",
+        ""
+    ]
 }

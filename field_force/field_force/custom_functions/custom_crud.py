@@ -8,9 +8,8 @@ from frappe import _
 from frappe.permissions import has_permission
 from frappe.utils.data import sbool
 from frappe.api import get_request_form_data
-from frappe.utils.response import build_response
+from field_force.field_force.custom_functions.utils import file_path
 
-file_path = str(Path(__file__).resolve().parent) + '/api_response_fields.json'
 
 def execute(doctype=None, name=None):
     api_response_fields = json.loads(open(file_path, "r").read())

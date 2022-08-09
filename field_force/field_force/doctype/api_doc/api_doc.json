@@ -1,0 +1,42 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-08-09 21:25:18.150056",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "doc",
+  "fields"
+ ],
+ "fields": [
+  {
+   "fieldname": "doc",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Doc",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "fields",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Fields",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-08-09 21:25:18.150056",
+ "modified_by": "Administrator",
+ "module": "Field Force",
+ "name": "API Doc",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
