@@ -11,9 +11,10 @@ from frappe.api import get_request_form_data
 from frappe.utils.response import build_response
 
 file_path = str(Path(__file__).resolve().parent) + '/api_response_fields.json'
-api_response_fields = json.loads(open(file_path, "r").read())
 
 def execute(doctype=None, name=None):
+    api_response_fields = json.loads(open(file_path, "r").read())
+
     try:
         if name:
             if frappe.local.request.method == "GET":
@@ -111,5 +112,8 @@ def execute(doctype=None, name=None):
     except frappe.DuplicateEntryError:
         frappe.local.response.http_status_code = 409
         frappe.local.response.message = f"Duplicate Entry!"
+    except frappe.InvalidAuthorizationToken:
+        frappe.local.response.http_status_code = 401
+        frappe.local.response.message = f"Invalid Token!"
 
     return build_custom_response(response_type='custom')

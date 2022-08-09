@@ -1,6 +1,6 @@
 from . import __version__ as app_version
-# import frappe.api
-# from field_force.api import handle
+import frappe.api
+import field_force.api
 
 app_name = "field_force"
 app_title = "Field Force"
@@ -11,9 +11,11 @@ app_color = "grey"
 app_email = "fieldforce@invento.com.bd"
 app_license = "MIT"
 
+#overriding the validate_auth function
+frappe.api.validate_auth = field_force.api.validate_auth
 
 # overriding the handle function
-frappe.api.handle = handle
+frappe.api.handle = field_force.api.handle
 
 # Includes in <head>
 # ------------------

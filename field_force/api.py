@@ -172,6 +172,7 @@ def validate_auth():
 
     if len(authorization_header) == 2:
         validate_oauth(authorization_header)
+        print("======>>>", authorization_header)
         validate_auth_via_api_keys(authorization_header)
 
     validate_auth_via_hooks()
@@ -242,8 +243,10 @@ def validate_api_key_secret(api_key, api_secret, frappe_authorization_source=Non
         filters={"api_key": api_key},
         fieldname=["name"]
     )
+
     form_dict = frappe.local.form_dict
     doc_secret = frappe.utils.password.get_decrypted_password(doctype, doc, fieldname='api_secret')
+
     if api_secret == doc_secret:
         if doctype == 'User':
             user = frappe.db.get_value(
@@ -253,10 +256,12 @@ def validate_api_key_secret(api_key, api_secret, frappe_authorization_source=Non
             )
         else:
             user = frappe.db.get_value(doctype, doc, 'user')
+
         if frappe.local.login_manager.user in ('', 'Guest'):
             frappe.set_user(user)
         frappe.local.form_dict = form_dict
-
+    else:
+        raise frappe.InvalidAuthorizationToken
 
 def validate_auth_via_hooks():
     for auth_hook in frappe.get_hooks('auth_hooks', []):
