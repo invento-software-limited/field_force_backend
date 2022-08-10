@@ -9,5 +9,19 @@
         "creation",
         "name",
         "modified"
+    ],
+    "Customer": [
+        "name",
+        "customer_name",
+        "distributor",
+        "contact_person",
+        "contact_number",
+        "email_address",
+        "primary_address",
+        "thana",
+        "zip_code",
+        "lattitude",
+        "longitude",
+        "image"
     ]
 }

@@ -111,6 +111,11 @@ doc_events = {
 	# },
 	"Item":{
 		"before_save": "field_force.field_force.hook_functions.item.set_item_name_to_description"
+	},
+	"Customer": {
+		"validate": "field_force.field_force.hook_functions.customer.set_customer_group",
+		# "on_insert": "field_force.field_force.hook_functions.customer.set_image",
+		# "before_save": "field_force.field_force.hook_functions.customer.set_image"
 	}
 
 }

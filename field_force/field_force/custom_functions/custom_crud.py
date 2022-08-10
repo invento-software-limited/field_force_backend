@@ -79,6 +79,7 @@ def execute(doctype=None, name=None):
                     frappe.local.response.update({
                         "data": data
                     })
+                    frappe.local.response.message = f"{doctype} Updated"
                 else:
                     frappe.throw(_("Not permitted"), frappe.PermissionError)
 
@@ -96,6 +97,8 @@ def execute(doctype=None, name=None):
 
                 # set response data
                 frappe.local.response.update({"data": data})
+                frappe.local.response.http_status_code = 201
+                frappe.local.response.message = f"{doctype} Created"
 
                 # commit for POST requests
                 frappe.db.commit()
