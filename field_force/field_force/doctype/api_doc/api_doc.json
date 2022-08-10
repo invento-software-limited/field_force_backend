@@ -17,7 +17,8 @@
    "in_standard_filter": 1,
    "label": "Doc",
    "options": "DocType",
-   "reqd": 1
+   "reqd": 1,
+   "unique": 1
   },
   {
    "fieldname": "fields",
@@ -31,7 +32,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-08-09 21:25:18.150056",
+ "modified": "2022-08-10 10:34:25.677481",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "API Doc",
