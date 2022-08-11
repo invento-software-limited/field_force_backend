@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import frappe
 import json
 
@@ -8,11 +6,12 @@ from frappe import _
 from frappe.permissions import has_permission
 from frappe.utils.data import sbool
 from frappe.api import get_request_form_data
-from field_force.field_force.custom_functions.utils import file_path
+from field_force.api_methods.utils import file_path
 
 
 def execute(doctype=None, name=None):
     api_response_fields = json.loads(open(file_path, "r").read())
+    print(api_response_fields)
 
     try:
         if name:
@@ -43,10 +42,13 @@ def execute(doctype=None, name=None):
                     "data": data
                 })
 
+                print(doc.parenttype, doc.parent)
                 if doc.parenttype and doc.parent:
                     frappe.get_doc(doc.parenttype, doc.parent).save()
 
+                doc.save()
                 frappe.db.commit()
+                frappe.local.response.message = f"{doctype} Updated"
 
             if frappe.local.request.method == "DELETE":
                 # Not checking permissions here because it's checked in delete_doc
@@ -79,7 +81,6 @@ def execute(doctype=None, name=None):
                     frappe.local.response.update({
                         "data": data
                     })
-                    frappe.local.response.message = f"{doctype} Updated"
                 else:
                     frappe.throw(_("Not permitted"), frappe.PermissionError)
 

@@ -3,7 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
-from field_force.field_force.custom_functions.utils import set_doctype_fields_to_json
+from field_force.api_methods.utils import set_doctype_fields_to_json
 
 class APIDocConfig(Document):
 	def save(self, *args, **kwargs):

@@ -7,11 +7,10 @@ import frappe
 import frappe.api
 import frappe.client
 import frappe.handler
-from field_force.response import build_custom_response
 from frappe import _
 from frappe.utils.response import build_response
 from frappe.utils.data import sbool
-from field_force.field_force.custom_functions import custom_crud
+from field_force.api_methods import custom_crud
 
 
 def handle():
@@ -101,6 +100,7 @@ def handle():
                     if doc.parenttype and doc.parent:
                         frappe.get_doc(doc.parenttype, doc.parent).save()
 
+                    doc.save()
                     frappe.db.commit()
 
                 if frappe.local.request.method == "DELETE":
@@ -172,7 +172,6 @@ def validate_auth():
 
     if len(authorization_header) == 2:
         validate_oauth(authorization_header)
-        print("======>>>", authorization_header)
         validate_auth_via_api_keys(authorization_header)
 
     validate_auth_via_hooks()
