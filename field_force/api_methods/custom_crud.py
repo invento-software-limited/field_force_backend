@@ -37,17 +37,13 @@ def execute(doctype=None, name=None):
 
                 # Not checking permissions here because it's checked in doc.save
                 doc.update(data)
-                data = get_doc_permitted_fields(doctype, doc, api_response_fields)
-
-                frappe.local.response.update({
-                    "data": data
-                })
 
                 if doc.parenttype and doc.parent:
                     frappe.get_doc(doc.parenttype, doc.parent).save()
 
                 doc.save()
                 frappe.db.commit()
+                frappe.local.response.data = get_doc_permitted_fields(doctype, doc, api_response_fields)
                 frappe.local.response.message = f"{doctype} Updated"
 
             if frappe.local.request.method == "DELETE":
