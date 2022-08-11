@@ -11,18 +11,22 @@ from field_force.api_methods.utils import file_path
 
 def execute(doctype=None, name=None):
     api_response_fields = json.loads(open(file_path, "r").read())
-    print(api_response_fields)
 
     try:
         if name:
             if frappe.local.request.method == "GET":
-                kwargs = {
-                    "doctype": doctype,
-                    "fieldname": api_response_fields.get(doctype, ['name']),
-                    "filters": {"name":name},
-                }
-                doc = frappe.call(frappe.client.get_value, **kwargs)
-                frappe.local.response.data = doc
+                # kwargs = {
+                #     "doctype": doctype,
+                #     "fieldname": api_response_fields.get(doctype, ['name']),
+                #     "filters": {"name":name},
+                # }
+                # doc = frappe.call(frappe.client.get_value, **kwargs)
+                doc = frappe.get_doc(doctype, name)
+
+                if not doc.has_permission("read"):
+                    raise frappe.PermissionError
+
+                frappe.local.response.data = get_doc_permitted_fields(doctype, doc, api_response_fields)
 
             if frappe.local.request.method == "PUT":
                 data = get_request_form_data()
@@ -91,10 +95,7 @@ def execute(doctype=None, name=None):
 
                 # insert document from request data
                 doc = frappe.get_doc(data).insert()
-                data = {}
-
-                for field in api_response_fields.get(doctype, ['name']):
-                    data[field] = doc.get(field)
+                data = get_doc_permitted_fields(doctype, doc, api_response_fields)
 
                 # set response data
                 frappe.local.response.update({"data": data})
@@ -120,3 +121,36 @@ def execute(doctype=None, name=None):
         frappe.local.response.message = f"Invalid Token!"
 
     return build_custom_response(response_type='custom')
+
+
+def get_doc_permitted_fields(doctype, doc, api_response_fields):
+    doc_ = doc.__dict__
+    data = {}
+    doc_api_response_fields = api_response_fields.get(doctype, ['name']) + api_response_fields.get(f"_{doctype}", [])
+
+    for field in doc_api_response_fields:
+        value = doc_.get(field)
+
+        if isinstance(value, list):
+            new_list = []
+            try:
+                for element in value:
+                    api_response_fields_ = api_response_fields.get(element.doctype)
+
+                    if api_response_fields_:
+                        new_element = {}
+
+                        for field_ in api_response_fields_:
+                            new_element[field_] = element.get(field_)
+
+                        new_list.append(new_element)
+                    else:
+                        new_list.append(element)
+
+                data[field] = new_list
+            except:
+                data[field] = value
+        else:
+            data[field] = value
+
+    return data

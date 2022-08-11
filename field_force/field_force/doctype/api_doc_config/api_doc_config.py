@@ -14,13 +14,18 @@ class APIDocConfig(Document):
 				fields = doc.fields.replace(' ', '').split(',')
 				columns = frappe.db.sql("SHOW COLUMNS FROM `tab%s`" % doc.doc, as_dict=True)
 				columns = [column['Field'] for column in columns]
+
 				valid_fields = []
 				invalid_fields = []
+				child_table_fields = []
 
 				for field in fields:
 					if field and field in columns:
 						if field not in valid_fields:
 							valid_fields.append(field)
+					elif field and frappe.db.field_exists(doc.doc, field):
+						if field not in child_table_fields:
+							child_table_fields.append(field)
 					else:
 						if field and field not in invalid_fields:
 							invalid_fields.append(field)
@@ -29,3 +34,6 @@ class APIDocConfig(Document):
 					frappe.throw(f"The fields <b>{invalid_fields}</b> doesn't exists on <b>{doc.doc}</b>")
 
 				set_doctype_fields_to_json(doc.doc, valid_fields)
+
+				if child_table_fields:
+					set_doctype_fields_to_json(f"_{doc.doc}", child_table_fields)

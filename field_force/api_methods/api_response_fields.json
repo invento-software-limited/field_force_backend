@@ -23,5 +23,26 @@
         "lattitude",
         "longitude",
         "image"
+    ],
+    "Sales Order": [
+        "name",
+        "customer",
+        "customer_name",
+        "contact_number",
+        "primary_address",
+        "email_address",
+        "transaction_date",
+        "delivery_date",
+        "order_type"
+    ],
+    "Sales Order Item": [
+        "name",
+        "item_code",
+        "item_name",
+        "qty",
+        "base_rate"
+    ],
+    "_Sales Order": [
+            "items"
     ]
 }
