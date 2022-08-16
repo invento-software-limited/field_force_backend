@@ -1,6 +1,7 @@
 import frappe
 import json
 
+from field_force.api_methods.custom_methods import get_custom_data
 from field_force.response import build_custom_response
 from frappe import _
 from frappe.permissions import has_permission
@@ -55,6 +56,8 @@ def execute(doctype=None, name=None):
 
         elif doctype:
             if frappe.local.request.method == "GET":
+                custom = ['Customer']
+
                 frappe.local.form_dict["fields"] = api_response_fields.get(doctype, ['name'])
 
                 # set limit of records for frappe.get_list
@@ -70,9 +73,13 @@ def execute(doctype=None, name=None):
                         frappe.local.form_dict[param] = sbool(param_val)
 
                 if has_permission(doctype, 'read'):
-                    # data = frappe.get_list(doctype, **frappe.local.form_dict)
-                    data = frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
-                    frappe.local.response.total_items = len(frappe.get_list(doctype, frappe.local.form_dict.get('filters')))
+                    if doctype in custom:
+                        data = get_custom_data(doctype)
+                    else:
+                        # data = frappe.get_list(doctype, **frappe.local.form_dict)
+                        data = frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
+                        frappe.local.response.total_items = len(frappe.get_list(doctype, frappe.local.form_dict.get('filters')))
+
                     # set frappe.get_list result to response
                     frappe.local.response.update({
                         "data": data

@@ -1,9 +1,11 @@
 {
     "Item": [
-        "creation",
+        "item_code",
         "item_name",
         "item_group",
-        "description"
+        "brand",
+        "standard_rate",
+        "image"
     ],
     "Employee": [
         "creation",
@@ -17,7 +19,7 @@
         "contact_person",
         "contact_number",
         "email_address",
-        "primary_address",
+        "address",
         "thana",
         "zip_code",
         "lattitude",
@@ -28,12 +30,15 @@
         "name",
         "customer",
         "customer_name",
+        "distributor",
         "contact_number",
-        "primary_address",
+        "address",
         "email_address",
         "transaction_date",
         "delivery_date",
-        "order_type"
+        "order_type",
+        "total_items",
+        "total_qty"
     ],
     "Sales Order Item": [
         "name",
@@ -43,6 +48,6 @@
         "base_rate"
     ],
     "_Sales Order": [
-            "items"
+        "items"
     ]
 }

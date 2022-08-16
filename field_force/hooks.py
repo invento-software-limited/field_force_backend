@@ -114,9 +114,12 @@ doc_events = {
 	},
 	"Customer": {
 		"validate": "field_force.field_force.hook_functions.customer.set_customer_group",
-		"on_insert": "field_force.field_force.hook_functions.customer.set_image",
-		"before_save": "field_force.field_force.hook_functions.customer.set_image",
-		"on_update": "field_force.field_force.hook_functions.customer.set_image",
+		# "on_insert": "field_force.field_force.hook_functions.customer.set_image",
+		# "before_save": "field_force.field_force.hook_functions.customer.set_image",
+		# "on_update": "field_force.field_force.hook_functions.customer.set_image",
+	},
+	"Sales Order":{
+		"validate": "field_force.field_force.hook_functions.sales_order.set_item_count"
 	}
 
 }
