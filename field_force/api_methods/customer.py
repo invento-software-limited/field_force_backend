@@ -9,8 +9,8 @@ def get_distributors(**kwargs):
         # 'customer_group': 'Distributor',
     }
 
-    if kwargs.get('name'):
-        filters['name'] = ["like", f"%{kwargs.pop('name ')}%"]
+    if kwargs.get('search'):
+        filters['name'] = ["like", f"%{kwargs.pop('search')}%"]
 
     if 'cmd' in kwargs.keys():
         del kwargs['cmd']
