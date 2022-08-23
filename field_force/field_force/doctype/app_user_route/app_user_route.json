@@ -1,20 +1,21 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:ATT-{DD}{MM}{YY}-{####}",
- "creation": "2022-08-22 12:35:55.010327",
+ "autoname": "format:AUR-{DD}{MM}{YY}-{#####}",
+ "creation": "2022-08-23 13:10:59.164980",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "user",
+  "email",
   "employee",
-  "type",
+  "employee_name",
   "date",
   "time",
   "server_date",
   "server_time",
-  "column_break_4",
-  "image",
+  "column_break_9",
   "latitude",
   "longitude",
   "device_model",
@@ -24,37 +25,37 @@
  ],
  "fields": [
   {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "User",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "user.email",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
    "fieldname": "employee",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Employee",
    "options": "Employee",
    "reqd": 1
   },
   {
-   "fieldname": "image",
-   "fieldtype": "Attach",
-   "label": "Image"
-  },
-  {
-   "fieldname": "type",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Type",
-   "options": "Checkin\nCheckout",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_4",
-   "fieldtype": "Column Break"
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name"
   },
   {
    "fieldname": "date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Date",
    "reqd": 1
   },
@@ -80,14 +81,20 @@
    "read_only": 1
   },
   {
+   "fieldname": "column_break_9",
+   "fieldtype": "Column Break"
+  },
+  {
    "fieldname": "latitude",
    "fieldtype": "Data",
-   "label": "Latitude"
+   "label": "Latitude",
+   "reqd": 1
   },
   {
    "fieldname": "longitude",
    "fieldtype": "Data",
-   "label": "Longitude"
+   "label": "Longitude",
+   "reqd": 1
   },
   {
    "fieldname": "device_model",
@@ -100,22 +107,23 @@
    "label": "Mac Address"
   },
   {
-   "fieldname": "imei",
-   "fieldtype": "Data",
-   "label": "IMEI"
-  },
-  {
    "fieldname": "ip_address",
    "fieldtype": "Data",
    "label": "IP Address"
+  },
+  {
+   "fieldname": "imei",
+   "fieldtype": "Data",
+   "label": "IMEI"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-08-23 18:00:50.005933",
+ "modified": "2022-08-23 15:18:01.054848",
  "modified_by": "Administrator",
  "module": "Field Force",
- "name": "App User Attendance",
+ "name": "App User Route",
+ "name_case": "Title Case",
  "owner": "Administrator",
  "permissions": [
   {
