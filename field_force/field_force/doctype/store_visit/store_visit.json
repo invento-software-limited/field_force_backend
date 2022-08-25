@@ -8,19 +8,24 @@
  "engine": "InnoDB",
  "field_order": [
   "user",
+  "email",
   "employee",
   "employee_name",
   "customer",
   "customer_address",
+  "device_date",
+  "device_time",
+  "cheated",
+  "column_break_5",
   "image",
+  "img",
   "details",
-  "column_break_9",
-  "date",
-  "time",
+  "additional_information_section",
   "server_date",
   "server_time",
   "latitude",
   "longitude",
+  "column_break_17",
   "device_model",
   "mac_address",
   "ip_address",
@@ -56,37 +61,20 @@
    "label": "Details"
   },
   {
-   "fieldname": "date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Date",
-   "reqd": 1
-  },
-  {
-   "fieldname": "time",
-   "fieldtype": "Time",
-   "in_list_view": 1,
-   "label": "Time",
-   "reqd": 1
-  },
-  {
    "default": "Today",
    "fieldname": "server_date",
    "fieldtype": "Date",
    "label": "Server Date",
-   "read_only": 1
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "default": "Now",
    "fieldname": "server_time",
    "fieldtype": "Time",
    "label": "Server Time",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_9",
-   "fieldtype": "Column Break"
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "latitude",
@@ -142,11 +130,62 @@
    "fieldtype": "Data",
    "label": "Customer Address",
    "read_only": 1
+  },
+  {
+   "fieldname": "device_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Device Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "device_time",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "Device Time",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "user.email",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.image != '';",
+   "fieldname": "additional_information_section",
+   "fieldtype": "Section Break",
+   "label": "Additional Information"
+  },
+  {
+   "fieldname": "column_break_17",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.image != '';",
+   "fieldname": "img",
+   "fieldtype": "Image",
+   "label": "IMG",
+   "options": "image",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "cheated",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Cheated"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-08-23 15:30:07.655848",
+ "modified": "2022-08-25 16:42:29.604387",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Store Visit",

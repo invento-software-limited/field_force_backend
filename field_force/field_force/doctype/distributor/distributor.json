@@ -9,15 +9,17 @@
  "field_order": [
   "distributor_name",
   "customer",
+  "column_break_3",
+  "customer_name",
+  "customer_address_and_contact_section",
   "contact_person",
   "contact_number",
   "address",
-  "email_address",
+  "latitude",
   "column_break_7",
-  "warehouse",
+  "email_address",
   "thana",
   "zip_code",
-  "latitude",
   "longitude"
  ],
  "fields": [
@@ -30,30 +32,28 @@
   {
    "fieldname": "customer",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Customer",
    "options": "Customer",
    "read_only": 1
   },
   {
-   "fieldname": "warehouse",
-   "fieldtype": "Link",
-   "label": "Warehouse",
-   "options": "Warehouse",
-   "read_only": 1
-  },
-  {
    "fieldname": "contact_person",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Contact Person"
   },
   {
    "fieldname": "contact_number",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Contact Number"
   },
   {
    "fieldname": "address",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Address"
   },
   {
@@ -84,11 +84,27 @@
    "fieldname": "email_address",
    "fieldtype": "Data",
    "label": "Email Address"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "customer.customer_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer_address_and_contact_section",
+   "fieldtype": "Section Break",
+   "label": "Customer Address and Contact"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-08-21 10:34:23.990035",
+ "modified": "2022-08-25 15:07:24.249346",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Distributor",

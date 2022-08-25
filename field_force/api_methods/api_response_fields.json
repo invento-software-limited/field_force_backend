@@ -3,7 +3,6 @@
         "item_code",
         "item_name",
         "item_group",
-        "brand",
         "standard_rate",
         "image"
     ],
@@ -38,16 +37,81 @@
         "delivery_date",
         "order_type",
         "total_items",
-        "total_qty"
+        "total_qty",
+        "grand_total"
     ],
     "Sales Order Item": [
         "name",
         "item_code",
         "item_name",
         "qty",
-        "base_rate"
+        "rate"
     ],
     "_Sales Order": [
         "items"
+    ],
+    "Brand": [
+        "name",
+        "image_1",
+        "image_2"
+    ],
+    "App User Attendance": [
+        "name",
+        "employee",
+        "type",
+        "image",
+        "date",
+        "time",
+        "server_date",
+        "server_time",
+        "latitude",
+        "longitude",
+        "device_model",
+        "mac_address",
+        "imei"
+    ],
+    "Video": [
+        "name",
+        "video_topic",
+        "provider",
+        "url"
+    ],
+    "Item Request": [
+        "name",
+        "customer",
+        "date",
+        "item_details"
+    ],
+    "App User Route": [
+        "name",
+        "user",
+        "employee",
+        "employee_name",
+        "date",
+        "time",
+        "latitude",
+        "longitude",
+        "device_model",
+        "mac_address",
+        "ip_address",
+        "imei"
+    ],
+    "Store Visit": [
+        "name",
+        "user",
+        "employee",
+        "employee_name",
+        "customer",
+        "customer_address",
+        "date",
+        "time",
+        "details",
+        "image",
+        "latitude",
+        "longitude",
+        "device_model",
+        "mac_address",
+        "ip_address",
+        "imei"
     ]
 }

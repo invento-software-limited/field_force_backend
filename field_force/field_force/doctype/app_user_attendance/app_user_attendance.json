@@ -7,16 +7,23 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "employee",
   "type",
-  "date",
-  "time",
+  "user",
+  "email",
+  "employee",
+  "employee_name",
+  "device_date",
+  "device_time",
+  "cheated",
+  "column_break_5",
+  "image",
+  "img",
+  "device_information_section",
   "server_date",
   "server_time",
-  "column_break_4",
-  "image",
   "latitude",
   "longitude",
+  "column_break_15",
   "device_model",
   "mac_address",
   "ip_address",
@@ -34,7 +41,7 @@
   },
   {
    "fieldname": "image",
-   "fieldtype": "Attach",
+   "fieldtype": "Attach Image",
    "label": "Image"
   },
   {
@@ -47,47 +54,32 @@
    "reqd": 1
   },
   {
-   "fieldname": "column_break_4",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Date",
-   "reqd": 1
-  },
-  {
-   "fieldname": "time",
-   "fieldtype": "Time",
-   "in_list_view": 1,
-   "label": "Time",
-   "reqd": 1
-  },
-  {
    "default": "Today",
    "fieldname": "server_date",
    "fieldtype": "Date",
    "label": "Server Date",
-   "read_only": 1
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "default": "Now",
    "fieldname": "server_time",
    "fieldtype": "Time",
    "label": "Server Time",
-   "read_only": 1
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "latitude",
    "fieldtype": "Data",
-   "label": "Latitude"
+   "label": "Latitude",
+   "reqd": 1
   },
   {
    "fieldname": "longitude",
    "fieldtype": "Data",
-   "label": "Longitude"
+   "label": "Longitude",
+   "reqd": 1
   },
   {
    "fieldname": "device_model",
@@ -108,11 +100,75 @@
    "fieldname": "ip_address",
    "fieldtype": "Data",
    "label": "IP Address"
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "user.email",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "read_only": 1
+  },
+  {
+   "fieldname": "device_information_section",
+   "fieldtype": "Section Break",
+   "label": "Additional Information"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "device_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Device Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "device_time",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "Device Time",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.image != '';",
+   "fieldname": "img",
+   "fieldtype": "Image",
+   "label": "IMG",
+   "options": "image",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "cheated",
+   "fieldtype": "Check",
+   "label": "Cheated"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-08-23 18:00:50.005933",
+ "modified": "2022-08-25 16:43:09.546502",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "App User Attendance",

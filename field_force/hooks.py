@@ -114,7 +114,7 @@ doc_events = {
 	},
 	"Customer": {
 		"validate": "field_force.field_force.hook_functions.customer.set_customer_group",
-		# "on_insert": "field_force.field_force.hook_functions.customer.set_image",
+		"after_insert": "field_force.field_force.hook_functions.customer.create_distributor",
 		# "before_save": "field_force.field_force.hook_functions.customer.set_image",
 		# "on_update": "field_force.field_force.hook_functions.customer.set_image",
 	},

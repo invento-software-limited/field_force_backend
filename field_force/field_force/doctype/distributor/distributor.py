@@ -7,11 +7,9 @@ from frappe.model.document import Document
 class Distributor(Document):
 
 	def validate(self):
-		if not self.customer and frappe.db.exists('Warehouse', self.distributor_name):
-			frappe.throw(f"Warehouse with name '{self.distributor_name}' already exists!")
-		elif not self.warehouse and frappe.db.exists('Customer', self.distributor_name):
-			frappe.throw(f"Customer with name '{self.distributor_name}' already exists!")
-		elif not self.customer and not self.warehouse:
+		if not self.customer and frappe.db.exists('Customer', self.distributor_name):
+			self.customer = self.distributor_name
+		elif not self.customer:
 			customer = {
 				'doctype': 'Customer',
 				'customer_name': self.distributor_name,
@@ -27,16 +25,9 @@ class Distributor(Document):
 			}
 			customer = frappe.get_doc(customer)
 			customer.insert()
+
 			self.customer = customer.name
-
-			warehouse = {
-				'doctype': 'Warehouse',
-				'warehouse_name': self.distributor_name
-			}
-			warehouse = frappe.get_doc(warehouse)
-			warehouse.insert()
-			self.warehouse = warehouse.name
-
+			self.customer_name = customer.customer_name
 		else:
 			customer_info = {
 				'contact_person': self.contact_person,
