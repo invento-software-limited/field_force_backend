@@ -8,8 +8,8 @@
  "engine": "InnoDB",
  "field_order": [
   "user",
-  "date",
   "column_break_3",
+  "date",
   "employee",
   "employee_name",
   "section_break_5",
@@ -26,16 +26,17 @@
   {
    "fieldname": "employee",
    "fieldtype": "Link",
+   "hidden": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Employee",
-   "options": "Employee",
-   "reqd": 1
+   "options": "Employee"
   },
   {
    "fetch_from": "employee.employee_name",
    "fieldname": "employee_name",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Employee Name",
    "read_only": 1
   },
@@ -63,7 +64,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-08-23 17:47:47.390131",
+ "modified": "2022-08-30 19:01:09.002267",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Store Visit Assign",

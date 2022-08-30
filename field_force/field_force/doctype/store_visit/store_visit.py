@@ -8,7 +8,7 @@ class StoreVisit(Document):
 	def after_insert(self):
 		filters = {
 			"customer": self.customer,
-			"employee": self.employee,
+			"user": self.user,
 			"date": self.device_date
 		}
 

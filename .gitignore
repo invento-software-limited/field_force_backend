@@ -4,3 +4,4 @@
 *.swp
 tags
 field_force/docs/current
+field_force/api_methods/api_response_fields.json
