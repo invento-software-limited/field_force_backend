@@ -16,6 +16,7 @@
   "distributor",
   "order_type",
   "skip_delivery_note",
+  "status",
   "column_break_9",
   "amended_from",
   "company",
@@ -379,6 +380,7 @@
   {
    "fieldname": "net_total",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "Net Total",
    "options": "currency",
    "read_only": 1
@@ -581,12 +583,19 @@
    "fieldtype": "Float",
    "label": "Total Items",
    "read_only": 1
+  },
+  {
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Draft\nSubmitted\nCancelled"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-08-30 18:31:26.498832",
+ "modified": "2022-08-31 10:24:48.915677",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",
