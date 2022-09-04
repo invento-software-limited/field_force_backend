@@ -37,10 +37,11 @@ class Requisition(Document):
 						item.amount = item.qty * rate
 						total += item.amount
 					else:
-						frappe.throw(f"There is not selling rate of item <b>{item.item_name}</b>")
+						frappe.throw(f"There is no selling rate of item <b>{item.item_name}</b>")
 
 				total_items += 1
 				total_qty += item.qty
+				self.validate_accepted_qty(item)
 		else:
 			frappe.throw("Items are required")
 
@@ -52,6 +53,10 @@ class Requisition(Document):
 		if total_items and total_qty:
 			self.total_qty = total_qty
 			self.total_items = total_items
+
+	def validate_accepted_qty(self, item):
+		if not item.accepted_qty:
+			item.accepted_qty = item.qty
 
 	def on_submit(self):
 		if self.docstatus == 1:

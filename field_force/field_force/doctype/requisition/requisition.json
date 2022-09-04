@@ -588,6 +588,7 @@
    "default": "Draft",
    "fieldname": "status",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Status",
    "options": "Draft\nSubmitted\nCancelled"
   }
@@ -595,7 +596,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-08-31 10:24:48.915677",
+ "modified": "2022-09-04 10:43:55.050744",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",

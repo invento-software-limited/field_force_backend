@@ -22,6 +22,7 @@
   "image_view",
   "quantity_and_rate",
   "qty",
+  "accepted_qty",
   "stock_uom",
   "picked_qty",
   "col_break2",
@@ -221,7 +222,7 @@
    "fieldname": "qty",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Quantity",
+   "label": "Requested Quantity",
    "oldfieldname": "qty",
    "oldfieldtype": "Currency",
    "print_width": "100px",
@@ -367,7 +368,7 @@
    "precision": "2"
   },
   {
-   "columns": 2,
+   "columns": 1,
    "depends_on": "eval: doc.type != \"\"",
    "fieldname": "rate",
    "fieldtype": "Currency",
@@ -806,11 +807,18 @@
    "print_hide": 1,
    "read_only": 1,
    "report_hide": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "accepted_qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Accepted Quantity"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2022-08-30 15:54:09.809536",
+ "modified": "2022-09-04 10:53:09.483481",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition Item",
