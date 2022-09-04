@@ -1,8 +1,10 @@
 # Copyright (c) 2022, Invento Software Limited and contributors
 # For license information, please see license.txt
 
-# import frappe
+import frappe
 from frappe.model.document import Document
 
 class AppUserAttendance(Document):
-	pass
+	def validate(self):
+		if frappe.session.user != 'administrator':
+			self.user = frappe.session.user

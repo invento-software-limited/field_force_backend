@@ -5,6 +5,9 @@ import frappe
 from frappe.model.document import Document
 
 class StoreVisit(Document):
+	def validate(self):
+		if frappe.session.user != 'administrator':
+			self.user = frappe.session.user
 	def after_insert(self):
 		filters = {
 			"customer": self.customer,
