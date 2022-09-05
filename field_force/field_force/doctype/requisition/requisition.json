@@ -48,6 +48,7 @@
   "section_break_36",
   "total_items",
   "total_qty",
+  "requisition_excel",
   "base_total",
   "base_net_total",
   "column_break_40",
@@ -591,12 +592,18 @@
    "hidden": 1,
    "label": "Status",
    "options": "Draft\nSubmitted\nCancelled"
+  },
+  {
+   "fieldname": "requisition_excel",
+   "fieldtype": "Attach",
+   "label": "Requisition Excel",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-04 10:43:55.050744",
+ "modified": "2022-09-05 14:00:07.572008",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",
