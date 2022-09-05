@@ -122,6 +122,7 @@ def generate_requisition_excel_and_upload(requisition):
         "content": requisition.name
     })
     file.save()
+    requisition.requisition_excel = file.file_url
     return file
 
 def get_directory_path(directory_name):
