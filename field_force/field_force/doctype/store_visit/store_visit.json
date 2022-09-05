@@ -111,8 +111,7 @@
   {
    "fieldname": "employee",
    "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
+   "hidden": 1,
    "label": "Employee",
    "options": "Employee"
   },
@@ -120,8 +119,8 @@
    "fetch_from": "employee.employee_name",
    "fieldname": "employee_name",
    "fieldtype": "Data",
-   "label": "Employee Name",
-   "read_only": 1
+   "hidden": 1,
+   "label": "Employee Name"
   },
   {
    "fetch_from": "customer.address",
@@ -178,13 +177,13 @@
    "default": "0",
    "fieldname": "cheated",
    "fieldtype": "Check",
-   "in_list_view": 1,
+   "hidden": 1,
    "label": "Cheated"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-08-30 18:53:31.404848",
+ "modified": "2022-09-05 17:42:40.787049",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Store Visit",

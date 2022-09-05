@@ -596,13 +596,14 @@
   {
    "fieldname": "requisition_excel",
    "fieldtype": "Attach",
+   "hidden": 1,
    "label": "Requisition Excel"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-05 14:44:03.881592",
+ "modified": "2022-09-05 15:56:44.384657",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",

@@ -5,6 +5,7 @@ import frappe
 from frappe.model.document import Document
 
 class AppUserRoute(Document):
-	def validate(self):
-		if frappe.session.user != 'administrator':
-			self.user = frappe.session.user
+	# def validate(self):
+	# 	if frappe.session.user != 'administrator':
+	# 		self.user = frappe.session.user
+	pass

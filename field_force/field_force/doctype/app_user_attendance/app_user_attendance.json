@@ -33,8 +33,7 @@
   {
    "fieldname": "employee",
    "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
+   "hidden": 1,
    "label": "Employee",
    "options": "Employee"
   },
@@ -49,7 +48,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Type",
-   "options": "Checkin\nCheckout",
+   "options": "\nCheckin\nCheckout",
    "reqd": 1
   },
   {
@@ -146,9 +145,8 @@
    "fetch_from": "employee.employee_name",
    "fieldname": "employee_name",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Employee Name",
-   "read_only": 1
+   "hidden": 1,
+   "label": "Employee Name"
   },
   {
    "depends_on": "eval: doc.image != '';",
@@ -162,12 +160,13 @@
    "default": "0",
    "fieldname": "cheated",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Cheated"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-08-30 18:51:00.922981",
+ "modified": "2022-09-05 17:46:31.014297",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "App User Attendance",
