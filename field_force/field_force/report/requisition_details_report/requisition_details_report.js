@@ -50,19 +50,24 @@ frappe.query_reports["Requisition Details Report"] = {
 			"options": "Distributor",
 		},
 		{
+			"fieldname": "status",
+			"label": __("Status"),
+			"fieldtype": "Select",
+			"width": "100",
+			"options": [
+				"Draft",
+				"Submitted",
+				"Cancelled"
+			],
+			"default": "Draft"
+		},
+		{
 			"fieldname": "company",
 			"label": __("Company"),
 			"fieldtype": "Link",
 			"width": "100",
 			"options": "Company",
 			"default": frappe.defaults.get_user_default("Company")
-		},
-		{
-			"fieldname": "submitted",
-			"label": __("Is Submitted"),
-			"fieldtype": "Check",
-			"width": "100",
-			"default": 1,
 		},
 	]
 };

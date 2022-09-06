@@ -19,12 +19,12 @@ def get_columns():
     """ Columns of Report Table"""
     return [
         {"label": _("Date"), "fieldname": "transaction_date", "width": 100},
-        {"label": _("Delivery Date"), "fieldname": "delivery_date", "width": 100},
         {"label": _("Requisition"), "fieldname": "name", "width": 150, "fieldtype": "Link", "options": "Requisition"},
         {"label": _("User"), "fieldname": "user", "width": 120, "fieldtype": "Data", "options": "User"},
-        # {"label": _("User Full Name"), "fieldname": "user_fullname", "width": 200, "fieldtype": "Link", "options": "User"},
 		{"label": _("Customer"), "fieldname": "customer", "width": 120, "fieldtype": "Link", "options": "Customer"},
+		{"label": _("Contact Number"), "fieldname": "contact_number", "width": 120},
 		{"label": _("Distributor"), "fieldname": "distributor", "width": 120, "fieldtype": "Link", "options": "Distributor"},
+        {"label": _("Delivery Date"), "fieldname": "delivery_date", "width": 100},
         {"label": _("Total Items"), "fieldname": "total_items", "width": 100},
         {"label": _("Total Quantity"), "fieldname": "total_qty", "fieldtype": "Int", "width": 100},
         {"label": _("Total Amount"), "fieldname": "total_amount", "fieldtype": "Currency", "width": 150},
@@ -36,9 +36,10 @@ def get_data(filters):
     conditions = get_conditions(filters)
 
     query_string = """SELECT requisition.name, requisition.transaction_date,requisition.delivery_date, requisition.user,
-                    requisition.user_fullname, requisition.customer, requisition.distributor, requisition.total_items,
-                    requisition.total_qty, requisition.grand_total as total_amount, requisition.company
-                    from `tabRequisition` requisition %s order by requisition.transaction_date desc""" % conditions
+                    requisition.user_fullname, requisition.customer, requisition.contact_number, requisition.distributor,
+                    requisition.total_items, requisition.total_qty, requisition.grand_total as total_amount,
+                    requisition.company from `tabRequisition` requisition where %s order by 
+                    requisition.transaction_date desc""" % conditions
 
     query_result = frappe.db.sql(query_string, as_dict=1, debug=0)
     return query_result
@@ -51,8 +52,10 @@ def get_conditions(filters):
     customer = filters.get('customer')
     distributor = filters.get('distributor')
     company = filters.get('company')
+    status = filters.get('status')
+
     conditions = [
-        "where requisition.docstatus = %s" % filters.get('submitted', 0)
+        "requisition.status = '%s'" % status
     ]
 
     if from_date:
