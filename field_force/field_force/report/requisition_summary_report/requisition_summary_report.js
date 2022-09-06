@@ -21,11 +21,44 @@ frappe.query_reports["Requisition Summary Report"] = {
 			"width": "60px"
 		},
 		{
+			"fieldname": "group_by",
+			"label": __("Group By"),
+			"fieldtype": "Select",
+			"width": "100",
+			"options": [
+				"Customer",
+				"User",
+			],
+			"default": "Customer"
+		},
+		{
 			"fieldname": "user",
 			"label": __("User"),
 			"fieldtype": "Link",
 			"width": "100",
 			"options": "User",
+			"depends_on": 'eval:doc.group_by=="User"'
+		},
+		{
+			"fieldname": "customer",
+			"label": __("Customer"),
+			"fieldtype": "Link",
+			"width": "100",
+			"options": "Customer",
+			"depends_on": 'eval:doc.group_by=="Customer"'
+		},
+
+		{
+			"fieldname": "status",
+			"label": __("Status"),
+			"fieldtype": "Select",
+			"width": "100",
+			"options": [
+				"Draft",
+				"Submitted",
+				"Cancelled"
+			],
+			"default": "Draft"
 		},
 		{
 			"fieldname": "company",
@@ -34,13 +67,6 @@ frappe.query_reports["Requisition Summary Report"] = {
 			"width": "100",
 			"options": "Company",
 			"default": frappe.defaults.get_user_default("Company")
-		},
-		{
-			"fieldname": "submitted",
-			"label": __("Is Submitted"),
-			"fieldtype": "Check",
-			"width": "100",
-			"default": 1,
 		},
 	]
 };
