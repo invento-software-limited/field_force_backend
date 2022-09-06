@@ -8,18 +8,23 @@ def execute(filters=None):
     columns = get_columns()
     data = get_data(filters)
 
+    for requisition in data:
+        if requisition.user:
+            requisition['user'] = f'<a href="/app/user/{requisition.user}" target="_blank">{requisition.user_fullname}</a>'
+
     return columns, data
 
 def get_columns():
     """ Columns of Report Table"""
     return [
         {"label": _("Date"), "fieldname": "transaction_date", "width": 150},
-        {"label": _("User"), "fieldname": "user", "width": 150, "fieldtype": "Link", "options": "User"},
-        {"label": _("User Full Name"), "fieldname": "user_fullname", "width": 200, "fieldtype": "Link", "options": "User"},
-        {"label": _("Total Requisitions"), "fieldname": "total_requisitions", "width": 250},
-        {"label": _("Total Items"), "fieldname": "total_items", "width": 175},
-        {"label": _("Total Quantity"), "fieldname": "total_qty", "fieldtype": "Int", "width": 125},
-        {"label": _("Total Amount"), "fieldname": "total_amount", "fieldtype": "Currency", "width": 150},
+        {"label": _("User"), "fieldname": "user", "width": 200},
+        # {"label": _("User Full Name"), "fieldname": "user_fullname", "width": 200, "fieldtype": "Link", "options": "User"},
+        {"label": _("Total Requisition"), "fieldname": "total_requisitions", "width": 180},
+        {"label": _("Total Item"), "fieldname": "total_items", "width": 170},
+        {"label": _("Total Quantity"), "fieldname": "total_qty", "fieldtype": "Int", "width": 180},
+        {"label": _("Total Amount"), "fieldname": "total_amount", "fieldtype": "Currency", "width": 180},
+        {"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company","width": 150},
     ]
 
 
@@ -28,7 +33,7 @@ def get_data(filters):
     conditions = get_conditions(filters)
 
     query_string = """SELECT requisition.transaction_date, requisition.user, requisition.user_fullname,
-                    count(*) as total_requisitions, sum(requisition.total_items) as total_items, 
+                    count(*) as total_requisitions, sum(requisition.total_items) as total_items, requisition.company,
                     sum(requisition.total_qty) as total_qty, sum(requisition.grand_total) as total_amount 
                     from `tabRequisition` requisition where requisition.docstatus = %s %s group by requisition.user,
                     requisition.transaction_date order by requisition.transaction_date desc""" % (submitted, conditions)

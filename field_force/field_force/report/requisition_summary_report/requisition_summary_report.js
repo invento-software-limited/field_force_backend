@@ -27,13 +27,14 @@ frappe.query_reports["Requisition Summary Report"] = {
 			"width": "100",
 			"options": "User",
 		},
-		// {
-		// 	"fieldname": "customer",
-		// 	"label": __("Customer"),
-		// 	"fieldtype": "Link",
-		// 	"width": "100",
-		// 	"options": "Customer",
-		// },
+		{
+			"fieldname": "company",
+			"label": __("Company"),
+			"fieldtype": "Link",
+			"width": "100",
+			"options": "Company",
+			"default": frappe.defaults.get_user_default("Company")
+		},
 		{
 			"fieldname": "submitted",
 			"label": __("Is Submitted"),
