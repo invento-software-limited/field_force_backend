@@ -14,6 +14,8 @@ import openpyxl
 class Requisition(Document):
 
     def validate(self):
+        self.set_user()
+        self.set_customer_info()
         self.validate_delivery_date()
         self.validate_items()
         # generate_requisition_excel_and_upload(self)
@@ -36,6 +38,21 @@ class Requisition(Document):
             if not item.delivery_date:
                 item.delivery_date = self.delivery_date
 
+    def set_user(self):
+        if not self.user:
+            self.user = frappe.session.user
+            self.user_fullname = frappe.db.get_value('User', self.user, 'full_name')
+
+    def set_customer_info(self):
+        if not self.customer_name or not self.distributor:
+            customer_name, distributor= frappe.db.get_value('Customer', self.customer, ['customer_name', 'distributor'])
+
+            if not self.customer_name and customer_name:
+                self.customer_name = customer_name
+
+            if not self.distributor and distributor:
+                self.distributor = distributor
+
     def validate_items(self):
         total_items = 0
         total_qty = 0
@@ -46,7 +63,7 @@ class Requisition(Document):
                 if not item.qty:
                     frappe.throw(f"Please give quantity of item <b>{item.item_name}</b>")
 
-                if not item.rate and not item.amount and item.qty:
+                if (not item.rate or not item.amount) and item.qty:
                     rate = frappe.db.get_value("Item Price", {"item_code": item.item_code, "selling": 1}, ["price_list_rate"])
 
                     if rate:
