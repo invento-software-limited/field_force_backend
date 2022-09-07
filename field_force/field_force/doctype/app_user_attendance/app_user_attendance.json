@@ -9,18 +9,19 @@
  "field_order": [
   "type",
   "user",
+  "user_fullname",
   "email",
   "employee",
   "employee_name",
-  "device_date",
-  "device_time",
+  "server_date",
+  "server_time",
   "cheated",
   "column_break_5",
   "image",
   "img",
   "device_information_section",
-  "server_date",
-  "server_time",
+  "device_date",
+  "device_time",
   "latitude",
   "longitude",
   "column_break_15",
@@ -55,7 +56,9 @@
    "default": "Today",
    "fieldname": "server_date",
    "fieldtype": "Date",
-   "label": "Server Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Date",
    "read_only": 1,
    "reqd": 1
   },
@@ -63,7 +66,8 @@
    "default": "Now",
    "fieldname": "server_time",
    "fieldtype": "Time",
-   "label": "Server Time",
+   "in_list_view": 1,
+   "label": "Time",
    "read_only": 1,
    "reqd": 1
   },
@@ -102,6 +106,8 @@
   {
    "fieldname": "user",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "User",
    "options": "User",
    "reqd": 1
@@ -162,11 +168,18 @@
    "fieldtype": "Check",
    "hidden": 1,
    "label": "Cheated"
+  },
+  {
+   "fetch_from": "user.full_name",
+   "fieldname": "user_fullname",
+   "fieldtype": "Data",
+   "label": "Full Name",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-05 17:46:31.014297",
+ "modified": "2022-09-07 11:37:15.659577",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "App User Attendance",
