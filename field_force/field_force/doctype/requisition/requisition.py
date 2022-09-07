@@ -22,13 +22,13 @@ class Requisition(Document):
 
     def on_submit(self):
         if self.docstatus == 1:
-            self.status = "Submitted"
+            frappe.db.set_value(self.doctype, self.name, 'status', 'Submitted')
 
         self.send_email()
 
     def on_cancel(self):
         if self.docstatus == 2:
-            self.status = "Cancelled"
+            frappe.db.set_value(self.doctype, self.name, 'status', 'Cancelled')
 
     def validate_delivery_date(self):
         if self.transaction_date > self.delivery_date:
