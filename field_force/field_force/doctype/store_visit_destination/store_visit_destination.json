@@ -83,20 +83,18 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "parent.employee",
-   "fetch_if_empty": 1,
+   "fetch_from": "parent.user",
    "fieldname": "user",
    "fieldtype": "Link",
    "label": "User",
    "options": "User",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-08-30 18:54:52.400445",
+ "modified": "2022-09-07 12:40:27.205789",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Store Visit Destination",
