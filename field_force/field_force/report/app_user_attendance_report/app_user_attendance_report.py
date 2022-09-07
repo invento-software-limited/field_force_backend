@@ -37,10 +37,11 @@ def get_data(filters):
 
     query_string = """select app_user_attendance.user, app_user_attendance.user_fullname, 
                     app_user_attendance.server_date, app_user_attendance.server_time, app_user_attendance.type,
-                    app_user_attendance.device_date, app_user_attendance.device_time 
+                    app_user_attendance.device_date, app_user_attendance.device_time, app_user_attendance.latitude,
+                    app_user_attendance.longitude, app_user_attendance.device_model
                     from `tabApp User Attendance` app_user_attendance where %s
                     order by app_user_attendance.device_date desc""" % (conditions)
-    print(query_string)
+
     query_result = frappe.db.sql(query_string, as_dict=1, debug=0)
     return query_result
 
