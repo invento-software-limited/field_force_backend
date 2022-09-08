@@ -1,16 +1,42 @@
 // Copyright (c) 2022, Invento Software Limited and contributors
 // For license information, please see license.txt
+function open_email_dialog(frm){
+	let message = "hello";
+
+	new frappe.views.CommunicationComposer({
+		doc: frm.doc,
+		frm: frm,
+		sender: 'bib.demo2@gmail.com',
+		subject: __(frm.meta.name) + ': ' + frm.docname,
+		recipients: frm.doc.email_address || frm.doc.email,
+		cc: "joyonto@gmail.com,",
+		bcc: "hello@gmail.com,",
+		attach_document_print: false,
+		message: message
+	});
+}
+
 
 frappe.ui.form.on('Requisition', {
-    setup: function (frm){
-        frm.add_fetch('customer', 'tax_id', 'tax_id');
-
-    },
+	on_load: function (){
+		if (frm.doc.requisition_excel === null){
+			frm.set_df_property("requisition_excel", "hidden", true);
+		}
+		else {
+			frm.set_df_property("requisition_excel", "hidden", false);
+		}
+	},
+    // setup: function (frm){
+    //     frm.add_fetch('customer', 'tax_id', 'tax_id');
+    // },
     delivery_date: function(frm) {
 		$.each(frm.doc.items || [], function(i, d) {
 			if(!d.delivery_date) d.delivery_date = frm.doc.delivery_date;
 		});
 		refresh_field("items");
+	},
+	before_submit: function (frm){
+		open_email_dialog(frm)
 	}
 });
 

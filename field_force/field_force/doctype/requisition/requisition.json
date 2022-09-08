@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:REQ-{DD}{MM}{YY}-{#####}",
+ "autoname": "format:REQ-{YY}{MM}{#####}",
  "creation": "2022-08-30 11:47:28.784443",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -14,6 +14,7 @@
   "order_type",
   "skip_delivery_note",
   "status",
+  "email",
   "column_break_9",
   "amended_from",
   "company",
@@ -565,9 +566,9 @@
    "options": "Draft\nSubmitted\nCancelled"
   },
   {
+   "depends_on": "eval: doc.requisition_excel !== null;",
    "fieldname": "requisition_excel",
    "fieldtype": "Attach",
-   "hidden": 1,
    "label": "Requisition Excel"
   },
   {
@@ -585,12 +586,18 @@
    "fieldtype": "Data",
    "label": "User Full Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Button",
+   "hidden": 1,
+   "label": "Email"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-07 10:59:48.292016",
+ "modified": "2022-09-08 17:53:39.097120",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",
