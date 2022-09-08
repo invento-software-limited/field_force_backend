@@ -16,13 +16,11 @@ def login(username, password):
     if frappe.response['message'] == 'Logged In':
         user = frappe.session.user
         user_doc = frappe.get_doc('User', user)
-        employee = frappe.get_last_doc('Employee', filters={"user_id": user_doc.name})
 
         del frappe.local.response['home_page']
 
         frappe.local.response.data = {
             "user": user_doc.name,
-            "employee": employee.name if employee else None,
             "full_name": frappe.local.response.pop('full_name'),
             "email": user_doc.email,
             "token": get_api_key_and_api_secret(user_doc),
