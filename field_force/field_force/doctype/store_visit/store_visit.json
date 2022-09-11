@@ -55,6 +55,7 @@
   {
    "fieldname": "image",
    "fieldtype": "Attach Image",
+   "in_preview": 1,
    "label": "Image"
   },
   {
@@ -201,9 +202,10 @@
    "read_only": 1
   }
  ],
+ "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-07 14:15:38.793486",
+ "modified": "2022-09-11 15:10:11.491439",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Store Visit",
