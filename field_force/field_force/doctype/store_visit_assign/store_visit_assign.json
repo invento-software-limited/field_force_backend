@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "format:SVA-{YY}{MM}{#####}",
  "creation": "2022-08-23 16:04:37.208023",
@@ -83,7 +84,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-07 14:24:03.575931",
+ "modified": "2022-09-11 15:20:12.248394",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Store Visit Assign",

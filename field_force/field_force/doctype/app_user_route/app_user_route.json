@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "format:AUR-{YY}{MM}{#####}",
  "creation": "2022-08-23 13:10:59.164980",
@@ -146,7 +147,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-07 17:42:14.189821",
+ "modified": "2022-09-11 15:19:05.406825",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "App User Route",

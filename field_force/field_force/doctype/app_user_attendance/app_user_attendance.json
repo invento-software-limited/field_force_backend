@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "format:ATT-{DD}{MM}{YY}-{####}",
  "creation": "2022-08-22 12:35:55.010327",
@@ -177,9 +178,10 @@
    "read_only": 1
   }
  ],
+ "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-07 11:37:15.659577",
+ "modified": "2022-09-11 15:17:47.401467",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "App User Attendance",
