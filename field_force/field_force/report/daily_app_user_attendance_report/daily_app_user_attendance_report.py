@@ -11,14 +11,13 @@ def execute(filters=None):
     data_dict = {}
 
     for app_user_attendance in data:
+        set_image_url(app_user_attendance)
         data_key = f"{app_user_attendance.server_date}_{app_user_attendance.user}"
 
         if data_key in data_dict.keys():
             data_dict[data_key]['checkout_time'] = app_user_attendance.server_time
             data_dict[data_key]['checkout_device_time'] = app_user_attendance.device_time
             data_dict[data_key]['checkout_name'] = app_user_attendance.name
-
-            set_image_url(app_user_attendance)
             data_dict[data_key]['checkout_image'] = app_user_attendance.image
         else:
             data_dict[data_key] = app_user_attendance
