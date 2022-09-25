@@ -12,8 +12,10 @@
   "customer_name",
   "address",
   "contact_number",
+  "distributor",
   "column_break_3",
   "user",
+  "user_fullname",
   "date",
   "item_details"
  ],
@@ -76,11 +78,25 @@
    "label": "User",
    "options": "User",
    "reqd": 1
+  },
+  {
+   "fetch_from": "user.full_name",
+   "fieldname": "user_fullname",
+   "fieldtype": "Data",
+   "label": "User Full Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "customer.distributor",
+   "fieldname": "distributor",
+   "fieldtype": "Data",
+   "label": "Distributor",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-11 15:19:42.264494",
+ "modified": "2022-09-25 14:34:44.496851",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Item Request",

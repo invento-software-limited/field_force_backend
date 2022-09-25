@@ -6,4 +6,6 @@ from frappe.model.document import Document
 
 class ItemRequest(Document):
 	def validate(self):
-		self.user = frappe.session.user
+		if not self.user:
+			self.user = frappe.session.user
+			self.user_fullname = frappe.db.get_value('User', self.user, 'full_name')
