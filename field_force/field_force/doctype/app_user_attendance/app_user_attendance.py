@@ -20,6 +20,9 @@ class AppUserAttendance(Document):
 				self.user_fullname = user_fullname
 
 		try:
+			if '.' in str(self.server_time):
+				self.server_time = str(self.server_time).split('.')[0]
+
 			device_datetime = datetime.datetime.strptime(f"{self.device_date} {self.device_time}", "%Y-%m-%d %H:%M:%S")
 			server_datetime = datetime.datetime.strptime(f"{self.server_date} {self.server_time}", "%Y-%m-%d %H:%M:%S")
 			time_difference = server_datetime - device_datetime if server_datetime > device_datetime \
