@@ -40,3 +40,11 @@ class JsonFile():
 def set_doctype_fields_to_json(doctype, value):
     api_response_fields = JsonFile()
     api_response_fields.set(doctype, value)
+
+def get_api_fields(doctype, with_child_fields=False):
+    api_response_fields = json.loads(open(file_path, "r").read())
+
+    if with_child_fields:
+        return api_response_fields.get(doctype, ['name']), api_response_fields.get(f'_{doctype}', ['name'])
+
+    return api_response_fields.get(doctype, ['name'])
