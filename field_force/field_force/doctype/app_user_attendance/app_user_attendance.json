@@ -64,7 +64,7 @@
    "reqd": 1
   },
   {
-   "default": "Now",
+   "default": "now",
    "fieldname": "server_time",
    "fieldtype": "Time",
    "in_list_view": 1,
@@ -167,8 +167,8 @@
    "default": "0",
    "fieldname": "cheated",
    "fieldtype": "Check",
-   "hidden": 1,
-   "label": "Cheated"
+   "label": "Cheated",
+   "read_only": 1
   },
   {
    "fetch_from": "user.full_name",
@@ -181,7 +181,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-11 15:17:47.401467",
+ "modified": "2022-09-26 12:03:29.938178",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "App User Attendance",
