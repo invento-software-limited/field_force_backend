@@ -32,5 +32,7 @@ class AppUserAttendance(Document):
 				self.cheated = 0
 
 		except Exception:
-			frappe.log_error(traceback.format_exc(), "App User Attendance")
+			error = f"device_date = {self.device_date}, device_time = {self.device_time} \n" \
+					f"server_date = {self.server_date}, server_time = {self.server_time} \n\n {traceback.format_exc()}"
+			frappe.log_error(error, "App User Attendance")
 
