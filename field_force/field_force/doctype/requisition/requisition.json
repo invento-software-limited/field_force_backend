@@ -136,6 +136,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "default": "frappe.defaults.get_user_default(\u201cCompany\u201d)",
    "fieldname": "company",
    "fieldtype": "Link",
    "in_standard_filter": 1,
@@ -597,7 +598,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-08 17:53:39.097120",
+ "modified": "2022-09-27 12:16:22.124077",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",

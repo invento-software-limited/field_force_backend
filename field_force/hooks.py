@@ -109,9 +109,9 @@ doc_events = {
 	# 	"on_cancel": "method",
 	# 	"on_trash": "method"
 	# },
-	"Item":{
-		"before_save": "field_force.field_force.hook_functions.item.set_item_name_to_description"
-	},
+	# "Item":{
+	# 	"before_save": "field_force.field_force.hook_functions.item.set_item_name_to_description"
+	# },
 	"Customer": {
 		"validate": "field_force.field_force.hook_functions.customer.set_customer_group",
 		"after_insert": "field_force.field_force.hook_functions.customer.create_distributor",
