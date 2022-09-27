@@ -29,7 +29,9 @@ def get_items_list():
     item_names = ''
 
     for item in items:
-        item['barcodes'] = []
+        if 'barcodes' in child_table_fields:
+            item['barcodes'] = []
+
         item['batches'] = []
         items_dict[item.item_code] = item
         item_names += ", " + f"'{item.item_code}'" if item_names else f"'{item.item_code}'"
@@ -53,5 +55,3 @@ def get_items_list():
         items_dict[batch.item]['batches'].append(batch)
 
     return items
-
-
