@@ -7,10 +7,10 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "user",
-  "user_fullname",
   "customer",
   "customer_name",
+  "address",
+  "contact_number",
   "order_type",
   "skip_delivery_note",
   "status",
@@ -25,14 +25,14 @@
   "po_date",
   "tax_id",
   "customer_address_and_contact_section",
+  "contact_person",
+  "email_address",
   "customer_image",
   "customer_group",
-  "contact_person",
-  "address",
   "latitude",
   "column_break_21",
-  "contact_number",
-  "email_address",
+  "user",
+  "user_fullname",
   "longitude",
   "currency_and_price_list_section",
   "currency",
@@ -188,7 +188,7 @@
    "collapsible": 1,
    "fieldname": "customer_address_and_contact_section",
    "fieldtype": "Section Break",
-   "label": "Customer Address and Contact"
+   "label": "Additional Info"
   },
   {
    "fetch_from": "customer.contact_person",
@@ -576,18 +576,18 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "User",
-   "options": "User",
-   "reqd": 1
+   "label": "Issued By",
+   "options": "User"
   },
   {
    "fetch_from": "user.full_name",
    "fieldname": "user_fullname",
    "fieldtype": "Data",
-   "label": "User Full Name",
+   "label": "Full Name",
    "read_only": 1
   },
   {
+   "fetch_from": "user.email",
    "fieldname": "email",
    "fieldtype": "Button",
    "hidden": 1,
@@ -597,7 +597,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-28 13:34:43.810953",
+ "modified": "2022-09-28 15:23:34.351735",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",

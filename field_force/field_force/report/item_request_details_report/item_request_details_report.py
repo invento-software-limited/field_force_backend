@@ -48,6 +48,7 @@ def get_conditions(filters):
     to_date = filters.get('to_date')
     user = filters.get('user')
     customer = filters.get('customer')
+    distributor = filters.get('distributor')
 
     conditions = []
 
@@ -59,5 +60,7 @@ def get_conditions(filters):
         conditions.append("item_request.user = '%s'" % user)
     if customer:
         conditions.append("item_request.customer = '%s'" % customer)
+    if distributor:
+        conditions.append("item_request.distributor = '%s'" % distributor)
 
     return " and ".join(conditions)

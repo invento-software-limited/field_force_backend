@@ -252,7 +252,7 @@
    "type": "Link"
   }
  ],
- "modified": "2022-09-28 14:34:34.309480",
+ "modified": "2022-09-28 14:45:56.067073",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Field Force",
@@ -276,6 +276,7 @@
    "format": "{} Draft",
    "label": "Sales Order",
    "link_to": "Sales Order",
+   "restrict_to_domain": "",
    "stats_filter": "{\"docstatus\": 0}",
    "type": "DocType"
   },
@@ -316,5 +317,5 @@
    "type": "DocType"
   }
  ],
- "shortcuts_label": ""
+ "shortcuts_label": "Shortcuts"
 }
