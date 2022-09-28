@@ -252,7 +252,7 @@
    "type": "Link"
   }
  ],
- "modified": "2022-09-27 18:35:11.842886",
+ "modified": "2022-09-28 14:34:34.309480",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Field Force",
@@ -262,29 +262,39 @@
  "pin_to_top": 1,
  "shortcuts": [
   {
-   "color": "#449CF0",
+   "color": "#ECAD4B",
    "doc_view": "List",
    "format": "{} Draft",
    "label": "Requisition",
    "link_to": "Requisition",
-   "stats_filter": "{\"transaction_date\":frappe.datetime.get_today().date, 'status': 'Daft'}",
+   "stats_filter": "{\"docstatus\": 0}",
+   "type": "DocType"
+  },
+  {
+   "color": "#EC864B",
+   "doc_view": "List",
+   "format": "{} Draft",
+   "label": "Sales Order",
+   "link_to": "Sales Order",
+   "stats_filter": "{\"docstatus\": 0}",
    "type": "DocType"
   },
   {
    "color": "#29CD42",
    "doc_view": "List",
-   "format": "{} Draft",
-   "label": "Sales Order",
-   "link_to": "Sales Order",
-   "stats_filter": "{\"transaction_date\":frappe.datetime.get_today().date}",
+   "format": "{} Visited",
+   "label": "Store Visit",
+   "link_to": "Store Visit",
+   "stats_filter": "{\"server_date\":frappe.datetime.get_today()}",
    "type": "DocType"
   },
   {
+   "color": "#761ACB",
    "doc_view": "List",
    "format": "{} Requests",
    "label": "Item Request",
    "link_to": "Item Request",
-   "stats_filter": "{\"date\":frappe.datetime.get_today().date}",
+   "stats_filter": "{\"date\":frappe.datetime.get_today()}",
    "type": "DocType"
   },
   {
@@ -293,24 +303,16 @@
    "format": "{} Logs",
    "label": "App User Attendance",
    "link_to": "App User Attendance",
-   "stats_filter": "{\"server_date\":frappe.datetime.get_today().date}",
+   "stats_filter": "{\"server_date\":frappe.datetime.get_today()}",
    "type": "DocType"
   },
   {
-   "color": "#9d76c2",
+   "color": "#4463F0",
    "doc_view": "List",
-   "format": "{} Visited",
-   "label": "Store Visit",
-   "link_to": "Store Visit",
-   "stats_filter": "{\"server_date\":frappe.datetime.get_today().date}",
-   "type": "DocType"
-  },
-  {
-   "doc_view": "List",
-   "format": "{} assigned",
+   "format": "{} Assigned",
    "label": "Store Visit Assign",
    "link_to": "Store Visit Assign",
-   "stats_filter": "{\"date\":frappe.datetime.get_today().date}",
+   "stats_filter": "{\"date\":frappe.datetime.get_today()}",
    "type": "DocType"
   }
  ],

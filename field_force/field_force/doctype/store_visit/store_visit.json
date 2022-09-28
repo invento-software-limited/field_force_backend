@@ -139,15 +139,12 @@
   {
    "fieldname": "device_date",
    "fieldtype": "Date",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Device Date",
    "reqd": 1
   },
   {
    "fieldname": "device_time",
    "fieldtype": "Time",
-   "in_list_view": 1,
    "label": "Device Time",
    "reqd": 1
   },
@@ -206,7 +203,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-11 15:18:15.342918",
+ "modified": "2022-09-28 14:22:47.517047",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Store Visit",
