@@ -18,6 +18,7 @@ class Requisition(Document):
     def validate(self):
         self.set_user()
         self.set_customer_info()
+        self.set_brand_and_image_to_requisition_items()
         self.validate_delivery_date()
         self.validate_items()
     def before_save(self):
@@ -56,6 +57,11 @@ class Requisition(Document):
 
             if not self.distributor and distributor:
                 self.distributor = distributor
+
+    def set_brand_and_image_to_requisition_items(self):
+        for item in self.items:
+            if not item.brand or not item.image:
+                item.brand, item.image = frappe.db.get_value('Item', item.item_code, ['brand', 'image'])
 
     def validate_items(self):
         total_items = 0

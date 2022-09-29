@@ -181,6 +181,7 @@
    "read_only": 1
   },
   {
+   "fetch_from": "item_code.brand",
    "fieldname": "brand",
    "fieldtype": "Link",
    "hidden": 1,
@@ -193,6 +194,7 @@
   },
   {
    "collapsible": 1,
+   "fetch_from": "item_code.image",
    "fieldname": "image_section",
    "fieldtype": "Section Break",
    "label": "Image"
@@ -817,7 +819,7 @@
  ],
  "istable": 1,
  "links": [],
- "modified": "2022-09-27 13:50:23.258338",
+ "modified": "2022-09-29 10:47:33.443237",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition Item",
