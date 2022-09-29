@@ -119,7 +119,7 @@ doc_events = {
 		# "on_update": "field_force.field_force.hook_functions.customer.set_image",
 	},
 	"Sales Order":{
-		"validate": "field_force.field_force.hook_functions.sales_order.set_item_count"
+		"validate": "field_force.field_force.hook_functions.sales_order.set_extra_values"
 	}
 
 }
