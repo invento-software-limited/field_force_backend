@@ -281,7 +281,7 @@
    "name": "Sales Order-distributor",
    "no_copy": 0,
    "non_negative": 0,
-   "options": "Customer",
+   "options": "Distributor",
    "owner": "Administrator",
    "parent": null,
    "parentfield": null,
