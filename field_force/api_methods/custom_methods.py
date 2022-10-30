@@ -7,23 +7,24 @@ from field_force.api_methods.utils import file_path, get_api_fields
 def get_custom_data(doctype):
     method = {
         'Customer': get_customer_list,
-        'Item': get_items_list
+        'Item': get_items_list,
+        'Store Visit Assign': get_store_visit_assigns_list
     }
 
-    return method[doctype]()
+    return method[doctype](doctype)
 
-def get_customer_list():
+def get_customer_list(doctype):
     frappe.local.form_dict['filters'] = [['customer_group', '=', 'Retail Shop']]
-    frappe.local.response.total_items = len(frappe.get_list('Customer', frappe.local.form_dict.get('filters')))
-    return frappe.call(frappe.client.get_list, 'Customer', **frappe.local.form_dict)
+    frappe.local.response.total_items = len(frappe.get_list(doctype, frappe.local.form_dict.get('filters')))
+    return frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
 
 
-def get_items_list():
-    _, child_table_fields = get_api_fields('Item', with_child_fields=True)
+def get_items_list(doctype):
+    _, child_table_fields = get_api_fields(doctype, with_child_fields=True)
 
     # retrieving items
-    items = frappe.call(frappe.client.get_list, 'Item', **frappe.local.form_dict)
-    frappe.local.response.total_items = len(frappe.get_list('Item', frappe.local.form_dict.get('filters')))
+    items = frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
+    frappe.local.response.total_items = len(frappe.get_list(doctype, frappe.local.form_dict.get('filters')))
 
     items_dict = {}
     item_names = ''
@@ -55,3 +56,35 @@ def get_items_list():
         items_dict[batch.item]['batches'].append(batch)
 
     return items
+
+def get_store_visit_assigns_list(doctype):
+    _, child_table_fields = get_api_fields(doctype, with_child_fields=True)
+
+    frappe.local.form_dict['filters'] = {'user': frappe.session.user}
+    store_visit_assigns = frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
+    frappe.local.response.total_items = len(frappe.get_list(doctype, frappe.local.form_dict.get('filters')))
+
+    store_visit_assigns_dict = {}
+    store_visit_assign_names = ''
+
+    if 'destinations' in child_table_fields:
+        for store_visit_assign in store_visit_assigns:
+            store_visit_assign['destinations'] = []
+
+            store_visit_assigns_dict[store_visit_assign.name] = store_visit_assign
+            store_visit_assign_names += ", " + f"'{store_visit_assign.name}'" if store_visit_assign_names else f"'{store_visit_assign.name}'"
+
+        child_table_doctype = 'Store Visit Destination'
+        store_visit_assign_fields = get_api_fields(child_table_doctype)
+        store_visit_assign_fields_str = ",".join([f'store_visit_destination.{field}' for field in store_visit_assign_fields])
+
+        destinations = frappe.db.sql(f"""select store_visit_destination.parent, {store_visit_assign_fields_str}
+                                        from `tab{child_table_doctype}` store_visit_destination where 
+                                        store_visit_destination.parent in ({store_visit_assign_names})
+                                        order by store_visit_destination.expected_time and
+                                         store_visit_destination.idx""", as_dict=True)
+
+        for destination in destinations:
+            store_visit_assigns_dict[destination.parent]['destinations'].append(destination)
+
+    return store_visit_assigns_dict.values()

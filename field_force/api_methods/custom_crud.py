@@ -56,7 +56,7 @@ def execute(doctype=None, name=None):
 
         elif doctype:
             if frappe.local.request.method == "GET":
-                custom = ['Customer', 'Item']
+                custom = ['Customer', 'Item', 'Store Visit Assign']
 
                 frappe.local.form_dict["fields"] = api_response_fields.get(doctype, ['name'])
                 frappe.local.form_dict['order_by'] = "modified desc"
