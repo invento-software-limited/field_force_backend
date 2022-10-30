@@ -81,8 +81,8 @@ def get_store_visit_assigns_list(doctype):
         destinations = frappe.db.sql(f"""select store_visit_destination.parent, {store_visit_assign_fields_str}
                                         from `tab{child_table_doctype}` store_visit_destination where 
                                         store_visit_destination.parent in ({store_visit_assign_names})
-                                        order by store_visit_destination.expected_time and
-                                         store_visit_destination.idx""", as_dict=True)
+                                        order by store_visit_destination.expected_time asc,
+                                         store_visit_destination.idx asc""", as_dict=True)
 
         for destination in destinations:
             store_visit_assigns_dict[destination.parent]['destinations'].append(destination)
