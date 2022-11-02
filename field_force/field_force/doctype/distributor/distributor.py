@@ -14,6 +14,7 @@ class Distributor(Document):
 				'doctype': 'Customer',
 				'customer_name': self.distributor_name,
 				'customer_group': 'Distributor',
+				'distributor': self.distributor_name,
 				'contact_person': self.contact_person,
 				'contact_number': self.contact_number,
 				'address': self.address,

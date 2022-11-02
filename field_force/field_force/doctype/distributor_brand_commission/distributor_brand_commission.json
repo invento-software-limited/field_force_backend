@@ -1,0 +1,43 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-11-02 10:24:02.107959",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "brand",
+  "commission_rate"
+ ],
+ "fields": [
+  {
+   "columns": 5,
+   "fieldname": "brand",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Brand",
+   "options": "Brand",
+   "reqd": 1
+  },
+  {
+   "columns": 5,
+   "fieldname": "commission_rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Commission Rate",
+   "precision": "2",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2022-11-02 11:51:21.912694",
+ "modified_by": "Administrator",
+ "module": "Field Force",
+ "name": "Distributor Brand Commission",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

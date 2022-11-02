@@ -20,13 +20,16 @@
   "email_address",
   "thana",
   "zip_code",
-  "longitude"
+  "longitude",
+  "brand_wise_commission_section",
+  "commission"
  ],
  "fields": [
   {
    "fieldname": "distributor_name",
    "fieldtype": "Data",
    "label": "Distributor Name",
+   "reqd": 1,
    "unique": 1
   },
   {
@@ -97,14 +100,26 @@
    "read_only": 1
   },
   {
+   "collapsible": 1,
    "fieldname": "customer_address_and_contact_section",
    "fieldtype": "Section Break",
-   "label": "Customer Address and Contact"
+   "label": "Address and Contact"
+  },
+  {
+   "fieldname": "brand_wise_commission_section",
+   "fieldtype": "Section Break",
+   "label": "Brand Wise Commission"
+  },
+  {
+   "fieldname": "commission",
+   "fieldtype": "Table",
+   "label": "Commission",
+   "options": "Distributor Brand Commission"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-08-25 15:07:24.249346",
+ "modified": "2022-11-02 11:28:28.811771",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Distributor",
