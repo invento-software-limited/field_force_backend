@@ -8,7 +8,7 @@ def set_customer_group(self, method):
 @frappe.whitelist()
 def create_distributor(self, method):
     if self.customer_group == 'Distributor':
-        if not frappe.db.exists('Distributor', self.name):
+        if not self.distributor and not frappe.db.exists('Distributor', self.name):
             distributor_info = {
                 'doctype': 'Distributor',
                 'distributor_name': self.name,
@@ -23,4 +23,4 @@ def create_distributor(self, method):
                 'longitude': self.longitude
             }
             distributor = frappe.get_doc(distributor_info)
-            distributor.insert()
+            distributor.save()
