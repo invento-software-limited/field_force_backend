@@ -14,13 +14,13 @@ from frappe.core.doctype.communication import email
 import openpyxl
 
 class Requisition(Document):
-
     def validate(self):
         self.set_user()
         self.set_customer_info()
         self.set_brand_and_image_to_requisition_items()
         self.validate_delivery_date()
         self.validate_items()
+
     def before_save(self):
         generate_requisition_excel_and_attach(self)
 
@@ -64,6 +64,12 @@ class Requisition(Document):
                 item.brand, item.image = frappe.db.get_value('Item', item.item_code, ['brand', 'image'])
 
     def validate_items(self):
+        commission_brand_list = frappe.get_list('Customer Brand Commission', {'parent': self.customer}, ['brand', 'commission_rate'])
+        commission_brand_dict = {}
+
+        for commission in commission_brand_list:
+            commission_brand_dict[commission.brand] = commission.commission_rate
+
         total_items = 0
         total_qty = 0
         total = 0
@@ -73,15 +79,26 @@ class Requisition(Document):
                 if not item.qty:
                     frappe.throw(f"Please give quantity of item <b>{item.item_name}</b>")
 
-                if (not item.rate or not item.amount) and item.qty:
-                    rate = frappe.db.get_value("Item Price", {"item_code": item.item_code, "selling": 1}, ["price_list_rate"])
+                if not item.discount_percentage:
+                    item.discount_percentage = commission_brand_dict.get(item.brand, 0)
 
-                    if rate:
-                        item.rate = rate
-                        item.amount = item.qty * rate
-                        total += item.amount
-                    else:
-                        frappe.throw(f"There is no selling rate of item <b>{item.item_name}</b>")
+                if not item.price_list_rate:
+                    item.price_list_rate = frappe.db.get_value("Item Price", {"item_code": item.item_code,
+                                                                              "selling": 1}, ["price_list_rate"])
+                if not item.price_list_rate and not item.rate:
+                    frappe.throw(f"There is no selling rate of item <b>{item.item_name}</b>")
+
+                elif item.price_list_rate or item.rate:
+                    if (item.price_list_rate and not item.rate) or (item.price_list_rate == item.rate):
+                        if item.discount_percentage:
+                            item.discount_amount = item.price_list_rate * (float(item.discount_percentage) / 100)
+                        else:
+                            item.discount_amount = 0
+
+                        item.rate = item.price_list_rate - item.discount_amount
+
+                    item.amount = item.qty * item.rate
+                    total += item.amount
 
                 total_items += 1
                 total_qty += item.qty
@@ -212,3 +229,27 @@ def set_column_width(worksheet, column=None, width=None):
     else:
         for i, width_ in enumerate([12, 15, 12, 12, 12, 15]):
             worksheet.column_dimensions[get_column_letter(i + 1)].width = width_
+
+
+@frappe.whitelist()
+def get_brands_commission(customer, brand=None):
+    customer = frappe.get_doc('Customer', customer)
+
+    if customer.customer_group == "Retail Shop":
+        distributor = frappe.get_doc("Distributor", customer.distributor)
+        brand_wise_commission_dict = get_commissions_in_dict(distributor.commissions)
+    else:
+        brand_wise_commission_dict = get_commissions_in_dict(customer.commssions)
+
+    if brand:
+        return brand_wise_commission_dict.get(brand, 0)
+
+    return brand_wise_commission_dict
+
+def get_commissions_in_dict(commissions):
+    brand_wise_commission_dict = {}
+
+    for commission in commissions:
+        brand_wise_commission_dict[commission.brand] = commission.commission_rate
+
+    return brand_wise_commission_dict

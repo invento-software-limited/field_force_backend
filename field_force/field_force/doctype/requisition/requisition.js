@@ -16,6 +16,31 @@ function open_email_dialog(frm){
 	});
 }
 
+var brand_commissions = {};
+
+function get_brands_commissions(customer, brand=null){
+	let response = null;
+
+	frappe.call({
+		method: 'field_force.field_force.doctype.requisition.requisition.get_brands_commission',
+		args: {
+			'customer': customer,
+			'brand': brand,
+		},
+		callback: function(r) {
+			if (!r.exc) {
+				// code snippet
+				console.log("=====>>>", r.message);
+				brand_commissions = r.message;
+			}
+			else{
+				console.log("====>>", r)
+			}
+		}
+	});
+	return response
+}
+
 
 frappe.ui.form.on('Requisition', {
 	on_load: function (){
@@ -26,18 +51,28 @@ frappe.ui.form.on('Requisition', {
 			frm.set_df_property("requisition_excel", "hidden", false);
 		}
 	},
+	refresh: function (frm){
+		if (frm.doc.customer){
+			brand_commissions = get_brands_commissions(frm.doc.customer)
+		}
+	},
+	before_submit: function (frm){
+		open_email_dialog(frm)
+	},
     // setup: function (frm){
     //     frm.add_fetch('customer', 'tax_id', 'tax_id');
     // },
+	customer: function (frm){
+		brand_commissions = get_brands_commissions(frm.doc.customer)
+	},
+
     delivery_date: function(frm) {
 		$.each(frm.doc.items || [], function(i, d) {
 			if(!d.delivery_date) d.delivery_date = frm.doc.delivery_date;
 		});
 		refresh_field("items");
 	},
-	before_submit: function (frm){
-		open_email_dialog(frm)
-	}
+
 });
 
 function set_absolute_values(frm){
@@ -65,6 +100,9 @@ function set_absolute_values(frm){
 frappe.ui.form.on("Requisition Item", {
 	item_code: function(frm,cdt,cdn) {
 		console.log("Item added");
+		console.log("======>>>", brand_commissions);
+
+
 		var row = locals[cdt][cdn];
 		if (frm.doc.delivery_date) {
 			row.delivery_date = frm.doc.delivery_date;
@@ -80,29 +118,39 @@ frappe.ui.form.on("Requisition Item", {
 				'filters': {'item_code': row.item_code, 'selling': 1},
 				'fieldname': [
 					'item_name',
-					'price_list_rate'
+					'price_list_rate',
+					'brand'
 				]
 			},
 			callback: function(r) {
 				if (!r.exc) {
 					// code snippet
-					console.log(r.message);
+					// console.log(r.message);
 					let item = r.message;
-					// row.rate = item.price_list_rate;
-					frappe.model.set_value(cdt, cdn, "rate", item.price_list_rate);
+					frappe.model.set_value(cdt, cdn, "price_list_rate", item.price_list_rate);
+
+					if (item.brand) {
+						// console.log("commission ===>>", brand_commissions);
+						if (brand_commissions[item.brand] !== undefined){
+							frappe.model.set_value(cdt, cdn, "discount_percentage", brand_commissions[item.brand])
+						}
+						else{
+							frappe.model.set_value(cdt, cdn, "discount_percentage", 0);
+						}
+					}
+					set_absolute_values(frm);
 				}
 			}
 		});
 	},
 	qty: function(frm, cdt, cdn){
-		var row = locals[cdt][cdn];
-		frappe.model.set_value(cdt, cdn, "amount", row.qty * row.rate);
-		set_absolute_values(frm);
+		set_amount(frm, cdt, cdn);
+	},
+	discount_percentage: function (frm, cdt, cdn){
+		set_rate_and_amount(frm, cdt, cdn);
 	},
 	rate: function(frm, cdt, cdn){
-		var row = locals[cdt][cdn];
-		frappe.model.set_value(cdt, cdn, "amount", row.qty * row.rate);
-		set_absolute_values(frm);
+		set_rate_and_amount(frm, cdt, cdn);
 	},
 	delivery_date: function(frm, cdt, cdn) {
 		if(!frm.doc.delivery_date) {
@@ -110,3 +158,26 @@ frappe.ui.form.on("Requisition Item", {
 		}
 	}
 });
+
+function set_rate_and_amount(frm, cdt, cdn){
+	let row = locals[cdt][cdn];
+	// console.log("rate====>>>", row.rate);
+	// console.log("prate====>>>", row.price_list_rate);
+
+	if (row.discount_percentage > 0){
+		row.rate = row.price_list_rate - (row.price_list_rate * (row.discount_percentage/100))
+		frappe.model.set_value(cdt, cdn, "rate", row.rate);
+	}
+	else if (row.rate === 0 || row.rate === null || row.rate === undefined){
+		frappe.model.set_value(cdt, cdn, "rate", row.price_list_rate);
+	}
+
+	frappe.model.set_value(cdt, cdn, "amount", row.qty * row.rate);
+	set_absolute_values(frm);
+}
+
+function set_amount(frm, cdt, cdn){
+	var row = locals[cdt][cdn];
+	frappe.model.set_value(cdt, cdn, "amount", row.qty * row.rate);
+	set_absolute_values(frm);
+}
