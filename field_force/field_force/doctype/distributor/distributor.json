@@ -22,7 +22,7 @@
   "zip_code",
   "longitude",
   "brand_wise_commission_section",
-  "commission"
+  "commissions"
  ],
  "fields": [
   {
@@ -111,15 +111,15 @@
    "label": "Brand Wise Commission"
   },
   {
-   "fieldname": "commission",
+   "fieldname": "commissions",
    "fieldtype": "Table",
-   "label": "Commission",
+   "label": "Commissions",
    "options": "Distributor Brand Commission"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-11-02 11:28:28.811771",
+ "modified": "2022-11-06 11:49:35.237002",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Distributor",
