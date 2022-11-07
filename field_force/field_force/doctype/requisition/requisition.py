@@ -21,8 +21,8 @@ class Requisition(Document):
         self.validate_delivery_date()
         self.validate_items()
 
-    def before_save(self):
-        generate_requisition_excel_and_attach(self)
+    # def before_save(self):
+    #     generate_requisition_excel_and_attach(self)
 
     def on_submit(self):
         if self.docstatus == 1:
