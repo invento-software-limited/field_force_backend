@@ -48,6 +48,7 @@
   "total_items",
   "total_qty",
   "requisition_excel",
+  "requisition_excel_file",
   "base_total",
   "base_net_total",
   "column_break_40",
@@ -566,9 +567,9 @@
    "options": "Draft\nSubmitted\nCancelled"
   },
   {
-   "depends_on": "eval: doc.requisition_excel !== null;",
    "fieldname": "requisition_excel",
    "fieldtype": "Attach",
+   "hidden": 1,
    "label": "Requisition Excel"
   },
   {
@@ -592,12 +593,19 @@
    "fieldtype": "Button",
    "hidden": 1,
    "label": "Email"
+  },
+  {
+   "depends_on": "eval:doc.requisition_excel != null;",
+   "fieldname": "requisition_excel_file",
+   "fieldtype": "Attach",
+   "label": "Requisition Excel File",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-28 15:23:34.351735",
+ "modified": "2022-11-07 14:23:17.491445",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",

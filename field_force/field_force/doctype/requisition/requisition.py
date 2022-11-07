@@ -28,8 +28,7 @@ class Requisition(Document):
         if self.docstatus == 1:
             frappe.db.set_value(self.doctype, self.name, 'status', 'Submitted')
 
-        # self.send_email()
-        # generate_requisition_excel_and_attach(self)
+        generate_requisition_excel_and_attach(self)
 
     def on_cancel(self):
         if self.docstatus == 2:
@@ -64,7 +63,8 @@ class Requisition(Document):
                 item.brand, item.image = frappe.db.get_value('Item', item.item_code, ['brand', 'image'])
 
     def validate_items(self):
-        commission_brand_list = frappe.get_list('Customer Brand Commission', {'parent': self.customer}, ['brand', 'commission_rate'])
+        commission_brand_list = frappe.get_list('Customer Brand Commission',
+                                                {'parent': self.customer}, ['brand', 'commission_rate'])
         commission_brand_dict = {}
 
         for commission in commission_brand_list:
@@ -119,52 +119,36 @@ class Requisition(Document):
         if not item.accepted_qty:
             item.accepted_qty = item.qty
 
-    def send_email(self):
-        sender = "bib.demo2@gmail.com"
-        sender_full_name = "Best in Brands Private Ltd."
-        recipients = "joyanto@invento.com.bd,"
-        cc = "joyonto51@gmail.com,"
-        bcc = None
-        email_subject = f"Requisition: {self.name}"
-        email_body = "Hello, jayanta"
-
-        file = generate_requisition_excel_and_attach(self)
-        attachments = [file.name]
-
-        # calling frappe email sender function
-        email.make(doctype = self.doctype, name = self.name, content = email_body, subject = email_subject, sent_or_received = "Sent",
-        sender = sender, sender_full_name = sender_full_name, recipients = recipients, communication_medium = "Email", send_email = True,
-        print_html = None, print_format = None, attachments = attachments, send_me_a_copy = False, cc = cc, bcc = bcc,
-        read_receipt = None, print_letterhead = True, email_template = None, communication_type = None)
-
-        print("email sent")
 
 def generate_requisition_excel_and_attach(requisition):
     workbook = openpyxl.Workbook()
     worksheet = workbook.active
     worksheet.name = requisition.name
-    # wb.remove(wb['Sheet'])
-    row_count = 1
 
-    # worksheet.cell(row=row_count, column=1).value = requisition.name
-    # worksheet.merge_cells(start_row=1, start_column=2, end_row=1, end_column=4)
-    columns = ['Item Code', 'Item Name', 'UOM', 'Quantity', 'Unit Price', 'Amount']
+    columns = ['[Product #]', '[Product Name]', '[UOM]', '[Quantity]', '[Unit Price]', '[Discount]', '[Nett Price]',
+               '[Amount]', '[Tax Code]']
+
     generate_row(worksheet, 1, columns, font=default_font)
     row_count = 2
 
     for item in requisition.items:
-        item_row_data = [item.item_code, item.item_name, item.uom, item.qty, item.rate, f'=D{row_count}*E{row_count}']
+        item_row_data = [item.item_code, item.item_name, item.uom, item.qty, item.price_list_rate,
+                         item.discount_percentage, f'=E{row_count}-(E{row_count}*(F{row_count}/100))',
+                         f'=D{row_count}*G{row_count}', 'NA']
+
         generate_row(worksheet, row_count, item_row_data, font=default_font)
         row_count += 1
 
     file_name = f"Requisition_{requisition.name}.xlsx"
     file_path = get_directory_path('requisition/')
     absolute_path = file_path + file_name
+    worksheet.sheet_view.zoomScale = 90
     workbook.save(absolute_path)
 
-    if not frappe.db.exists('File', {'file_name': file_name}):
-        file = attach_file(requisition, absolute_path, file_name)
-        requisition.requisition_excel = file.file_url
+    file = attach_file(requisition, absolute_path, file_name)
+    requisition.requisition_excel = file.file_url
+    requisition.requisition_excel_file = f'<a class="attached-file-link" href="{file.file_url}"' \
+                                         f' target="_blank">{file_name}</a>'
         # + f"?file={random.randint(100, 1000)}"
 
 def attach_file(requisition, file_path, file_name):
@@ -187,6 +171,8 @@ def attach_file(requisition, file_path, file_name):
 
 def generate_row(ws, row_count, column_values, font=None, font_size=None, color=None, height=None):
     cells = []
+    amount_columns = [5, 7, 8]
+    column_widths = [15, 15, 15,15, 15, 15,15, 15, 15,]
 
     for i, value in enumerate(column_values):
         column_number = i + 1
@@ -200,11 +186,13 @@ def generate_row(ws, row_count, column_values, font=None, font_size=None, color=
         if color:
             cell.fill = PatternFill(fgColor=color, fill_type='solid')
 
-        # if isinstance(value, int) or column_number in qty_columns:
+        # if isinstance(value, int):
         #     cell.number_format = "#,##0"
-        # elif isinstance(value, float) or column_number in amount_columns:
-        #     cell.number_format = "#,##0.00"
+        # elif isinstance(value, float):
+        if i+1 in amount_columns:
+            cell.number_format = "#,##0.00"
 
+        ws.column_dimensions[get_column_letter(i + 1)].width = column_widths[i]
         cell.alignment = Alignment(vertical='center')
         cells.append(cell)
 
@@ -239,7 +227,7 @@ def get_brands_commission(customer, brand=None):
         distributor = frappe.get_doc("Distributor", customer.distributor)
         brand_wise_commission_dict = get_commissions_in_dict(distributor.commissions)
     else:
-        brand_wise_commission_dict = get_commissions_in_dict(customer.commssions)
+        brand_wise_commission_dict = get_commissions_in_dict(customer.commissions)
 
     if brand:
         return brand_wise_commission_dict.get(brand, 0)

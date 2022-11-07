@@ -56,14 +56,16 @@ frappe.ui.form.on('Requisition', {
 			brand_commissions = get_brands_commissions(frm.doc.customer)
 		}
 	},
-	before_submit: function (frm){
-		open_email_dialog(frm)
-	},
+	// before_submit: function (frm){
+		// open_email_dialog(frm)
+	// },
     // setup: function (frm){
     //     frm.add_fetch('customer', 'tax_id', 'tax_id');
     // },
 	customer: function (frm){
-		brand_commissions = get_brands_commissions(frm.doc.customer)
+		if (frm.doc.customer) {
+			brand_commissions = get_brands_commissions(frm.doc.customer)
+		}
 	},
 
     delivery_date: function(frm) {
@@ -102,7 +104,6 @@ frappe.ui.form.on("Requisition Item", {
 		console.log("Item added");
 		console.log("======>>>", brand_commissions);
 
-
 		var row = locals[cdt][cdn];
 		if (frm.doc.delivery_date) {
 			row.delivery_date = frm.doc.delivery_date;
@@ -124,7 +125,6 @@ frappe.ui.form.on("Requisition Item", {
 			},
 			callback: function(r) {
 				if (!r.exc) {
-					// code snippet
 					// console.log(r.message);
 					let item = r.message;
 					frappe.model.set_value(cdt, cdn, "price_list_rate", item.price_list_rate);
