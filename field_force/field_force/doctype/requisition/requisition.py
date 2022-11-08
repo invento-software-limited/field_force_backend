@@ -133,7 +133,7 @@ def generate_requisition_excel_and_attach(requisition):
 
     for item in requisition.items:
         item_row_data = [item.item_code, item.item_name, item.uom, item.qty, item.price_list_rate,
-                         item.discount_percentage, f'=E{row_count}-(E{row_count}*(F{row_count}/100))',
+                         item.discount_amount, f'=E{row_count}-F{row_count}',
                          f'=D{row_count}*G{row_count}', 'NA']
 
         generate_row(worksheet, row_count, item_row_data, font=default_font)

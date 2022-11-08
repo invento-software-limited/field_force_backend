@@ -149,10 +149,23 @@ frappe.ui.form.on("Requisition Item", {
 	discount_percentage: function (frm, cdt, cdn){
 		set_rate_and_amount(frm, cdt, cdn);
 	},
+	discount_amount: function(frm, cdt, cdn){
+		let row = locals[cdt][cdn];
+		let rate = row.price_list_rate - row.discount_amount
+
+		if (row.price_list_rate && row.discount_amount){
+			let discount_percentage = 100 * (row.discount_amount / row.price_list_rate)
+			frappe.model.set_value(cdt, cdn, "discount_percentage", discount_percentage);
+		}
+
+		frappe.model.set_value(cdt, cdn, "rate", rate);
+		set_absolute_values(frm);
+	},
 	rate: function(frm, cdt, cdn){
 		set_rate_and_amount(frm, cdt, cdn);
 	},
 	delivery_date: function(frm, cdt, cdn) {
+
 		if(!frm.doc.delivery_date) {
 			erpnext.utils.copy_value_in_all_rows(frm.doc, cdt, cdn, "items", "delivery_date");
 		}
@@ -165,7 +178,9 @@ function set_rate_and_amount(frm, cdt, cdn){
 	// console.log("prate====>>>", row.price_list_rate);
 
 	if (row.discount_percentage > 0){
-		row.rate = row.price_list_rate - (row.price_list_rate * (row.discount_percentage/100))
+		let discount_amount = (row.price_list_rate * (row.discount_percentage/100));
+		row.rate = row.price_list_rate - discount_amount
+		frappe.model.set_value(cdt, cdn, "discount_amount", discount_amount);
 		frappe.model.set_value(cdt, cdn, "rate", row.rate);
 	}
 	else if (row.rate === 0 || row.rate === null || row.rate === undefined){
