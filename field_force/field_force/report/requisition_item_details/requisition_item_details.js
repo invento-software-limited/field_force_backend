@@ -90,5 +90,13 @@ frappe.query_reports["Requisition Item Details"] = {
 			"options": "Company",
 			"default": frappe.defaults.get_user_default("Company")
 		},
-	]
+	],
+	// "formatter":function (row, cell, value, columnDef, dataContext, default_formatter) {
+	// 	value = default_formatter(row, cell, value, columnDef, dataContext);
+	// 	if (dataContext.amount > 50) {
+	// 		var $value = $(value).css("font-weight", "bold");
+	// 		value = $value.wrap("<p></p>").parent().html();
+	// 	}
+	// 	return value;
+	// }
 };

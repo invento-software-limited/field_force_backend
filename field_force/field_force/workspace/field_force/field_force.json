@@ -134,6 +134,16 @@
   {
    "hidden": 0,
    "is_query_report": 1,
+   "label": "Requisition Item Details",
+   "link_to": "Requisition Item Details",
+   "link_type": "Report",
+   "onboard": 0,
+   "only_for": "",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
    "label": "Requisition Details Report",
    "link_to": "Requisition Details Report",
    "link_type": "Report",
@@ -252,7 +262,7 @@
    "type": "Link"
   }
  ],
- "modified": "2022-09-28 14:45:56.067073",
+ "modified": "2022-11-09 10:06:53.926997",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Field Force",

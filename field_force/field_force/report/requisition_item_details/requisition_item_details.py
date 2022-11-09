@@ -1,6 +1,6 @@
 # Copyright (c) 2022, Invento Software Limited and contributors
 # For license information, please see license.txt
-
+import datetime
 
 import frappe
 from frappe import _
@@ -10,32 +10,90 @@ def execute(filters=None):
     data = get_data(filters)
     requisition_name = ''
     fields = ['transaction_date', 'name', 'customer', 'distributor', 'delivery_date', 'user', 'status', 'company']
+    subtotal_fields = ['qty', 'amount']
     requisition_items = []
+    subtotal = get_subtotal()
+    date_wise_total = {}
+    customers = []
+    item_count = 0
 
-    for requisition in data:
-        if requisition_name == requisition.name:
+    for requisition_item in data:
+        date_wise_total = set_date_wise_qty_and_amount(date_wise_total, requisition_item)
+
+        if requisition_item.customer not in customers:
+            customers.append(requisition_item.customer)
+
+        if requisition_name == requisition_item.name:
             for field in fields:
-                requisition[field] = None
+                requisition_item[field] = None
         else:
-            requisition_name = requisition.name
+            requisition_name = requisition_item.name
 
-            if requisition_items:
-                requisition_items.append({})
+            if item_count > 1:
+                requisition_items.append(subtotal)
+                subtotal = get_subtotal()
+                item_count = 0
 
-        requisition_items.append(requisition)
+            # if requisition_items:
+            #     requisition_items.append({})
 
-    # chart = get_chart(data, filters)
-    return columns, requisition_items
+        for field in subtotal_fields:
+            subtotal[field] += requisition_item[field]
+
+        requisition_items.append(requisition_item)
+        item_count += 1
+
+    if item_count > 1:
+        requisition_items.append(subtotal)
+
+    chart = get_chart(data, date_wise_total, filters)
+    return columns, requisition_items, '', chart
+
+def set_date_wise_qty_and_amount(date_wise_total, requisition_item):
+    transaction_date = str(requisition_item.transaction_date)
+
+    if transaction_date not in date_wise_total.keys():
+        date_wise_total[transaction_date] = {
+            'qty': requisition_item.qty,
+            'amount': requisition_item.amount
+        }
+    else:
+        date_wise_total[transaction_date]['qty'] += requisition_item.qty
+        date_wise_total[transaction_date]['amount'] += requisition_item.amount
+
+    return date_wise_total
+
+def get_date_list(filters):
+    from_date = filters.get('from_date')
+    to_date = filters.get('to_date')
+
+    from_date = datetime.datetime.strptime(from_date, "%Y-%m-%d")
+    to_date = datetime.datetime.strptime(to_date, "%Y-%m-%d")
+
+    date_list = [str(from_date)]
+    date = from_date
+
+    while date <= to_date:
+        date = date + datetime.timedelta(days=1)
+        date_list.append(str(date.date()))
+
+    return date_list
+
+def get_subtotal():
+    return {
+        'uom': "Total = ",
+        'qty':0,
+        'amount': 0
+    }
 
 def get_columns():
     """ Columns of Report Table"""
     return [
         {"label": _("Date"), "fieldname": "transaction_date", "width": 100},
-        {"label": _("Requisition"), "fieldname": "name", "width": 100, "fieldtype": "Link", "options": "Requisition"},
-		{"label": _("Customer"), "fieldname": "customer", "width": 100, "fieldtype": "Link", "options": "Customer"},
-		# {"label": _("Contact Number"), "fieldname": "contact_number", "width": 120},
-		{"label": _("Distributor"), "fieldname": "distributor", "width": 100, "fieldtype": "Link", "options": "Distributor"},
-        {"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Link", "options": "Item", "width": 100},
+        {"label": _("Requisition ID"), "fieldname": "name", "width": 130, "fieldtype": "Link", "options": "Requisition"},
+		{"label": _("Customer"), "fieldname": "customer", "width": 150, "fieldtype": "Link", "options": "Customer"},
+		{"label": _("Distributor"), "fieldname": "distributor", "width": 150, "fieldtype": "Link", "options": "Distributor"},
+        {"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Link", "options": "Item", "width": 140},
         {"label": _("Item Name"), "fieldname": "item_name", "width": 100},
         {"label": _("Item Group"), "fieldname": "item_group", "fieldtype": "Link", "options": "Item Group", "width": 80},
         {"label": _("Brand"), "fieldname": "brand", "fieldtype": "Link", "options": "Brand", "width": 80},
@@ -106,39 +164,51 @@ def get_conditions(filters):
 
     return " and ".join(conditions)
 
-#
-# def get_chart(data, filters):
-#     items_quantity = 20
-#     data_ = data if items_quantity == "All" else data[:int(items_quantity)]
-#
-#     data = {
-#         "labels": [item.get("customer") for item in data_],
-#         "datasets": [
-#             {"name": "Quantity", "values": [item.get("qty") for item in data_]},
-#             {"name": "Amount", "values": [item.get("amount")+2000 for item in data_]}
-#         ]
-#     }
-#
-#     chart = {
-#         "data": data,
-#         "isNavigable": 1,
-#         "title": "Item Analysis Chart",
-#         "type": "line", # or 'bar', 'line', 'pie', 'percentage'
-#         "height": 400,
-#         "colors": ["purple", "#00c2bb", "light-blue"],
-#         "axisOptions": {
-#             "xAxisMode": "tick",
-#             "xIsSeries": True
-#         },
-#         "lineOptions": {
-#             "regionFill": 1, # default: 0
-#             "dotSize": 5 # default: 4
-#         },
-#         "barOptions": {
-#             "stacked": True,
-#             "spaceRatio": 1
-#         }
-#     }
-#
-#     return chart
+def get_chart(data, date_wise_total, filters):
+    date_list = get_date_list(filters)
+    qty_list = []
+    amount_list = []
+
+    for date in date_list:
+        if date in date_wise_total.keys():
+            qty_list.append(date_wise_total[date]['qty'])
+            amount_list.append(date_wise_total[date]['amount'])
+        else:
+            qty_list.append(0)
+            amount_list.append(0)
+
+    print(amount_list, qty_list)
+
+    data = {
+        # "labels": customers,
+        "labels": date_list,
+        "datasets": [
+            {"name": "Quantity", "values": qty_list},
+            {"name": "Amount", "values": amount_list}
+        ]
+    }
+
+    chart = {
+        "data": data,
+        "isNavigable": True,
+        "title": "Requisition Item Analysis Chart",
+        "type": "line", # or 'bar', 'line', 'pie', 'percentage'
+        "height": 300,
+        "colors": ["purple", "#00c2bb", "light-blue"],
+        "axisOptions": {
+            "xAxisMode": "tick", # default: span
+            "xIsSeries": True
+        },
+        "lineOptions": {
+            "regionFill": 1, # default: 0
+            "dotSize": 5, # default: 4
+            # "hideLine": 1 # default: 0
+        },
+        # "barOptions": {
+        #     "stacked": False,
+        #     "spaceRatio": 1
+        # }
+    }
+
+    return chart
 
