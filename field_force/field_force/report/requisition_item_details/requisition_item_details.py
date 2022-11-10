@@ -9,23 +9,23 @@ def execute(filters=None):
     columns = get_columns()
     data = get_data(filters)
     requisition_name = ''
-    fields = ['transaction_date', 'name', 'customer', 'distributor', 'delivery_date', 'user', 'status', 'company']
-    subtotal_fields = ['qty', 'amount']
     requisition_items = []
     subtotal = get_subtotal()
     date_wise_total = {}
-    customers = []
     item_count = 0
 
     for requisition_item in data:
         date_wise_total = set_date_wise_qty_and_amount(date_wise_total, requisition_item)
 
-        if requisition_item.customer not in customers:
-            customers.append(requisition_item.customer)
-
         if requisition_name == requisition_item.name:
-            for field in fields:
-                requisition_item[field] = None
+            requisition_item.transaction_date = None
+            requisition_item.name = None
+            requisition_item.customer = None
+            requisition_item.distributor = None
+            requisition_item.delivery_date = None
+            requisition_item.user = None
+            requisition_item.status = None
+            requisition_item.company = None
         else:
             requisition_name = requisition_item.name
 
@@ -37,8 +37,8 @@ def execute(filters=None):
             # if requisition_items:
             #     requisition_items.append({})
 
-        for field in subtotal_fields:
-            subtotal[field] += requisition_item[field]
+        subtotal['qty'] += requisition_item.qty
+        subtotal['amount'] += requisition_item.amount
 
         requisition_items.append(requisition_item)
         item_count += 1
@@ -176,8 +176,6 @@ def get_chart(data, date_wise_total, filters):
         else:
             qty_list.append(0)
             amount_list.append(0)
-
-    print(amount_list, qty_list)
 
     data = {
         # "labels": customers,
