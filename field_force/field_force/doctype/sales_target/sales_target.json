@@ -1,0 +1,114 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2022-11-10 12:15:46.676314",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "reporting_person",
+  "reporting_person_name",
+  "employee",
+  "user",
+  "get_sales_persons",
+  "column_break_2",
+  "month",
+  "year",
+  "section_break_9",
+  "sales_persons_targets"
+ ],
+ "fields": [
+  {
+   "fieldname": "reporting_person",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Reporting Person",
+   "options": "Sales Person",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "month",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Month",
+   "options": "\nJanuary\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember",
+   "reqd": 1
+  },
+  {
+   "fieldname": "year",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Year",
+   "options": "Fiscal Year",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "reporting_person.employee",
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.user_id",
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "User",
+   "options": "User"
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break",
+   "label": "Sales Person Wise Target"
+  },
+  {
+   "fetch_from": "reporting_person.sales_person_name",
+   "fieldname": "reporting_person_name",
+   "fieldtype": "Data",
+   "label": "Reporting Person Name",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: doc.reporting_person != null;",
+   "fieldname": "get_sales_persons",
+   "fieldtype": "Button",
+   "label": "Get Sales Persons"
+  },
+  {
+   "fieldname": "sales_persons_targets",
+   "fieldtype": "Table",
+   "label": "Targets",
+   "options": "Sales Target Person",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2022-11-10 17:48:26.065232",
+ "modified_by": "Administrator",
+ "module": "Field Force",
+ "name": "Sales Target",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
