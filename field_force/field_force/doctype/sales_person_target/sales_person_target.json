@@ -9,6 +9,7 @@
   "sales_person",
   "sales_person_name",
   "target_amount",
+  "achievement_amount",
   "column_break_3",
   "month",
   "year",
@@ -28,6 +29,7 @@
    "reqd": 1
   },
   {
+   "columns": 3,
    "fieldname": "target_amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
@@ -82,15 +84,22 @@
   {
    "fieldname": "column_break_3",
    "fieldtype": "Column Break"
+  },
+  {
+   "columns": 3,
+   "fieldname": "achievement_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Achievement Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-11-13 10:39:46.841208",
+ "modified": "2022-11-13 17:04:37.366606",
  "modified_by": "Administrator",
  "module": "Field Force",
- "name": "Sales Target Person",
+ "name": "Sales Person Target",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",

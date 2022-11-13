@@ -88,13 +88,13 @@
    "fieldname": "sales_persons_targets",
    "fieldtype": "Table",
    "label": "Targets",
-   "options": "Sales Target Person",
+   "options": "Sales Person Target",
    "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-11-13 10:44:03.624993",
+ "modified": "2022-11-13 17:06:35.461906",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Sales Target",
