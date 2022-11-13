@@ -1,7 +1,6 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "SAL-TAR-.#####",
  "creation": "2022-11-10 11:49:59.674502",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -88,7 +87,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-11-10 17:56:01.039245",
+ "modified": "2022-11-13 10:39:46.841208",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Sales Target Person",

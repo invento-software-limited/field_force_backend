@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "SAL-TAR-.#####",
  "creation": "2022-11-10 12:15:46.676314",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -22,6 +23,7 @@
    "fieldname": "reporting_person",
    "fieldtype": "Link",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Reporting Person",
    "options": "Sales Person",
    "reqd": 1
@@ -34,6 +36,7 @@
    "fieldname": "month",
    "fieldtype": "Select",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Month",
    "options": "\nJanuary\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember",
    "reqd": 1
@@ -42,6 +45,7 @@
    "fieldname": "year",
    "fieldtype": "Link",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Year",
    "options": "Fiscal Year",
    "reqd": 1
@@ -90,7 +94,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-11-10 17:48:26.065232",
+ "modified": "2022-11-13 10:44:03.624993",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Sales Target",
