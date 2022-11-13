@@ -39,7 +39,7 @@ frappe.api.handle = field_force.api.handle
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {"Sales Order" : "public/js/sales_order.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -119,7 +119,8 @@ doc_events = {
 		# "on_update": "field_force.field_force.hook_functions.customer.set_image",
 	},
 	"Sales Order":{
-		"validate": "field_force.field_force.hook_functions.sales_order.set_extra_values"
+		"validate": "field_force.field_force.hook_functions.sales_order.set_extra_values",
+		"before_save": "field_force.field_force.hook_functions.sales_order.add_sales_person"
 	}
 
 }
