@@ -118,9 +118,10 @@ doc_events = {
 		# "before_save": "field_force.field_force.hook_functions.customer.set_image",
 		# "on_update": "field_force.field_force.hook_functions.customer.set_image",
 	},
-	"Sales Order":{
+	"Sales Order": {
 		"validate": "field_force.field_force.hook_functions.sales_order.set_extra_values",
-		"before_save": "field_force.field_force.hook_functions.sales_order.add_sales_person"
+		"before_save": "field_force.field_force.hook_functions.sales_order.add_sales_person",
+		# "on_update": "field_force.field_force.hook_functions.sales_order.add_amount_to_achievement"
 	}
 
 }

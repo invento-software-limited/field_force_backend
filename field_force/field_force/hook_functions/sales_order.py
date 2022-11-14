@@ -28,4 +28,17 @@ def add_sales_person(self, method):
     if not self.user:
         self.user = self.owner
 
+    add_amount_to_achievement(self, method)
+
     # self.save()
+
+def add_amount_to_achievement(self, method):
+    print("======>>", method)
+
+    achievement_amount = self.grand_total - self.achievement_amount
+
+    sales_target = frappe.get_doc("Sales Person Target", {"sales_person": self.sales_person})
+    sales_target.achievement_amount += achievement_amount
+    sales_target.save()
+
+    self.achievement_amount += achievement_amount
