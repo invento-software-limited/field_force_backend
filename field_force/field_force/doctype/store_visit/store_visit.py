@@ -36,4 +36,5 @@ class StoreVisit(Document):
 			store_visit_destination = frappe.get_last_doc("Store Visit Destination", filters=filters)
 			store_visit_destination.store_visit = self.name
 			store_visit_destination.status = 'Visited'
+			store_visit_destination.visited_time = self.server_time
 			store_visit_destination.save()
