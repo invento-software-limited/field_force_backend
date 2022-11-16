@@ -2,7 +2,7 @@ frappe.pages['merchandising-pictur'].on_page_load = function(wrapper) {
     frappe.require("assets/field_force/css/page_modal.css");
     var page = frappe.ui.make_app_page({
         parent: wrapper,
-		title: 'Merchandising Picture Detail Report',
+		title: 'Merchandising Picture Details Report',
         single_column: true
     });
     $('.page-body').css('background', '#FFFFFF');
@@ -70,7 +70,11 @@ class StoreVisitDetailsReport {
                     fieldtype: 'Column Break'
                 },
                 {
-                    fieldtype: 'Column Break'
+                    fieldname: 'brand',
+                    label: __('Brand'),
+                    fieldtype: 'Link',
+                    options: 'Brand',
+                    change: () => this.fetch_and_render(),
                 },
                 {
                     fieldtype: 'Section Break'
@@ -95,7 +99,7 @@ class StoreVisitDetailsReport {
         $('.main-section').append(html)
     }
     fetch_and_render = () => {
-        let {from_date, to_date, user, customer} = this.form.get_values();
+        let {from_date, to_date, user, customer, brand} = this.form.get_values();
         if (!from_date) {
             this.form.get_field('preview').html('');
             return;
@@ -110,7 +114,8 @@ class StoreVisitDetailsReport {
                 from_date: from_date,
                 to_date: to_date,
                 user: user,
-                customer: customer
+                customer: customer,
+                brand: brand
             },
             freeze: true
         }).then(r => {
@@ -134,6 +139,7 @@ class StoreVisitDetailsReport {
             '      <th scope="col">Name</th>\n' +
             '      <th scope="col">User</th>\n' +
             '      <th scope="col">Customer</th>\n' +
+            '      <th scope="col">Brand</th>\n' +
             '      <th scope="col">Contact Number</th>\n' +
             '      <th scope="col">Device Date</th>\n' +
             '      <th scope="col">Device Time</th>\n' +
@@ -155,6 +161,7 @@ class StoreVisitDetailsReport {
             html += '<td>' + `${data.name || ''}` + '</td>';
             html += '<td>' + `${data.user || ''}` + '</td>';
             html += '<td>' + `${data.customer || ''}` + '</td>';
+            html += '<td>' + `${data.brand || ''}` + '</td>';
             html += '<td>' + `${data.contact_number || ''}` + '</td>';
             html += '<td>' + `${data.device_date || ''}` + '</td>';
             html += '<td>' + `${data.device_time || ''}` + '</td>';
