@@ -25,7 +25,9 @@
   "device_model",
   "mac_address",
   "ip_address",
-  "imei"
+  "imei",
+  "location_section",
+  "location"
  ],
  "fields": [
   {
@@ -143,11 +145,20 @@
    "fieldtype": "Data",
    "label": "Full Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Geolocation"
+  },
+  {
+   "fieldname": "location_section",
+   "fieldtype": "Section Break",
+   "label": "Location"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-11 15:19:05.406825",
+ "modified": "2022-11-16 13:21:18.422508",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "App User Route",
