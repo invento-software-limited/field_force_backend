@@ -1,0 +1,29 @@
+{
+ "content": null,
+ "creation": "2022-11-15 16:58:18.096885",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2022-11-15 16:58:18.096885",
+ "modified_by": "Administrator",
+ "module": "Field Force",
+ "name": "store-visit-details-",
+ "owner": "Administrator",
+ "page_name": "store-visit-details-",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "HR Manager"
+  },
+  {
+   "role": "HR User"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Store Visit Details Report"
+}
