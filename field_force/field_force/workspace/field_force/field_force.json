@@ -173,6 +173,24 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Sales Person",
+   "link_to": "Sales Person",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Target",
+   "link_to": "Sales Target",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Sales Order",
    "link_to": "Sales Order",
    "link_type": "DocType",
@@ -211,8 +229,8 @@
    "hidden": 0,
    "is_query_report": 1,
    "label": "App User Attendance Report",
-   "link_to": "App User Attendance Report",
-   "link_type": "Report",
+   "link_to": "app-user-attendance-",
+   "link_type": "Page",
    "onboard": 0,
    "type": "Link"
   },
@@ -256,13 +274,56 @@
    "hidden": 0,
    "is_query_report": 1,
    "label": "Store Visit Details Report",
-   "link_to": "Store Visit Details Report",
-   "link_type": "Report",
+   "link_to": "store-visit-details-",
+   "link_type": "Page",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Merchandising",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Merchandising Picture",
+   "link_to": "Merchandising Picture",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Merchandising Picture Details Report",
+   "link_to": "merchandising-pictur",
+   "link_type": "Page",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Route",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "App User Route",
+   "link_to": "App User Route",
+   "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
   }
  ],
- "modified": "2022-11-09 10:06:53.926997",
+ "modified": "2022-11-16 13:15:20.812731",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Field Force",
@@ -293,24 +354,6 @@
   {
    "color": "#29CD42",
    "doc_view": "List",
-   "format": "{} Visited",
-   "label": "Store Visit",
-   "link_to": "Store Visit",
-   "stats_filter": "{\"server_date\":frappe.datetime.get_today()}",
-   "type": "DocType"
-  },
-  {
-   "color": "#761ACB",
-   "doc_view": "List",
-   "format": "{} Requests",
-   "label": "Item Request",
-   "link_to": "Item Request",
-   "stats_filter": "{\"date\":frappe.datetime.get_today()}",
-   "type": "DocType"
-  },
-  {
-   "color": "#29CD42",
-   "doc_view": "List",
    "format": "{} Logs",
    "label": "App User Attendance",
    "link_to": "App User Attendance",
@@ -324,6 +367,41 @@
    "label": "Store Visit Assign",
    "link_to": "Store Visit Assign",
    "stats_filter": "{\"date\":frappe.datetime.get_today()}",
+   "type": "DocType"
+  },
+  {
+   "color": "#29CD42",
+   "doc_view": "List",
+   "format": "{} Visited",
+   "label": "Store Visit",
+   "link_to": "Store Visit",
+   "stats_filter": "{\"server_date\":frappe.datetime.get_today()}",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "format": "{} ",
+   "label": "Merchandising Picture",
+   "link_to": "Merchandising Picture",
+   "stats_filter": "{\"server_date\": frappe.datetime.get_today()}",
+   "type": "DocType"
+  },
+  {
+   "color": "#761ACB",
+   "doc_view": "List",
+   "format": "{} Requests",
+   "label": "Item Request",
+   "link_to": "Item Request",
+   "stats_filter": "{\"date\":frappe.datetime.get_today()}",
+   "type": "DocType"
+  },
+  {
+   "color": "#ECAD4B",
+   "doc_view": "List",
+   "format": "{} On Going",
+   "label": "Announcement",
+   "link_to": "Announcement",
+   "stats_filter": "{\"disabled\": 0}",
    "type": "DocType"
   }
  ],
