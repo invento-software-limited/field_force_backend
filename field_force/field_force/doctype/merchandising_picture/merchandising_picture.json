@@ -14,6 +14,7 @@
   "employee",
   "employee_name",
   "customer",
+  "brand",
   "contact_number",
   "customer_address",
   "server_date",
@@ -198,12 +199,20 @@
    "fieldname": "imei",
    "fieldtype": "Data",
    "label": "IMEI"
+  },
+  {
+   "fieldname": "brand",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Brand",
+   "options": "Brand"
   }
  ],
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-10-18 16:10:06.909864",
+ "modified": "2022-11-16 12:56:07.921991",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Merchandising Picture",
