@@ -11,26 +11,33 @@ class SalesTarget(Document):
 			target.year = self.year
 
 
-
 @frappe.whitelist()
-def get_sales_persons(reporting_person):
+def get_sales_persons(reporting_person, all_child=True, as_tree=False):
 	sales_persons_list = []
+	tree_dict = {}
+	get_all_children(sales_persons_list, tree_dict,  reporting_person, all_child)
 
-	get_all_children(sales_persons_list, reporting_person)
+	if as_tree:
+		return tree_dict
 	# print(sales_persons_list)
 	return sales_persons_list
 
-def get_all_children(sales_persons_list, parent):
+def get_all_children(sales_persons_list, tree_dict, parent, all_child=True, as_tree=False):
 	sales_persons = get_child(parent)
+
+	if parent not in tree_dict.keys():
+		tree_dict[parent] = {}
 
 	if not sales_persons:
 		return
 
 	for sales_person in sales_persons:
 		sales_persons_list.append(sales_person)
+		tree_dict[parent][sales_person.sales_person] = {}
 
-		if sales_person.is_group:
-			get_all_children(sales_persons_list, sales_person.sales_person)
+		if sales_person.is_group and all_child:
+			get_all_children(sales_persons_list, tree_dict[parent], sales_person.sales_person, tree_dict)
+
 
 def get_child(parent):
 	return frappe.db.sql("""select name as sales_person, sales_person_name, employee, is_group from `tabSales Person` 
