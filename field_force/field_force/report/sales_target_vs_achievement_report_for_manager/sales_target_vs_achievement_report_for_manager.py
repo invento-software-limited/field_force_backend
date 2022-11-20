@@ -1,5 +1,6 @@
 # Copyright (c) 2022, Invento Software Limited and contributors
 # For license information, please see license.txt
+from numpy import mean
 
 import frappe
 from field_force.field_force.doctype.sales_target.sales_target import get_sales_persons
@@ -13,27 +14,55 @@ def execute(filters=None):
     month_number = datetime.datetime.strptime(filters.get('from_date'), '%Y-%m-%d').month
     month = calendar.month_name[month_number]
     year = frappe.defaults.get_user_default("fiscal_year")
-
-    all_child = False if filters.get('type') == 'Self Child' else True
+    data = []
 
     if frappe.db.exists('Sales Person', {'user': frappe.session.user}):
-        sales_person_ = frappe.get_doc('Sales Person', {'user': frappe.session.user})
-        sales_persons = get_sales_persons(sales_person_.name, False)
+        sales_person = frappe.get_doc('Sales Person', {'user': frappe.session.user})
 
-        data = []
+        if filters.get('type') == 'Self Coordinates':
+            sales_persons = get_sales_persons(sales_person.name, all_child=False)
 
-        for sales_person in sales_persons:
-            data_ = get_data(conditions, sales_person.sales_person, month, year)
-            print(data_)
-            data.append(data_[0])
+            for sales_person_ in sales_persons:
+                conditions_ = add_sales_person_to_condition(conditions, sales_person_.sales_person, all_child=True,
+                                                           including_self=True)
+                data_ = get_data(conditions_, month, year, group_wise=True)
+                data.append(data_[0])
 
-        return columns, data
+        elif filters.get('type') == 'Group Wise':
+            sales_persons = get_sales_persons(sales_person.name, all_child=False)
+
+            for sales_person_ in sales_persons:
+                conditions_ = add_sales_person_to_condition(conditions, sales_person_.sales_person, all_child=True,
+                                                            including_self=True)
+                data_ = get_data(conditions_, month, year)
+
+                if data_:
+                    average_amount_row = {
+                        "sales_person": f"<b>{sales_person_.sales_person}</b>",
+                        "target_amount": 0,
+                        "achievement_amount": 0,
+                    }
+
+                    achievement_percentages = []
+
+                    for sales_person in data_:
+                        average_amount_row['target_amount'] += sales_person['target_amount']
+                        average_amount_row['achievement_amount'] += sales_person['achievement_amount']
+                        achievement_percentages.append(sales_person['achievement_percentage'])
+
+                    average_amount_row['achievement_percentage'] = mean(achievement_percentages)
+                    data.append(average_amount_row)
+                    data.extend(data_)
+        else:
+            conditions_ = add_sales_person_to_condition(conditions, sales_person.name, all_child=True,
+                                                        including_self=True)
+            data = get_data(conditions_, month, year)
     else:
-        frappe.msgprint("There is no sales person")
+        frappe.msgprint("You have no Sales Person ID")
 
     # data = get_data(filters, sales_person_names)
 
-    return columns, []
+    return columns, data
 
 
 def get_columns(filters):
@@ -49,24 +78,30 @@ def get_columns(filters):
 
     return columns
 
-def get_data(conditions, sales_person, month, year):
-    print("===>>", sales_person)
-    conditions = add_sales_person_to_condition(conditions, sales_person, all_child=True, including_self=True)
-
-    print(conditions)
+def get_data(conditions, month, year, group_wise=False):
 
     sales_order_query = """select sum(sales_order.grand_total) as achievement_amount, sales_order.sales_person, 
                     sales_order.customer from `tabSales Order` sales_order where %s group by sales_order.sales_person
                     order by achievement_amount desc""" % conditions
 
-    sales_target_query = """select sum(sales.achievement_amount) as achievement_amount, sales.sales_person,
-                            sum(sales_target.target_amount) as target_amount,
-                            (CASE WHEN sum(sales_target.target_amount) is not null 
-                                   THEN 100/(sum(sales_target.target_amount)/sum(sales.achievement_amount))
-                                   ELSE 0
-                            END) as achievement_percentage from (%s) sales left join `tabSales Person Target` 
-                            sales_target on sales_target.sales_person=sales.sales_person where sales_target.month='%s'
-                            and sales_target.year='%s'""" % (sales_order_query, month, year)
+    if group_wise:
+        sales_target_query = """select sum(sales.achievement_amount) as achievement_amount, sales.sales_person,
+                                sum(sales_target.target_amount) as target_amount,
+                                (CASE WHEN sum(sales_target.target_amount) is not null 
+                                       THEN 100/(sum(sales_target.target_amount)/sum(sales.achievement_amount))
+                                       ELSE 0
+                                END) as achievement_percentage from (%s) sales left join `tabSales Person Target` 
+                                sales_target on sales_target.sales_person=sales.sales_person where sales_target.month='%s'
+                                and sales_target.year='%s'""" % (sales_order_query, month, year)
+    else:
+        sales_target_query = """select sales.achievement_amount as achievement_amount, sales.sales_person,
+                                sales_target.target_amount as target_amount,
+                                (CASE WHEN sales_target.target_amount is not null 
+                                       THEN 100/(sales_target.target_amount/sales.achievement_amount)
+                                       ELSE 0
+                                END) as achievement_percentage from (%s) sales left join `tabSales Person Target` 
+                                sales_target on sales_target.sales_person=sales.sales_person where sales_target.month='%s'
+                                and sales_target.year='%s'""" % (sales_order_query, month, year)
 
     query_result = frappe.db.sql(sales_target_query, as_dict=1, debug=0)
     return query_result
@@ -97,12 +132,12 @@ def get_conditions(filters):
 
 def add_sales_person_to_condition(conditions, sales_person, all_child=False, including_self=False):
     sales_person_names = get_sales_persons_list(sales_person, all_child, including_self, as_tuple_str=True)
-    print(sales_person_names)
+    conditions_ = ''
 
-    if sales_person_names:
-        conditions += ' and sales_order.sales_person in ' + sales_person_names
+    if sales_person_names and conditions:
+        conditions_ = conditions + ' and sales_order.sales_person in ' + sales_person_names
 
-    return conditions
+    return conditions_
 
 
 def get_sales_persons_list(sales_person, all_child=False, including_self=False, as_tuple_str=False):

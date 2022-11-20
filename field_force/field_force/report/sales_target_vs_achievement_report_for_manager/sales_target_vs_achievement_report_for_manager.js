@@ -40,8 +40,9 @@ frappe.query_reports["Sales Target vs Achievement Report For Manager"] = {
 			"fieldtype": "Select",
 			"width": "100",
 			"options": [
-				"All",
-				"Self Child"
+				"Individual",
+				"Self Coordinates",
+				"Group Wise"
 			],
 		},
 	]
