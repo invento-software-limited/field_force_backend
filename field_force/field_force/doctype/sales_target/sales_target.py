@@ -6,9 +6,24 @@ from frappe.model.document import Document
 
 class SalesTarget(Document):
 	def validate(self):
+		messages = ''
+
 		for target in self.sales_persons_targets:
 			target.month = self.month
 			target.year = self.year
+
+			filters = {
+				"sales_person": target.sales_person,
+				"month": target.month,
+				"year": target.year
+			}
+
+			if frappe.db.exists("Sales Person Target", filters):
+				messages += f"Target already exists of sales person <b>{target.sales_person}</b>" \
+							f" for <b>{target.month}</b>, <b>{target.year}</b><br><hr>"
+
+		if messages:
+			frappe.throw(messages)
 
 
 @frappe.whitelist()
