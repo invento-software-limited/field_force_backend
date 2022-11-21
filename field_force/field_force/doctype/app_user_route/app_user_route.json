@@ -148,17 +148,17 @@
   },
   {
    "fieldname": "location",
-   "fieldtype": "Geolocation"
+   "fieldtype": "Geolocation",
+   "label": "Location"
   },
   {
    "fieldname": "location_section",
-   "fieldtype": "Section Break",
-   "label": "Location"
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-11-16 13:21:18.422508",
+ "modified": "2022-11-21 15:45:05.351999",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "App User Route",
