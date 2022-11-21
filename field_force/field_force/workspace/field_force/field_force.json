@@ -208,6 +208,15 @@
   },
   {
    "hidden": 0,
+   "is_query_report": 1,
+   "label": "Sales Target/Achievement Report",
+   "link_to": "Sales Target vs Achievement Report For Manager",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
    "is_query_report": 0,
    "label": "Attendance",
    "link_type": "DocType",
@@ -238,8 +247,8 @@
    "hidden": 0,
    "is_query_report": 1,
    "label": "Daily App User Attendance Report",
-   "link_to": "Daily App User Attendance Report",
-   "link_type": "Report",
+   "link_to": "daily-app-user-atten",
+   "link_type": "Page",
    "onboard": 0,
    "type": "Link"
   },
@@ -350,7 +359,7 @@
    "type": "Link"
   }
  ],
- "modified": "2022-11-16 13:32:41.753663",
+ "modified": "2022-11-21 13:49:49.681649",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Field Force",
