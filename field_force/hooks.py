@@ -123,6 +123,9 @@ doc_events = {
 		"before_save": "field_force.field_force.hook_functions.sales_order.add_sales_person",
 		# "on_update": "field_force.field_force.hook_functions.sales_order.add_amount_to_achievement"
 		"on_cancel": "field_force.field_force.hook_functions.sales_order.subtract_achievement_amount"
+	},
+	"Sales Person": {
+		"before_save": "field_force.field_force.hook_functions.sales_person.create_employee_and_set_role_profile"
 	}
 
 }
