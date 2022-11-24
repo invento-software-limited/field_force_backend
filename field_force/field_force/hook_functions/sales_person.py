@@ -22,15 +22,21 @@ def create_employee_and_set_role_profile(self, method):
             })
             gender.insert()
 
-        employee_dict = frappe._dict({
+        employee = frappe.get_doc({
+            "doctype": "Employee",
             "first_name": self.sales_person_name,
             "gender": "N/A",
             "date_of_birth": (datetime.datetime.today() - datetime.timedelta(days=1)).date(),
             "date_of_joining": datetime.datetime.today().date(),
             "user_id": self.user,
-            # "role_profile": self.type
         })
 
-        print(employee_dict)
-        employee = frappe.new_doc("Employee", employee_dict)
         employee.insert()
+        self.employee = employee.name
+
+    if self.user and self.type:
+        user = frappe.get_doc("User", self.user)
+
+        if user.role_profile_name != self.type:
+            user.role_profile_name = self.type
+            user.save()

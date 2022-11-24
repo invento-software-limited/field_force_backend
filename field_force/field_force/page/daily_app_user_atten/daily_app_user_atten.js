@@ -139,7 +139,7 @@ class AppUserAttendanceReport {
             '      <th scope="col">User</th>\n' +
             '      <th scope="col">Checkin Time</th>\n' +
             '      <th scope="col">Checkout Time</th>\n' +
-            '      <th scope="col">Checkin Device Date</th>\n' +
+            '      <th scope="col">Checkin Device Time</th>\n' +
             '      <th scope="col">Checkout Device Time</th>\n' +
             '      <th scope="col">Checkin Image</th>\n' +
             '      <th scope="col">Checkout Image</th>\n' +
