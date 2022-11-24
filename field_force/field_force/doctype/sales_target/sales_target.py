@@ -13,6 +13,7 @@ class SalesTarget(Document):
 			target.year = self.year
 
 			filters = {
+				"name": ["!=", target.name],
 				"sales_person": target.sales_person,
 				"month": target.month,
 				"year": target.year
@@ -27,17 +28,17 @@ class SalesTarget(Document):
 
 
 @frappe.whitelist()
-def get_sales_persons(reporting_person, all_child=True, as_tree=False):
+def get_sales_persons(reporting_person, all_child=True, as_tree=False, type=None):
 	sales_persons_list = []
 	tree_dict = {}
-	get_all_children(sales_persons_list, tree_dict,  reporting_person, all_child)
+	get_all_children(sales_persons_list, tree_dict,  reporting_person, all_child, type=type)
 
 	if as_tree:
 		return tree_dict
 	# print(sales_persons_list)
 	return sales_persons_list
 
-def get_all_children(sales_persons_list, tree_dict, parent, all_child=True, as_tree=False):
+def get_all_children(sales_persons_list, tree_dict, parent, all_child=True, as_tree=False, type=None):
 	sales_persons = get_child(parent)
 
 	if parent not in tree_dict.keys():
@@ -47,13 +48,20 @@ def get_all_children(sales_persons_list, tree_dict, parent, all_child=True, as_t
 		return
 
 	for sales_person in sales_persons:
-		sales_persons_list.append(sales_person)
-		tree_dict[parent][sales_person.sales_person] = {}
+		if type:
+			if sales_person.type == type:
+				sales_persons_list.append(sales_person)
+				tree_dict[parent][sales_person.sales_person] = {}
+			else:
+				if sales_person.is_group and all_child:
+					get_all_children(sales_persons_list, tree_dict[parent], sales_person.sales_person, tree_dict, type=type)
+		else:
+			sales_persons_list.append(sales_person)
+			tree_dict[parent][sales_person.sales_person] = {}
 
-		if sales_person.is_group and all_child:
-			get_all_children(sales_persons_list, tree_dict[parent], sales_person.sales_person, tree_dict)
-
+			if sales_person.is_group and all_child:
+				get_all_children(sales_persons_list, tree_dict[parent], sales_person.sales_person, tree_dict)
 
 def get_child(parent):
-	return frappe.db.sql("""select name as sales_person, sales_person_name, employee, is_group from `tabSales Person` 
-							where parent_sales_person='%s'""" % parent, as_dict=1)
+	return frappe.db.sql("""select name as sales_person, sales_person_name, employee, is_group, type
+	 						from `tabSales Person` where parent_sales_person='%s'""" % parent, as_dict=1)
