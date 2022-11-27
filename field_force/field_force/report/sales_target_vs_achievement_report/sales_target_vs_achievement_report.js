@@ -2,6 +2,43 @@
 // For license information, please see license.txt
 /* eslint-disable */
 
+function get_sales_person(){
+	frappe.call({
+	method: 'frappe.client.get_value',
+	async: false,
+	args: {
+		'doctype': 'Sales Person',
+		'filters': {'user': frappe.session.user},
+		'fieldname': ['name', 'type', 'lft', 'rgt']
+	},
+	callback: function (r) {
+		if (!r.exc) {
+			// console.log(r.message.name)
+			sales_person = r.message;
+
+			// if (!sales_person){
+			// 	sales_person = frappe.get_doc("Sales Person", "Sales Team");
+			// }
+		}
+	}
+})}
+
+get_sales_person();
+
+function get_type (sales_person){
+	console.log(sales_person);
+	if (sales_person.type === 'Channel Manager'){
+		return "By Manager"
+	}
+	else if (sales_person.type === "Manager"){
+		return "By Supervisor"
+	}
+	else{
+		return "Individual"
+	}
+}
+
+
 frappe.query_reports["Sales Target vs Achievement Report"] = {
 	"filters": [
 		{
@@ -20,19 +57,22 @@ frappe.query_reports["Sales Target vs Achievement Report"] = {
 			"reqd": 1,
 			"width": "60px"
 		},
-		// {
-		// 	"fieldname": "user",
-		// 	"label": __("User"),
-		// 	"fieldtype": "Link",
-		// 	"width": "100",
-		// 	"options": "User",
-		// },
 		{
 			"fieldname": "sales_person",
 			"label": __("Sales Person"),
 			"fieldtype": "Link",
 			"width": "100",
 			"options": "Sales Person",
+			"default": sales_person.name,
+			"get_query": function (){
+				return {
+					"filters": [
+						// "parent_sales_person": sales_person.name
+						["lft", ">=", sales_person.lft],
+						["rgt", "<=", sales_person.rgt]
+					]
+				}
+			}
 		},
 		{
 			"fieldname": "type",
@@ -41,9 +81,10 @@ frappe.query_reports["Sales Target vs Achievement Report"] = {
 			"width": "100",
 			"options": [
 				"Individual",
+				"By Supervisor",
 				"By Manager",
-				"By Supervisor"
 			],
+			"default": get_type(sales_person)
 		},
 	]
 };
