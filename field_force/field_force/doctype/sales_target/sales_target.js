@@ -22,6 +22,7 @@ function get_sales_persons(frm) {
             method: "field_force.field_force.doctype.sales_target.sales_target.get_sales_persons",
             args: {
                 reporting_person: frm.doc.reporting_person,
+                exclude_group: true
             },
             callback: function (r) {
                 if (r.message) {

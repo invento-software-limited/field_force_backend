@@ -36,13 +36,13 @@ def create_employee_and_set_role_profile(self, method):
             user.save()
 
 def create_role_profile(role_profile_name):
-    if not frappe.db.exists("Role Profile", {"role_profile": role_profile_name}):
+    if not frappe.db.exists("Role Profile", {"name": role_profile_name}):
         role_profile = frappe.get_doc({
             "doctype": "Role Profile",
             "role_profile": role_profile_name
         })
-        role_profile.insert()
 
+        role_profile.insert()
         print(f"'{role_profile_name}'")
 
         roles = {
