@@ -67,6 +67,9 @@ def execute(filters=None):
         elif filters.get('type') == 'Individual':
             conditions_, sales_person_names = add_sales_person_to_condition(conditions, sales_person.name, all_child=True)
             data = get_data(conditions_, month, year, sales_person_names)
+
+            for row in data:
+                set_format(row, average_percentage=False)
     # else:
     #     frappe.msgprint("You have no Sales Person ID")
 
@@ -176,6 +179,7 @@ def get_conditions(filters):
     # user = filters.get('user')
     # customer = filters.get('customer')
 
+    # conditions = ["sales_order.docstatus == 1"]
     conditions = []
 
     if from_date:

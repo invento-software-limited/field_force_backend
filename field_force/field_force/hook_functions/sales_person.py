@@ -8,13 +8,6 @@ def create_employee_and_set_role_profile(self, method):
             if frappe.db.exists("Employee", {"user_id": self.user}):
                 frappe.throw(f"Employee already exists with user id '<b>{self.user}</b>'")
 
-        if not frappe.db.exists("Role Profile", {"role_profile": self.type}):
-            role = frappe.get_doc({
-                "doctype": "Role Profile",
-                "role_profile": self.type
-            })
-            role.insert()
-
         if not frappe.db.exists("Gender", {"name": "N/A"}):
             gender = frappe.get_doc({
                 "doctype": "Gender",
@@ -36,7 +29,42 @@ def create_employee_and_set_role_profile(self, method):
 
     if self.user and self.type:
         user = frappe.get_doc("User", self.user)
+        create_role_profile(self.type)
 
         if user.role_profile_name != self.type:
             user.role_profile_name = self.type
             user.save()
+
+def create_role_profile(role_profile_name):
+    if not frappe.db.exists("Role Profile", {"role_profile": role_profile_name}):
+        role_profile = frappe.get_doc({
+            "doctype": "Role Profile",
+            "role_profile": role_profile_name
+        })
+        role_profile.insert()
+
+        roles = {
+            "Sales Representative": [
+                "Sales User"
+            ],
+            "Supervisor": [
+                "Sales User"
+            ],
+            "Manager": [
+                "Sales User",
+                "Sales Manager",
+            ],
+            "Channel Manager": [
+                "Sales User",
+                "Sales Manager",
+                "Sales Master Manager"
+            ]
+        }
+
+        for role in roles[role_profile_name]:
+            role_profile.append('roles', {
+                "doctype": "Has Role",
+                "role": role
+            })
+
+        role_profile.save()
