@@ -43,7 +43,12 @@ def create_role_profile(role_profile_name):
         })
         role_profile.insert()
 
+        print(f"'{role_profile_name}'")
+
         roles = {
+            "Merchandiser": [
+                "Sales User"
+            ],
             "Sales Representative": [
                 "Sales User"
             ],
