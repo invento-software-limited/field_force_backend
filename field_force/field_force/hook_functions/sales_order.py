@@ -1,4 +1,6 @@
 import frappe
+import calendar
+import datetime
 
 @frappe.whitelist()
 def set_extra_values(self, method):
@@ -34,8 +36,9 @@ def add_sales_person(self, method):
 
 def add_amount_to_achievement(self, method):
     # print("======>>", method)
+    month, year = get_month_and_year(self)
     achievement_amount = get_default(self.grand_total) - get_default(self.achievement_amount)
-    set_amount_to_sales_target(self.sales_person, achievement_amount)
+    set_amount_to_sales_target(self.sales_person, achievement_amount, month, year)
 
     if self.achievement_amount or self.achievement_amount == 0:
         self.achievement_amount += achievement_amount
@@ -43,15 +46,27 @@ def add_amount_to_achievement(self, method):
         self.achievement_amount = achievement_amount
 
 def subtract_achievement_amount(self, method):
+    month, year = get_month_and_year(self)
     achievement_amount = -self.achievement_amount
-    set_amount_to_sales_target(self.sales_person, achievement_amount)
+    set_amount_to_sales_target(self.sales_person, achievement_amount, month, year)
 
-def set_amount_to_sales_target(sales_person, achievement_amount):
-    sales_target = frappe.get_doc("Sales Person Target", {"sales_person": sales_person})
-    sales_target.achievement_amount += achievement_amount
-    sales_target.save()
+def set_amount_to_sales_target(sales_person, achievement_amount, month, year):
+    filters = {
+        "sales_person": sales_person,
+        "month": calendar.month_name[month],
+        "year": year
+    }
+    if frappe.db.exists("Sales Person Target", filters):
+        sales_target = frappe.get_doc("Sales Person Target", filters)
+        sales_target.achievement_amount += achievement_amount
+        sales_target.save()
 
 def get_default(value):
     if value:
         return value
     return 0
+
+def get_month_and_year(sales_order):
+    month =  datetime.datetime.strptime(sales_order.transaction_date, "%Y-%m-%d").month
+    year = frappe.defaults.get_user_default('fiscal_year')
+    return month, year
