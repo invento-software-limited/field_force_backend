@@ -31,7 +31,10 @@ def get_user_attendance_data(filters=None):
             data_dict[data_key]['checkout_name'] = app_user_attendance.name
             data_dict[data_key]['checkout_image'] = app_user_attendance.image
 
-    return reversed(data_dict.values())
+    if data_dict.values():
+        return reversed(data_dict.values())
+
+    return []
 
 def set_user_link(app_user_attendance):
     if app_user_attendance.user:
