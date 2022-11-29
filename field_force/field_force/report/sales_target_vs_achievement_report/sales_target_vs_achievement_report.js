@@ -2,42 +2,61 @@
 // For license information, please see license.txt
 /* eslint-disable */
 
-function get_sales_person(){
-	frappe.call({
-	method: 'frappe.client.get_value',
-	async: false,
-	args: {
-		'doctype': 'Sales Person',
-		'filters': {'user': frappe.session.user},
-		'fieldname': ['name', 'type', 'lft', 'rgt']
-	},
-	callback: function (r) {
-		if (!r.exc) {
-			// console.log(r.message.name)
-			sales_person = r.message;
+var sales_person = null;
 
-			// if (!sales_person){
-			// 	sales_person = frappe.get_doc("Sales Person", "Sales Team");
-			// }
-		}
+function get_sales_person() {
+	if (frappe.user.has_role("System Manager") !== undefined) {
+		frappe.call({
+			method: "frappe.client.get",
+			async: false,
+			args: {
+				doctype: "Sales Person",
+				name: "Sales Team",
+			},
+			callback(r) {
+				if (r.message) {
+					console.log(r.message)
+					sales_person = r.message;
+				}
+			}
+		});
 	}
-})}
+	else {
+		frappe.call({
+			method: 'frappe.client.get_value',
+			async: false,
+			args: {
+				'doctype': 'Sales Person',
+				'filters': {'user': frappe.session.user},
+				'fieldname': ['name', 'type', 'lft', 'rgt']
+			},
+			callback: function (r) {
+				if (!r.exc) {
+					// console.log(r.message.name)
+					sales_person = r.message;
 
-get_sales_person();
-
-function get_type (sales_person){
-	console.log(sales_person);
-	if (sales_person.type === 'Channel Manager'){
-		return "By Manager"
-	}
-	else if (sales_person.type === "Manager"){
-		return "By Supervisor"
-	}
-	else{
-		return "Individual"
+					// if (!sales_person){
+					// 	sales_person = frappe.get_doc("Sales Person", "Sales Team");
+					// }
+				}
+			}
+		})
 	}
 }
 
+get_sales_person()
+
+
+function get_type(sales_person) {
+	console.log(sales_person);
+	if (sales_person.type === 'Channel Manager') {
+		return "By Manager"
+	} else if (sales_person.type === "Manager") {
+		return "By Supervisor"
+	} else {
+		return "Individual"
+	}
+}
 
 frappe.query_reports["Sales Target vs Achievement Report"] = {
 	"filters": [
@@ -59,7 +78,7 @@ frappe.query_reports["Sales Target vs Achievement Report"] = {
 		},
 		{
 			"fieldname": "sales_person",
-			"label": __("Sales Person"),
+			"label": __("Reporting Person"),
 			"fieldtype": "Link",
 			"width": "100",
 			"options": "Sales Person",
@@ -85,7 +104,7 @@ frappe.query_reports["Sales Target vs Achievement Report"] = {
 				"By Manager",
 			],
 			"default": get_type(sales_person)
-		},
+		}
 	]
-};
+}
 

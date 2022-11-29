@@ -31,7 +31,7 @@ def execute(filters=None):
     if sales_person:
         # print(sales_person.type, filters.get('type'))
 
-        if sales_person.type in ['Channel Manager', 'Manager'] and filters.get('type') == 'By Supervisor':
+        if sales_person.type in ['Channel Manager', 'Manager', None] and filters.get('type') == 'By Supervisor':
             sales_persons = get_sales_persons(sales_person.name, type='Supervisor')
             # print("=====>>>", sales_persons)
 
@@ -39,7 +39,6 @@ def execute(filters=None):
                 if sales_person_.type == 'Supervisor' and sales_person_.is_group:
                     conditions_, sales_person_names  = add_sales_person_to_condition(conditions, sales_person_.sales_person,
                                                                                      all_child=True, including_self=True)
-
                     # print("====>>", sales_person_.sales_person, sales_person_names, conditions_)
                     if sales_person_names and conditions_:
                         data_ = get_data(conditions_, month, year, sales_person_names, group_wise=False)
@@ -48,8 +47,8 @@ def execute(filters=None):
                             row = make_sum_and_push_to_data_list(data, data_, sales_person_, is_group=True)
                             make_bold(row)
 
-        elif sales_person.type == 'Channel Manager' and filters.get('type') == 'By Manager':
-            sales_persons = get_sales_persons(sales_person.name, all_child=False, type='Manager')
+        elif sales_person.type in ['Channel Manager', None] and filters.get('type') == 'By Manager':
+            sales_persons = get_sales_persons(sales_person.name, all_child=True, type='Manager')
             # print(sales_persons)
 
             for sales_person_ in sales_persons:
@@ -70,10 +69,6 @@ def execute(filters=None):
 
             for row in data:
                 set_format(row, average_percentage=False)
-    # else:
-    #     frappe.msgprint("You have no Sales Person ID")
-
-    # data = get_data(filters, sales_person_names)
 
     return columns, data
 
@@ -139,14 +134,13 @@ def get_columns(filters):
     return columns
 
 def get_data(conditions, month, year, sales_person_names, group_wise=False):
-
     sales_order_query = """select sum(sales_order.grand_total) as achievement_amount, sales_order.sales_person, 
                     sales_order.customer from `tabSales Order` sales_order %s group by sales_order.sales_person
                     order by achievement_amount desc""" % conditions
 
-    target_query = """select sales_target.sales_person, sales_target.target_amount from `tabSales Person Target` 
-                    sales_target where sales_target.sales_person in %s and sales_target.month='%s'
-                    and sales_target.year='%s'""" % (sales_person_names, month, year)
+    # target_query = """select sales_target.sales_person, sales_target.target_amount from `tabSales Person Target`
+    #                 sales_target where sales_target.sales_person in %s and sales_target.month='%s'
+    #                 and sales_target.year='%s'""" % (sales_person_names, month, year)
 
     if group_wise:
         sales_target_query = """select sum(sales.achievement_amount) as achievement_amount, sales.sales_person,
@@ -188,11 +182,6 @@ def get_conditions(filters):
         conditions.append("sales_order.transaction_date <= '%s'" % to_date)
     # if sales_person:
     #     conditions.append("sales_order.sales_person = '%s'" % sales_person)
-
-    # if user:
-    #     conditions.append("sales_order.user = '%s'" % user)
-    # if customer:
-    #     conditions.append("sales_order.customer = '%s'" % customer)
 
     return " and ".join(conditions)
 
@@ -259,12 +248,12 @@ def currency_format(amount):
 def get_current_sales_person(filters):
     roles = frappe.get_roles(frappe.session.user)
 
-    if 'System Manager' in roles:
-        sales_person = frappe.get_doc("Sales Person", "Sales Team")
-    elif frappe.db.exists("Sales Person", {'name': filters.get('sales_person')}):
+    if frappe.db.exists("Sales Person", {'name': filters.get('sales_person')}):
         sales_person = frappe.get_doc("Sales Person", filters.get('sales_person'))
     elif frappe.db.exists('Sales Person', {'user': frappe.session.user}):
         sales_person = frappe.get_doc('Sales Person', {'user': frappe.session.user})
+    elif 'System Manager' in roles:
+        sales_person = frappe.get_doc("Sales Person", "Sales Team")
     else:
         sales_person = None
 
