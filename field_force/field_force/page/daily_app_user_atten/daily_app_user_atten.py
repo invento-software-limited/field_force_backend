@@ -32,7 +32,7 @@ def get_user_attendance_data(filters=None):
             data_dict[data_key]['checkout_image'] = app_user_attendance.image
 
     if data_dict.values():
-        return reversed(data_dict.values())
+        return list(data_dict.values())[::-1]
 
     return []
 
