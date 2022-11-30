@@ -59,7 +59,7 @@ frappe.query_reports["Requisition Details Report"] = {
 				"Submitted",
 				"Cancelled"
 			],
-			"default": "Draft"
+			"default": "Submitted"
 		},
 		{
 			"fieldname": "company",
