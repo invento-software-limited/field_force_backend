@@ -19,15 +19,16 @@ def get_columns(filters):
     """ Columns of Report Table"""
 
     columns = [
-        {"label": _("Date"), "fieldname": "date", "width": 120},
-        {"label": _("Name"), "fieldname": "name", "fieldtype": "Link", "options":"Item Request", "width": 150},
-        {"label": _("User"), "fieldname": "user", "width": 140},
-        {"label": _("Customer"), "fieldname": "customer", "width": 150, "fieldtype": "Link", "options":"Customer"},
-        {"label": _("Address"), "fieldname": "address", "width": 150},
-        {"label": _("Contact Number"), "fieldname": "contact_number", "width": 150},
-        {"label": _("Distributor"), "fieldname": "distributor", "width": 150},
-        {"label": _("Item Details"), "fieldname": "item_details", "width": 200},
-	]
+        {"label": _("Date"), "fieldname": "date", "width": 110},
+        {"label": _("ID"), "fieldname": "name", "fieldtype": "Link", "options":"Item Request", "width": 140},
+        {"label": _("Distributor"), "fieldname": "distributor", "width": 140},
+        {"label": _("Customer"), "fieldname": "customer", "width": 140, "fieldtype": "Link", "options":"Customer"},
+        {"label": _("Address"), "fieldname": "address", "width": 140},
+        {"label": _("Contact"), "fieldname": "contact_number", "width": 110},
+        {"label": _("Item Details"), "fieldname": "item_details", "width": 280},
+        {"label": _("Created By"), "fieldname": "user", "width": 150},
+
+    ]
 
     return columns
 
