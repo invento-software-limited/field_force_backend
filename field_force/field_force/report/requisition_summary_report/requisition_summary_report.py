@@ -17,33 +17,43 @@ def execute(filters=None):
 def get_columns(filters):
     """ Columns of Report Table"""
     columns = [
-        {"label": _("Date"), "fieldname": "transaction_date", "width": 150},
+        {"label": _("Date"), "fieldname": "transaction_date", "width": 140},
         {},
-        {"label": _("Total Requisition"), "fieldname": "total_requisitions", "width": 180},
-        {"label": _("Total Item"), "fieldname": "total_items", "width": 170},
-        {"label": _("Total Quantity"), "fieldname": "total_qty", "fieldtype": "Int", "width": 180},
-        {"label": _("Total Amount"), "fieldname": "total_amount", "fieldtype": "Currency", "width": 180},
-        {"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company","width": 150},
+        {"label": _("Total Requisition"), "fieldname": "total_requisitions", "width": 150},
+        {"label": _("Total Item"), "fieldname": "total_items", "width": 160},
+        {"label": _("Total Qty"), "fieldname": "total_qty", "fieldtype": "Int", "width": 160},
+        {"label": _("Total Amount"), "fieldname": "total_amount", "fieldtype": "Currency", "width": 160},
+        # {"label": _("Created By"), "fieldname": "user", "fieldtype":"Data", "width": 140},
+        {"label": _("Status"), "fieldname": "status", "fieldtype":"Data", "width": 120},
+        {"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company","width": 160},
     ]
 
-    if filters.get('group_by') == 'User':
-        columns[1] = {"label": _("User"), "fieldname": "user", "width": 200}
-    else:
+    if filters.get('group_by') == 'Distributor':
+        columns[1] = {"label": _("Distributor"), "fieldname": "distributor", "fieldtype":"Link",
+                      "options":"Distributor", "width": 160}
+    elif filters.get('group_by') == 'Customer':
         columns[1] = {"label": _("Customer"), "fieldname": "customer", "fieldtype":"Link",
-                      "options":"Customer", "width": 200}
+                      "options":"Customer", "width": 160}
+    else:
+        columns[1] = {"label": _("Created By"), "fieldname": "user", "fieldtype":"Data", "width": 160}
 
     return columns
 
 def get_data(filters):
     conditions = get_conditions(filters)
-    group_by = 'requisition.user' if filters.get('group_by') == 'User' else 'requisition.customer'
+    if filters.get('group_by') == 'Distributor':
+        group_by = 'requisition.distributor'
+    elif filters.get('group_by') == 'Customer':
+        group_by = 'requisition.customer'
+    else:
+        group_by = 'requisition.user'
 
     query_string = """SELECT requisition.transaction_date, requisition.user, requisition.user_fullname,
-                    requisition.customer, count(*) as total_requisitions, sum(requisition.total_items) 
-                    as total_items, requisition.company, sum(requisition.total_qty) as total_qty, 
+                    requisition.customer, requisition.distributor, count(*) as total_requisitions, sum(requisition.total_items) 
+                    as total_items, requisition.company, sum(requisition.total_qty) as total_qty, requisition.status,
                     sum(requisition.grand_total) as total_amount from `tabRequisition` requisition 
-                    where %s group by requisition.transaction_date, %s
-                    order by requisition.transaction_date desc""" % (conditions, group_by)
+                    where %s group by %s
+                    order by total_amount desc""" % (conditions, group_by)
 
     query_result = frappe.db.sql(query_string, as_dict=1, debug=0)
     return query_result
@@ -54,6 +64,7 @@ def get_conditions(filters):
     to_date = filters.get('to_date')
     group_by = filters.get('group_by')
     user = filters.get('user')
+    distributor = filters.get('distributor')
     customer = filters.get('customer')
     status = filters.get('status')
 
@@ -65,9 +76,12 @@ def get_conditions(filters):
         conditions.append("requisition.transaction_date >= '%s'" % from_date)
     if to_date:
         conditions.append("requisition.transaction_date <= '%s'" % to_date)
-    if group_by == 'User' and user:
-        conditions.append("requisition.user = '%s'" % user)
-    if group_by == 'Customer' and customer:
+
+    if group_by == 'Distributor' and distributor:
+        conditions.append("requisition.distributor = '%s'" % distributor)
+    elif group_by == 'Customer' and customer:
         conditions.append("requisition.customer = '%s'" % customer)
+    elif group_by == 'Created By' and user:
+        conditions.append("requisition.user = '%s'" % distributor)
 
     return " and ".join(conditions)
