@@ -18,10 +18,115 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Item and Brand",
+   "label": "Requsition",
+   "link_to": "",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "",
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Requisition",
+   "link_to": "Requisition",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Requisition Item Details",
+   "link_to": "Requisition Item Details",
+   "link_type": "Report",
+   "onboard": 0,
+   "only_for": "",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Requisition Details Report",
+   "link_to": "Requisition Details Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Requisition Summary Report",
+   "link_to": "Requisition Summary Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "only_for": "",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales",
+   "link_to": "",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "",
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Target",
+   "link_to": "Sales Target",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Order",
+   "link_to": "Sales Order",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Sales Order Analysis",
+   "link_to": "Sales Order Analysis",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Sales Target/Achievement Report",
+   "link_to": "Sales Target vs Achievement Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Brand and Item",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Brand",
+   "link_to": "Brand",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "",
+   "type": "Link"
   },
   {
    "hidden": 0,
@@ -37,16 +142,6 @@
    "is_query_report": 0,
    "label": "Item Group",
    "link_to": "Item Group",
-   "link_type": "DocType",
-   "onboard": 0,
-   "only_for": "",
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Brand",
-   "link_to": "Brand",
    "link_type": "DocType",
    "onboard": 0,
    "only_for": "",
@@ -109,110 +204,6 @@
    "link_type": "DocType",
    "onboard": 0,
    "only_for": "",
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Requsition",
-   "link_to": "",
-   "link_type": "DocType",
-   "onboard": 0,
-   "only_for": "",
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Requisition",
-   "link_to": "Requisition",
-   "link_type": "DocType",
-   "onboard": 0,
-   "only_for": "",
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Requisition Item Details",
-   "link_to": "Requisition Item Details",
-   "link_type": "Report",
-   "onboard": 0,
-   "only_for": "",
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Requisition Details Report",
-   "link_to": "Requisition Details Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Requisition Summary Report",
-   "link_to": "Requisition Summary Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "only_for": "",
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Sales",
-   "link_to": "",
-   "link_type": "DocType",
-   "onboard": 0,
-   "only_for": "",
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Sales Person",
-   "link_to": "Sales Person",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Sales Target",
-   "link_to": "Sales Target",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Sales Order",
-   "link_to": "Sales Order",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Sales Order Analysis",
-   "link_to": "Sales Order Analysis",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Sales Target/Achievement Report",
-   "link_to": "Sales Target vs Achievement Report",
-   "link_type": "Report",
-   "onboard": 1,
    "type": "Link"
   },
   {
@@ -315,7 +306,7 @@
    "type": "Link"
   },
   {
-   "hidden": 0,
+   "hidden": 1,
    "is_query_report": 0,
    "label": "Route",
    "link_type": "DocType",
@@ -357,9 +348,107 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Person",
+   "link_to": "Sales Person",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Item Request Details Report",
+   "link_to": "Item Request Details Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Requisition Item Details",
+   "link_to": "Requisition Item Details",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Requisition Details Report",
+   "link_to": "Requisition Details Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Requisition Summary Report",
+   "link_to": "Requisition Summary Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Sales Target/Achievement Report",
+   "link_to": "Sales Target vs Achievement Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "App User Attendance Report",
+   "link_to": "app-user-attendance-",
+   "link_type": "Page",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Daily App User Attendance Report",
+   "link_to": "daily-app-user-atten",
+   "link_type": "Page",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Store Visit Details Report",
+   "link_to": "Store Visit Details Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Merchandising Picture Details Report",
+   "link_to": "merchandising-pictur",
+   "link_type": "Page",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2022-11-24 13:29:40.631562",
+ "modified": "2022-11-30 17:52:49.150232",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Field Force",
@@ -388,12 +477,21 @@
    "type": "DocType"
   },
   {
+   "color": "#ECAD4B",
+   "doc_view": "List",
+   "format": "{} On Going",
+   "label": "Announcement",
+   "link_to": "Announcement",
+   "stats_filter": "{\"disabled\": 0}",
+   "type": "DocType"
+  },
+  {
    "color": "#29CD42",
    "doc_view": "List",
-   "format": "{} Logs",
+   "format": "",
    "label": "App User Attendance",
    "link_to": "App User Attendance",
-   "stats_filter": "{\"server_date\":frappe.datetime.get_today()}",
+   "stats_filter": "",
    "type": "DocType"
   },
   {
@@ -402,16 +500,25 @@
    "format": "{} Assigned",
    "label": "Store Visit Assign",
    "link_to": "Store Visit Assign",
-   "stats_filter": "{\"date\":frappe.datetime.get_today()}",
+   "stats_filter": "",
+   "type": "DocType"
+  },
+  {
+   "color": "#761ACB",
+   "doc_view": "List",
+   "format": "",
+   "label": "Item Request",
+   "link_to": "Item Request",
+   "stats_filter": "",
    "type": "DocType"
   },
   {
    "color": "#29CD42",
    "doc_view": "List",
-   "format": "{} Visited",
+   "format": "",
    "label": "Store Visit",
    "link_to": "Store Visit",
-   "stats_filter": "{\"server_date\":frappe.datetime.get_today()}",
+   "stats_filter": "",
    "type": "DocType"
   },
   {
@@ -419,25 +526,7 @@
    "format": "{} ",
    "label": "Merchandising Picture",
    "link_to": "Merchandising Picture",
-   "stats_filter": "{\"server_date\": frappe.datetime.get_today()}",
-   "type": "DocType"
-  },
-  {
-   "color": "#761ACB",
-   "doc_view": "List",
-   "format": "{} Requests",
-   "label": "Item Request",
-   "link_to": "Item Request",
-   "stats_filter": "{\"date\":frappe.datetime.get_today()}",
-   "type": "DocType"
-  },
-  {
-   "color": "#ECAD4B",
-   "doc_view": "List",
-   "format": "{} On Going",
-   "label": "Announcement",
-   "link_to": "Announcement",
-   "stats_filter": "{\"disabled\": 0}",
+   "stats_filter": "",
    "type": "DocType"
   }
  ],
