@@ -21,11 +21,11 @@ frappe.query_reports["Requisition Details Report"] = {
 			"width": "60px"
 		},
 		{
-			"fieldname": "user",
-			"label": __("User"),
+			"fieldname": "distributor",
+			"label": __("Distributor"),
 			"fieldtype": "Link",
 			"width": "100",
-			"options": "User",
+			"options": "Distributor",
 		},
 		{
 			"fieldname": "customer",
@@ -43,11 +43,11 @@ frappe.query_reports["Requisition Details Report"] = {
 			}
 		},
 		{
-			"fieldname": "distributor",
-			"label": __("Distributor"),
+			"fieldname": "user",
+			"label": __("Created By"),
 			"fieldtype": "Link",
 			"width": "100",
-			"options": "Distributor",
+			"options": "User",
 		},
 		{
 			"fieldname": "status",

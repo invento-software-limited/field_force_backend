@@ -19,16 +19,18 @@ def get_columns():
     """ Columns of Report Table"""
     return [
         {"label": _("Date"), "fieldname": "transaction_date", "width": 100},
-        {"label": _("Requisition"), "fieldname": "name", "width": 150, "fieldtype": "Link", "options": "Requisition"},
-        {"label": _("User"), "fieldname": "user", "width": 120, "fieldtype": "Data", "options": "User"},
+        {"label": _("ID"), "fieldname": "name", "width": 130, "fieldtype": "Link", "options": "Requisition"},
+        {"label": _("Distributor"), "fieldname": "distributor", "width": 120, "fieldtype": "Link",
+         "options": "Distributor"},
 		{"label": _("Customer"), "fieldname": "customer", "width": 120, "fieldtype": "Link", "options": "Customer"},
-		{"label": _("Contact Number"), "fieldname": "contact_number", "width": 120},
-		{"label": _("Distributor"), "fieldname": "distributor", "width": 120, "fieldtype": "Link", "options": "Distributor"},
+		{"label": _("Contact"), "fieldname": "contact_number", "width": 100},
         {"label": _("Delivery Date"), "fieldname": "delivery_date", "width": 100},
-        {"label": _("Total Items"), "fieldname": "total_items", "width": 100},
-        {"label": _("Total Quantity"), "fieldname": "total_qty", "fieldtype": "Int", "width": 100},
+        # {"label": _("Total Items"), "fieldname": "total_items", "width": 100},
+        {"label": _("Total Qty"), "fieldname": "total_qty", "fieldtype": "Int", "width": 100},
         {"label": _("Total Amount"), "fieldname": "total_amount", "fieldtype": "Currency", "width": 150},
-		{"label": _("Company"), "fieldname": "company", "width": 150, "fieldtype": "Link", "options": "Company"},
+        {"label": _("Created By"), "fieldname": "user", "width": 120, "fieldtype": "Data"},
+        {"label": _("Status"), "fieldname": "status", "width": 80, "fieldtype": "Data"},
+        {"label": _("Company"), "fieldname": "company", "width": 140, "fieldtype": "Link", "options": "Company"},
     ]
 
 
@@ -38,7 +40,7 @@ def get_data(filters):
     query_string = """SELECT requisition.name, requisition.transaction_date,requisition.delivery_date, requisition.user,
                     requisition.user_fullname, requisition.customer, requisition.contact_number, requisition.distributor,
                     requisition.total_items, requisition.total_qty, requisition.grand_total as total_amount,
-                    requisition.company from `tabRequisition` requisition where %s order by 
+                    requisition.status, requisition.company from `tabRequisition` requisition where %s order by 
                     requisition.transaction_date desc""" % conditions
 
     query_result = frappe.db.sql(query_string, as_dict=1, debug=0)
