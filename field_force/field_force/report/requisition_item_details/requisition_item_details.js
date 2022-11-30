@@ -20,12 +20,19 @@ frappe.query_reports["Requisition Item Details"] = {
 			"reqd": 1,
 			"width": "60px"
 		},
+		// {
+		// 	"fieldname": "requisition",
+		// 	"label": __("Requisition"),
+		// 	"fieldtype": "Link",
+		// 	"width": "100",
+		// 	"options": "Requisition",
+		// },
 		{
-			"fieldname": "requisition",
-			"label": __("Requisition"),
+			"fieldname": "distributor",
+			"label": __("Distributor"),
 			"fieldtype": "Link",
 			"width": "100",
-			"options": "Requisition",
+			"options": "Distributor",
 		},
 		{
 			"fieldname": "customer",
@@ -43,13 +50,6 @@ frappe.query_reports["Requisition Item Details"] = {
 			}
 		},
 		{
-			"fieldname": "distributor",
-			"label": __("Distributor"),
-			"fieldtype": "Link",
-			"width": "100",
-			"options": "Distributor",
-		},
-		{
 			"fieldname": "item",
 			"label": __("Item"),
 			"fieldtype": "Link",
@@ -64,7 +64,7 @@ frappe.query_reports["Requisition Item Details"] = {
 		},
 		{
 			"fieldname": "user",
-			"label": __("Issued By"),
+			"label": __("Created By"),
 			"fieldtype": "Link",
 			"width": "100",
 			"options": "User",

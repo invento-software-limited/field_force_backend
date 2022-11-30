@@ -15,7 +15,7 @@ def execute(filters=None):
     item_count = 0
 
     for requisition_item in data:
-        date_wise_total = set_date_wise_qty_and_amount(date_wise_total, requisition_item)
+        # date_wise_total = set_date_wise_qty_and_amount(date_wise_total, requisition_item)
 
         if requisition_name == requisition_item.name:
             requisition_item.transaction_date = None
@@ -24,13 +24,14 @@ def execute(filters=None):
             requisition_item.distributor = None
             requisition_item.delivery_date = None
             requisition_item.user = None
+            requisition_item.grand_total = None
             requisition_item.status = None
             requisition_item.company = None
         else:
             requisition_name = requisition_item.name
 
             if item_count > 1:
-                requisition_items.append(subtotal)
+                # requisition_items.append(subtotal)
                 subtotal = get_subtotal()
                 item_count = 0
 
@@ -43,8 +44,8 @@ def execute(filters=None):
         requisition_items.append(requisition_item)
         item_count += 1
 
-    if item_count > 1:
-        requisition_items.append(subtotal)
+    # if item_count > 1:
+    #     requisition_items.append(subtotal)
 
     chart = get_chart(data, date_wise_total, filters)
     return columns, requisition_items, '', chart
@@ -90,9 +91,10 @@ def get_columns():
     """ Columns of Report Table"""
     return [
         {"label": _("Date"), "fieldname": "transaction_date", "width": 100},
-        {"label": _("Requisition ID"), "fieldname": "name", "width": 130, "fieldtype": "Link", "options": "Requisition"},
-		{"label": _("Customer"), "fieldname": "customer", "width": 150, "fieldtype": "Link", "options": "Customer"},
-		{"label": _("Distributor"), "fieldname": "distributor", "width": 150, "fieldtype": "Link", "options": "Distributor"},
+        {"label": _("ID"), "fieldname": "name", "width": 130, "fieldtype": "Link", "options": "Requisition"},
+        {"label": _("Distributor"), "fieldname": "distributor", "width": 130, "fieldtype": "Link",
+         "options": "Distributor"},
+        {"label": _("Customer"), "fieldname": "customer", "width": 130, "fieldtype": "Link", "options": "Customer"},
         {"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Link", "options": "Item", "width": 140},
         {"label": _("Item Name"), "fieldname": "item_name", "width": 100},
         {"label": _("Item Group"), "fieldname": "item_group", "fieldtype": "Link", "options": "Item Group", "width": 80},
@@ -104,8 +106,9 @@ def get_columns():
         {"label": _("Quantity"), "fieldname": "qty", "fieldtype": "Int", "width": 80},
         {"label": _("Rate"), "fieldname": "rate", "fieldtype": "Currency", "width": 100},
         {"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 100},
+        {"label": _("Total"), "fieldname": "grand_total", "fieldtype": "Currency", "width": 100},
         {"label": _("Delivery Date"), "fieldname": "delivery_date", "width": 100},
-		{"label": _("Issued By"), "fieldname": "user", "width": 100, "fieldtype": "Link", "options": "User"},
+		{"label": _("Created By"), "fieldname": "user", "width": 100, "fieldtype": "Link", "options": "User"},
 		{"label": _("Status"), "fieldname": "status", "width": 80},
 		{"label": _("Company"), "fieldname": "company", "width": 100, "fieldtype": "Link", "options": "Company"},
     ]
@@ -116,7 +119,7 @@ def get_data(filters):
 
     query_string = """SELECT requisition.name, requisition.transaction_date,requisition.delivery_date, requisition.user,
                     requisition.user_fullname, requisition.customer, requisition.contact_number, requisition.distributor,
-                    requisition_item.item_code, requisition_item.item_name, requisition_item.item_group,
+                    requisition.grand_total, requisition_item.item_code, requisition_item.item_name, requisition_item.item_group,
                     requisition_item.uom, requisition_item.brand, requisition_item.price_list_rate, requisition_item.qty,
                     requisition_item.discount_percentage, requisition_item.discount_amount, requisition_item.rate,
                     requisition_item.amount, requisition.user, requisition.company, requisition.status
