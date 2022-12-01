@@ -50,20 +50,20 @@ class StoreVisitDetailsReport {
                     fieldtype: 'Column Break'
                 },
                 {
-                    fieldname: 'user',
-                    label: __('User'),
+                    fieldname: 'customer',
+                    label: __('Customer'),
                     fieldtype: 'Link',
-                    options: 'User',
+                    options: 'Customer',
                     change: () => this.fetch_and_render(),
                 },
                 {
                     fieldtype: 'Column Break'
                 },
                 {
-                    fieldname: 'customer',
-                    label: __('Customer'),
+                    fieldname: 'user',
+                    label: __('Created By'),
                     fieldtype: 'Link',
-                    options: 'Customer',
+                    options: 'User',
                     change: () => this.fetch_and_render(),
                 },
                 {
@@ -129,17 +129,19 @@ class StoreVisitDetailsReport {
         let table_header = '<thead>\n' +
             '    <tr>\n' +
             '      <th scope="col" >SL</th>\n' +
-            '      <th scope="col">Date</th>\n' +
-            '      <th scope="col">Time</th>\n' +
-            '      <th scope="col">Name</th>\n' +
-            '      <th scope="col">User</th>\n' +
+            '      <th scope="col">DateTime</th>\n' +
+            // '      <th scope="col">Time</th>\n' +
+            '      <th scope="col">ID</th>\n' +
             '      <th scope="col">Customer</th>\n' +
-            '      <th scope="col">Contact Number</th>\n' +
-            '      <th scope="col">Device Date</th>\n' +
-            '      <th scope="col">Device Time</th>\n' +
+            '      <th scope="col">Address</th>\n' +
+            '      <th scope="col">Contact</th>\n' +
+            '      <th scope="col">Device DateTime</th>\n' +
+            '      <th scope="col">Cheated</th>\n' +
+            // '      <th scope="col">Device Time</th>\n' +
             '      <th scope="col">Latitude</th>\n' +
             '      <th scope="col">Longitude</th>\n' +
-            '      <th scope="col">Device Model</th>\n' +
+            '      <th scope="col">Model</th>\n' +
+            '      <th scope="col">Created By</th>\n' +
             '      <th scope="col">Image</th>\n' +
             '    </tr>\n' +
             '  </thead>\n';
@@ -151,16 +153,18 @@ class StoreVisitDetailsReport {
             html += `<tr>`;
             html += '<td>' + data.sl + '</td>';
             html += '<td>' + `${data.server_date || ''}` + '</td>';
-            html += '<td>' + `${data.server_time || ''}` + '</td>';
+            // html += '<td>' + `${data.server_time || ''}` + '</td>';
             html += '<td>' + `${data.name || ''}` + '</td>';
-            html += '<td>' + `${data.user || ''}` + '</td>';
             html += '<td>' + `${data.customer || ''}` + '</td>';
+            html += '<td>' + `${data.customer_address || ''}` + '</td>';
             html += '<td>' + `${data.contact_number || ''}` + '</td>';
             html += '<td>' + `${data.device_date || ''}` + '</td>';
-            html += '<td>' + `${data.device_time || ''}` + '</td>';
+            html += '<td>' + `${data.cheated || ''}` + '</td>';
+            // html += '<td>' + `${data.device_time || ''}` + '</td>';
             html += '<td>' + `${data.latitude || ''}` + '</td>';
             html += '<td>' + `${data.longitude || ''}` + '</td>';
             html += '<td>' + `${data.device_model || ''}` + '</td>';
+            html += '<td>' + `${data.user || ''}` + '</td>';
             html += '<td style="height:100px; width:120px;"><a href="#"><img style="height:100%; width:100%" src="' + data.image + '" onclick="(function(e){document.getElementById(\'modal_section\').style.display=\'block\';document.getElementById(\'img01\').src=e.path[0].currentSrc;return false;})(arguments[0]);return false;"></a></td>';
             html += `</tr>`;
         })
