@@ -3,9 +3,7 @@ import os
 import frappe
 import json
 
-from field_force.field_force.report.daily_app_user_attendance_report.daily_app_user_attendance_report import \
-    get_site_directory_path
-from field_force.field_force.report.utils import set_image_url, set_user_link
+from field_force.field_force.report.utils import set_image_url, set_user_link, get_site_directory_path
 
 
 @frappe.whitelist()

@@ -3,6 +3,7 @@
 import datetime
 
 import frappe
+from field_force.field_force.report.utils import set_user_link
 from frappe import _
 
 def execute(filters=None):
@@ -29,6 +30,7 @@ def execute(filters=None):
             requisition_item.company = None
         else:
             requisition_name = requisition_item.name
+            set_user_link(requisition_item)
 
             if item_count > 1:
                 # requisition_items.append(subtotal)
@@ -108,7 +110,7 @@ def get_columns():
         {"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 100},
         {"label": _("Total"), "fieldname": "grand_total", "fieldtype": "Currency", "width": 100},
         {"label": _("Delivery Date"), "fieldname": "delivery_date", "width": 100},
-		{"label": _("Created By"), "fieldname": "user", "width": 100, "fieldtype": "Link", "options": "User"},
+		{"label": _("Created By"), "fieldname": "user", "width": 100, "fieldtype": "Data"},
 		{"label": _("Status"), "fieldname": "status", "width": 80},
 		{"label": _("Company"), "fieldname": "company", "width": 100, "fieldtype": "Link", "options": "Company"},
     ]
