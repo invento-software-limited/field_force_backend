@@ -2,8 +2,8 @@
 # For license information, please see license.txt
 
 import frappe
-import datetime
-import traceback
+
+from field_force.field_force.doctype.utils import set_cheat_status, set_location_to_map
 from frappe.model.document import Document
 
 class AppUserAttendance(Document):
@@ -19,23 +19,7 @@ class AppUserAttendance(Document):
 			if not self.user_fullname and user_fullname:
 				self.user_fullname = user_fullname
 
-		try:
-			if '.' in str(self.server_time):
-				self.server_time = str(self.server_time).split('.')[0]
+		set_cheat_status(self)
 
-			device_datetime = datetime.datetime.strptime(f"{self.device_date} {self.device_time}", "%Y-%m-%d %H:%M:%S")
-			server_datetime = datetime.datetime.strptime(f"{self.server_date} {self.server_time}", "%Y-%m-%d %H:%M:%S")
-			time_difference = server_datetime - device_datetime if server_datetime > device_datetime \
-				else device_datetime - server_datetime
-			tolerance_time = 2 * 60
-
-			if time_difference.seconds > tolerance_time:
-				self.cheated = 1
-			else:
-				self.cheated = 0
-
-		except Exception:
-			error = f"device_date = {self.device_date}, device_time = {self.device_time} \n" \
-					f"server_date = {self.server_date}, server_time = {self.server_time} \n\n {traceback.format_exc()}"
-			frappe.log_error(error, "App User Attendance")
-
+	def before_save(self):
+		set_location_to_map(self)

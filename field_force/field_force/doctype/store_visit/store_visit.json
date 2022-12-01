@@ -8,18 +8,17 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "user",
-  "user_fullname",
-  "email",
-  "employee",
-  "employee_name",
   "customer",
   "contact_number",
   "customer_address",
   "server_date",
   "server_time",
   "details",
-  "cheated",
+  "user",
+  "user_fullname",
+  "email",
+  "employee",
+  "employee_name",
   "column_break_5",
   "image",
   "img",
@@ -28,11 +27,14 @@
   "device_time",
   "latitude",
   "longitude",
+  "cheated",
   "column_break_17",
   "device_model",
   "mac_address",
   "ip_address",
-  "imei"
+  "imei",
+  "section_break_26",
+  "location"
  ],
  "fields": [
   {
@@ -40,7 +42,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "User",
+   "label": "Created By",
    "options": "User",
    "reqd": 1
   },
@@ -182,8 +184,8 @@
    "default": "0",
    "fieldname": "cheated",
    "fieldtype": "Check",
-   "hidden": 1,
-   "label": "Cheated"
+   "label": "Cheated",
+   "read_only": 1
   },
   {
    "fetch_from": "customer.contact_number",
@@ -196,14 +198,24 @@
    "fetch_from": "user.full_name",
    "fieldname": "user_fullname",
    "fieldtype": "Data",
-   "label": "User Full Name",
+   "label": "Full Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_26",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Geolocation",
+   "hidden": 1,
+   "label": "Location"
   }
  ],
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-28 14:22:47.517047",
+ "modified": "2022-12-01 16:18:08.677584",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Store Visit",

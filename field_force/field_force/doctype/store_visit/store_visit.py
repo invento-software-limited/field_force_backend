@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
+from field_force.field_force.doctype.utils import set_location_to_map, set_cheat_status
 from frappe.model.document import Document
 
 class StoreVisit(Document):
@@ -25,6 +26,8 @@ class StoreVisit(Document):
 			if not self.customer_address and customer_address:
 				self.customer_address = customer_address
 
+		set_cheat_status(self)
+
 	def after_insert(self):
 		filters = {
 			"customer": self.customer,
@@ -38,3 +41,6 @@ class StoreVisit(Document):
 			store_visit_destination.status = 'Visited'
 			store_visit_destination.visited_time = self.server_time
 			store_visit_destination.save()
+
+	def before_save(self):
+		set_location_to_map(self)
