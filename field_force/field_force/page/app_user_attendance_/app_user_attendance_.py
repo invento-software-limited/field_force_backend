@@ -1,22 +1,37 @@
+import os
+
 import frappe
 import json
+
+from field_force.field_force.report.daily_app_user_attendance_report.daily_app_user_attendance_report import \
+    get_site_directory_path
+from field_force.field_force.report.utils import has_cheated, set_cheat_status, set_image_url, set_user_link
+
 
 @frappe.whitelist()
 def get_user_attendance_data(filters=None):
     query_result = get_query_data(filters)
+    site_directory = get_site_directory_path()
 
     for index, app_user_attendance in enumerate(query_result):
-        if app_user_attendance.user:
-            title = app_user_attendance.user_fullname or app_user_attendance.user
-            app_user_attendance['user'] = f'<a href="/app/user/{app_user_attendance.user}" target="_blank">{title}</a>'
+        set_user_link(app_user_attendance)
+        app_user_attendance['name'] = f'<a href="/app/app-user-attendance/{app_user_attendance.name}" ' \
+                                      f'target="_blank">{app_user_attendance.name}</a>'
+        app_user_attendance.server_date = f"{app_user_attendance.server_date}<br>{app_user_attendance.server_time}"
+        app_user_attendance.device_date = f"{app_user_attendance.device_date}<br>{app_user_attendance.device_time}"
 
-        image_url = app_user_attendance.image
+        if app_user_attendance.cheated:
+            app_user_attendance.cheated = 'Yes'
 
-        # if image_url:
-        #     if '/files/' in image_url:
-        #         app_user_attendance['image'] = f'<a href="{image_url}" target="_blank">{image_url}</a>'
+        # if not app_user_attendance.image or '/files/' not in app_user_attendance.image:
+        #     app_user_attendance.image = '/files/default-image.png'
+
+        set_image_url(app_user_attendance, site_directory)
+        # set_cheat_status(doc=app_user_attendance)
+
         app_user_attendance['sl'] = index + 1
     return query_result
+
 
 def get_query_data(filters):
     try:
@@ -28,8 +43,8 @@ def get_query_data(filters):
     query_string = """select app_user_attendance.name, app_user_attendance.user, app_user_attendance.user_fullname, 
                     app_user_attendance.server_date, app_user_attendance.server_time, app_user_attendance.type,
                     app_user_attendance.device_date, app_user_attendance.device_time, app_user_attendance.latitude,
-                    app_user_attendance.longitude, app_user_attendance.device_model, app_user_attendance.image
-                    from `tabApp User Attendance` app_user_attendance where %s
+                    app_user_attendance.longitude, app_user_attendance.device_model, app_user_attendance.image,
+                    app_user_attendance.cheated from `tabApp User Attendance` app_user_attendance where %s
                     order by app_user_attendance.server_date desc""" % (conditions)
 
     query_result = frappe.db.sql(query_string, as_dict=1, debug=0)

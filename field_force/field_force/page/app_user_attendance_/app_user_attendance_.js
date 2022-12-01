@@ -132,16 +132,17 @@ class AppUserAttendanceReport {
         let table_header = '<thead>\n' +
             '    <tr>\n' +
             '      <th scope="col" >SL</th>\n' +
-            '      <th scope="col">Date</th>\n' +
-            '      <th scope="col">Time</th>\n' +
-            '      <th scope="col">Name</th>\n' +
+            '      <th scope="col">DateTime</th>\n' +
+            // '      <th scope="col">Time</th>\n' +
+            '      <th scope="col">ID</th>\n' +
             '      <th scope="col">User</th>\n' +
             '      <th scope="col">Type</th>\n' +
-            '      <th scope="col">Device Date</th>\n' +
-            '      <th scope="col">Device Time</th>\n' +
+            '      <th scope="col">Device DateTime</th>\n' +
+            '      <th scope="col">Cheated</th>\n' +
+            // '      <th scope="col">Device Time</th>\n' +
             '      <th scope="col">Latitude</th>\n' +
             '      <th scope="col">Longitude</th>\n' +
-            '      <th scope="col">Device Model</th>\n' +
+            '      <th scope="col">Model</th>\n' +
             '      <th scope="col">Image</th>\n' +
             '    </tr>\n' +
             '  </thead>\n';
@@ -153,12 +154,13 @@ class AppUserAttendanceReport {
             html += `<tr>`;
             html += '<td>' + data.sl + '</td>';
             html += '<td>' + `${data.server_date || ''}` + '</td>';
-            html += '<td>' + `${data.server_time || ''}` + '</td>';
+            // html += '<td>' + `${data.server_time || ''}` + '</td>';
             html += '<td>' + `${data.name || ''}` + '</td>';
             html += '<td>' + `${data.user || ''}` + '</td>';
             html += '<td>' + `${data.type || ''}` + '</td>';
             html += '<td>' + `${data.device_date || ''}` + '</td>';
-            html += '<td>' + `${data.device_time || ''}` + '</td>';
+            // html += '<td>' + `${data.device_time || ''}` + '</td>';
+            html += '<td>' + `${data.cheated || ''}` + '</td>';
             html += '<td>' + `${data.latitude || ''}` + '</td>';
             html += '<td>' + `${data.longitude || ''}` + '</td>';
             html += '<td>' + `${data.device_model || ''}` + '</td>';
