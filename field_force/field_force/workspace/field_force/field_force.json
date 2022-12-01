@@ -170,17 +170,16 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Customer",
+   "label": "Store Visit",
    "link_type": "DocType",
    "onboard": 0,
-   "only_for": "",
    "type": "Card Break"
   },
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Customer",
-   "link_to": "Customer",
+   "label": "Store Visit Assign",
+   "link_to": "Store Visit Assign",
    "link_type": "DocType",
    "onboard": 0,
    "only_for": "",
@@ -189,21 +188,19 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Customer Group",
-   "link_to": "Customer Group",
+   "label": "Store Visit",
+   "link_to": "Store Visit",
    "link_type": "DocType",
    "onboard": 0,
-   "only_for": "",
    "type": "Link"
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
-   "label": "Distributor",
-   "link_to": "Distributor",
-   "link_type": "DocType",
+   "is_query_report": 1,
+   "label": "Store Visit Details Report",
+   "link_to": "store-visit-details-",
+   "link_type": "Page",
    "onboard": 0,
-   "only_for": "",
    "type": "Link"
   },
   {
@@ -246,16 +243,17 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Store Visit",
+   "label": "Customer",
    "link_type": "DocType",
    "onboard": 0,
+   "only_for": "",
    "type": "Card Break"
   },
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Store Visit Assign",
-   "link_to": "Store Visit Assign",
+   "label": "Customer",
+   "link_to": "Customer",
    "link_type": "DocType",
    "onboard": 0,
    "only_for": "",
@@ -264,19 +262,21 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Store Visit",
-   "link_to": "Store Visit",
+   "label": "Customer Group",
+   "link_to": "Customer Group",
    "link_type": "DocType",
    "onboard": 0,
+   "only_for": "",
    "type": "Link"
   },
   {
    "hidden": 0,
-   "is_query_report": 1,
-   "label": "Store Visit Details Report",
-   "link_to": "store-visit-details-",
-   "link_type": "Page",
+   "is_query_report": 0,
+   "label": "Distributor",
+   "link_to": "Distributor",
+   "link_type": "DocType",
    "onboard": 0,
+   "only_for": "",
    "type": "Link"
   },
   {
@@ -431,10 +431,10 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Store Visit Details Report",
-   "link_to": "Store Visit Details Report",
-   "link_type": "Report",
+   "link_to": "store-visit-details-",
+   "link_type": "Page",
    "onboard": 0,
    "type": "Link"
   },
@@ -448,7 +448,7 @@
    "type": "Link"
   }
  ],
- "modified": "2022-11-30 17:52:49.150232",
+ "modified": "2022-12-01 17:10:54.534808",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Field Force",
@@ -486,20 +486,20 @@
    "type": "DocType"
   },
   {
-   "color": "#29CD42",
-   "doc_view": "List",
-   "format": "",
-   "label": "App User Attendance",
-   "link_to": "App User Attendance",
-   "stats_filter": "",
-   "type": "DocType"
-  },
-  {
    "color": "#4463F0",
    "doc_view": "List",
    "format": "{} Assigned",
    "label": "Store Visit Assign",
    "link_to": "Store Visit Assign",
+   "stats_filter": "",
+   "type": "DocType"
+  },
+  {
+   "color": "#29CD42",
+   "doc_view": "List",
+   "format": "",
+   "label": "App User Attendance",
+   "link_to": "App User Attendance",
    "stats_filter": "",
    "type": "DocType"
   },
