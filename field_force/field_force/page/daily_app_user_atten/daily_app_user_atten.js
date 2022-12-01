@@ -135,12 +135,13 @@ class AppUserAttendanceReport {
             '    <tr>\n' +
             '      <th scope="col" >SL</th>\n' +
             '      <th scope="col">Date</th>\n' +
-            '      <th scope="col">Name</th>\n' +
+            // '      <th scope="col">Name</th>\n' +
             '      <th scope="col">User</th>\n' +
             '      <th scope="col">Checkin Time</th>\n' +
             '      <th scope="col">Checkout Time</th>\n' +
             '      <th scope="col">Checkin Device Time</th>\n' +
             '      <th scope="col">Checkout Device Time</th>\n' +
+            '      <th scope="col">Cheated</th>\n' +
             '      <th scope="col">Checkin Image</th>\n' +
             '      <th scope="col">Checkout Image</th>\n' +
             '    </tr>\n' +
@@ -153,12 +154,13 @@ class AppUserAttendanceReport {
             html += `<tr>`;
             html += '<td>' + data.sl + '</td>';
             html += '<td>' + `${data.server_date || ''}` + '</td>';
-            html += '<td>' + `${data.name || ''}` + '</td>';
+            // html += '<td>' + `${data.name || ''}` + '</td>';
             html += '<td>' + `${data.user || ''}` + '</td>';
             html += '<td>' + `${data.server_time || ''}` + '</td>';
             html += '<td>' + `${data.checkout_time || ''}` + '</td>';
             html += '<td>' + `${data.device_time || ''}` + '</td>';
             html += '<td>' + `${data.checkout_device_time || ''}` + '</td>';
+            html += '<td>' + `${data.cheated || ''}` + '</td>';
             html += '<td style="height:100px; width:120px;"><a href="#"><img style="height:100%; width:100%" ' + 'src="' + data.checkin_image + '" onclick="(function(e){document.getElementById(\'modal_section\').style.display=\'block\';' + 'document.getElementById(\'img01\').src=e.path[0].currentSrc;return false;})(arguments[0]);return false;"></a></td>';
             html += '<td style="height:100px; width:120px;"><a href="#"><img style="height:100%; width:100%" ' + 'src="' + data.checkout_image + '" onclick="(function(e){document.getElementById(\'modal_section\').style.display=\'block\';' + 'document.getElementById(\'img01\').src=e.path[0].currentSrc;return false;})(arguments[0]);return false;"></a></td>';
             html += `</tr>`;
