@@ -15,7 +15,7 @@
     z-index: 1; /* Sit on top */
     padding-top: 100px; /* Location of the box */
     left: 0;
-    top: 141px;
+    top: 80px;
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
@@ -27,16 +27,16 @@
 .modal-content {
     margin: auto;
     display: block;
-    width: 80%;
-    max-width: 700px;
+    width: 70%;
+    max-width: 500px;
 }
 
 /* Caption of Modal Image */
 #caption {
     margin: auto;
     display: block;
-    width: 80%;
-    max-width: 700px;
+    width: 50%;
+    max-width: 500px;
     text-align: center;
     color: #ccc;
     padding: 10px 0;
@@ -78,12 +78,13 @@
     position: absolute;
     left: 0;
     right: 0;
+
 }
 
 .close {
     position: absolute;
     left: 0;
-    right: -35em;
+    right: -30em;
     color: black;
     font-size: 40px;
     font-weight: bold;
@@ -92,7 +93,7 @@
     display: block;
     width: 80%;
     max-width: 700px;
-    top: -40px;
+    top: -45px;
 }
 
 .close:hover,
@@ -103,7 +104,7 @@
 }
 
 /* 100% Image Width on Smaller Screens */
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 400px) {
     .modal-content {
         width: 100%;
     }
