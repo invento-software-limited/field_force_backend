@@ -75,7 +75,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "User",
+   "label": "Created By",
    "options": "User",
    "reqd": 1
   },
@@ -83,7 +83,7 @@
    "fetch_from": "user.full_name",
    "fieldname": "user_fullname",
    "fieldtype": "Data",
-   "label": "User Full Name",
+   "label": "Full Name",
    "read_only": 1
   },
   {
@@ -98,7 +98,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-28 14:48:02.727826",
+ "modified": "2022-12-04 13:53:51.548846",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Item Request",
