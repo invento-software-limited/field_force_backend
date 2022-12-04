@@ -22,6 +22,9 @@ class AppUserAttendanceReport {
         this.page.add_action_icon("refresh", () => {
             this.fetch_and_render();
         });
+        this.page.add_menu_item("Export", ()=>{
+            this.export_excel()
+        })
 
     }
     make_form = () => {
@@ -170,4 +173,10 @@ class AppUserAttendanceReport {
         html += "</tbody>";
         return html
     }
-};
+    export_excel = () => {
+        console.log("Export")
+
+        let url = '/api/method/field_force.field_force.page.app_user_attendance_.app_user_attendance_.export_data';
+        window.open(url, '_blank');
+    }
+}
