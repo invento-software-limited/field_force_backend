@@ -3,12 +3,9 @@
 from numpy import mean
 
 import frappe
-from erpnext.controllers.queries import get_fields
 from field_force.field_force.doctype.sales_target.sales_target import get_sales_persons
 from frappe import _
 import datetime, calendar
-
-from frappe.desk.reportview import get_filters_cond, get_match_cond
 
 
 def get_currency_symbol():
@@ -37,7 +34,7 @@ def execute(filters=None):
 
             for sales_person_ in sales_persons:
                 if sales_person_.type == 'Supervisor' and sales_person_.is_group:
-                    conditions_, sales_person_names  = add_sales_person_to_condition(conditions, sales_person_.sales_person,
+                    conditions_, sales_person_names  = add_sales_person_to_condition(conditions, sales_person_,
                                                                                      all_child=True, including_self=True)
                     # print("====>>", sales_person_.sales_person, sales_person_names, conditions_)
                     if sales_person_names and conditions_:
@@ -53,18 +50,10 @@ def execute(filters=None):
 
             for sales_person_ in sales_persons:
                 if sales_person_.type == 'Manager' and sales_person_.is_group:
-
                     get_data_by_supervisor(conditions, data, sales_person_.sales_person, month, year, all_child=True)
-                    # conditions_, sales_person_names = add_sales_person_to_condition(conditions, sales_person_.sales_person,
-                    #                                                                 including_self=True, all_child=True)
-                    # if conditions_:
-                    #     data_ = get_data(conditions_, month, year, sales_person_names, group_wise=False)
-                    #
-                    #     if data_:
-                    #         make_sum_and_push_to_data_list(data, data_, sales_person_, is_group=True)
 
-        elif filters.get('type') == 'Individual':
-            conditions_, sales_person_names = add_sales_person_to_condition(conditions, sales_person.name, all_child=True)
+        elif sales_person and filters.get('type') == 'Individual':
+            conditions_, sales_person_names = add_sales_person_to_condition(conditions, sales_person, all_child=True)
             data = get_data(conditions_, month, year, sales_person_names)
 
             for row in data:
@@ -86,7 +75,7 @@ def get_data_by_supervisor(conditions, data,  sales_person_name, month, year, al
 
     for sales_person_ in sales_persons:
         if sales_person_.type == 'Supervisor' and sales_person_.is_group:
-            conditions_, sales_person_names = add_sales_person_to_condition(conditions, sales_person_.sales_person,
+            conditions_, sales_person_names = add_sales_person_to_condition(conditions, sales_person_,
                                                                             including_self=True, all_child=all_child)
             if conditions_:
                 data_ = get_data(conditions_, month, year, sales_person_names, group_wise=False)
@@ -169,12 +158,10 @@ def get_data(conditions, month, year, sales_person_names, group_wise=False):
 def get_conditions(filters):
     from_date = filters.get('from_date')
     to_date = filters.get('to_date')
-    sales_person = filters.get('sales_person')
-    # user = filters.get('user')
-    # customer = filters.get('customer')
+    # sales_person = filters.get('sales_person')
 
-    # conditions = ["sales_order.docstatus == 1"]
-    conditions = []
+    conditions = ["sales_order.docstatus=1"]
+    # conditions = []
 
     if from_date:
         conditions.append("sales_order.transaction_date >= '%s'" % from_date)
@@ -186,9 +173,14 @@ def get_conditions(filters):
     return " and ".join(conditions)
 
 def add_sales_person_to_condition(conditions, sales_person, all_child=False, including_self=False):
-    sales_person_names = get_sales_persons_list(sales_person, all_child, including_self, as_tuple_str=True)
-    # print(sales_person_names)
+    sales_person_name = sales_person.get('name') or sales_person.get('sales_person')
     conditions_ = ''
+
+    if sales_person.is_group:
+        sales_person_names = get_sales_persons_list(sales_person_name, all_child, including_self, as_tuple_str=True)
+    else:
+        sales_person_names = "('%s')" % sales_person_name
+
 
     if sales_person_names and conditions:
         conditions_ = conditions + ' and sales_order.sales_person in ' + sales_person_names

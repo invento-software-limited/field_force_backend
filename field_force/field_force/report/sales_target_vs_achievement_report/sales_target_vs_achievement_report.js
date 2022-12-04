@@ -27,7 +27,7 @@ function get_sales_person() {
 			async: false,
 			args: {
 				'doctype': 'Sales Person',
-				'filters': {'user': frappe.session.user},
+				'filters': {'user': frappe.session.user, 'is_group':1},
 				'fieldname': ['name', 'type', 'lft', 'rgt']
 			},
 			callback: function (r) {
@@ -87,6 +87,7 @@ frappe.query_reports["Sales Target vs Achievement Report"] = {
 				return {
 					"filters": [
 						// "parent_sales_person": sales_person.name
+						["is_group", "=", 1],
 						["lft", ">=", sales_person.lft],
 						["rgt", "<=", sales_person.rgt]
 					]
