@@ -73,7 +73,7 @@ def get_conditions(filters):
 
 def get_columns():
     columns =  [
-        {'fieldname': 'sl', 'label': 'SL', 'expwidth': 5},
+        {'fieldname': 'sl', 'label': 'SL', 'expwidth': 5, 'export': False},
         {'fieldname': 'server_date', 'label': 'DateTime', 'expwidth': 12},
         {'fieldname': 'name', 'label': 'ID', 'expwidth': 15},
         {'fieldname': 'user', 'label': 'User', 'expwidth': 15},
