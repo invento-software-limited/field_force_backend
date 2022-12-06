@@ -1,31 +1,42 @@
 import frappe
 import json
 
+from field_force.field_force.page.utils import generate_excel_and_download
 from field_force.field_force.report.utils import set_link_to_doc, set_user_link, set_image_url, get_site_directory_path
 
 
 @frappe.whitelist()
 def get_merchandising_picture_data(filters=None):
+    columns = get_columns()
+    data = get_absolute_data(filters)
+    return data, columns
+
+def get_absolute_data(filters, export=False):
     query_result = get_query_data(filters)
     site_directory = get_site_directory_path()
 
     for index, merchandising_picture in enumerate(query_result):
-        set_link_to_doc(merchandising_picture, 'name', 'merchandising-picture')
-        set_link_to_doc(merchandising_picture, 'customer', 'customer')
-        set_link_to_doc(merchandising_picture, 'brand', 'brand')
-        set_user_link(merchandising_picture)
         set_image_url(merchandising_picture, site_directory)
 
         server_time = str(merchandising_picture.server_time).split('.')[0] \
             if '.' in str(merchandising_picture.server_time) else merchandising_picture.server_time
         device_time = str(merchandising_picture.device_time).split('.')[0] \
             if '.' in str(merchandising_picture.device_time) else merchandising_picture.device_time
-        merchandising_picture.server_date = f"{merchandising_picture.server_date}<br>{server_time}"
-        merchandising_picture.device_date = f"{merchandising_picture.device_date}<br>{device_time}"
 
-        if merchandising_picture.cheated:
-            merchandising_picture.cheated = 'Yes'
+        if not export:
+            set_link_to_doc(merchandising_picture, 'name', 'merchandising-picture')
+            set_link_to_doc(merchandising_picture, 'customer', 'customer')
+            set_link_to_doc(merchandising_picture, 'brand', 'brand')
+            set_user_link(merchandising_picture)
 
+            merchandising_picture.server_date = f"{merchandising_picture.server_date}<br>{server_time}"
+            merchandising_picture.device_date = f"{merchandising_picture.device_date}<br>{device_time}"
+        else:
+            merchandising_picture.user = merchandising_picture.user_fullname or merchandising_picture.user
+            merchandising_picture.server_date = f"{merchandising_picture.server_date}\n{server_time}"
+            merchandising_picture.device_date = f"{merchandising_picture.device_date}\n{device_time}"
+
+        merchandising_picture.cheated = 'Yes' if merchandising_picture.cheated else ''
         merchandising_picture['sl'] = index + 1
 
     return query_result
@@ -71,3 +82,32 @@ def get_conditions(filters):
         conditions.append("merchandising_picture.brand = '%s'" % brand)
 
     return " and ".join(conditions)
+def get_columns():
+    columns =  [
+        {'fieldname': 'sl', 'label': 'SL', 'expwidth': 5, 'export': False},
+        {'fieldname': 'server_date', 'label': 'Date', 'expwidth': 13},
+        {'fieldname': 'name', 'label': 'ID', 'expwidth': 20},
+        {'fieldname': 'brand', 'label': 'Brand', 'expwidth': 15},
+        {'fieldname': 'customer', 'label': 'Customer', 'expwidth': 15},
+        {'fieldname': 'customer_address', 'label': 'Address', 'expwidth': 15},
+        {'fieldname': 'contact_number', 'label': 'Contact', 'expwidth': 15},
+        {'fieldname': 'device_date', 'label': 'Device Date Time', 'expwidth': 15},
+        {'fieldname': 'cheated', 'label': 'Cheated', 'fieldtype': 'Data', 'expwidth': 15},
+        {'fieldname': 'latitude', 'label': 'Latitude', 'fieldtype': 'Data', 'expwidth': 15},
+        {'fieldname': 'longitude', 'label': 'Longitude', 'fieldtype': 'Data', 'expwidth': 15},
+        {'fieldname': 'device_model', 'label': 'Device Model', 'fieldtype': 'Data', 'expwidth': 15},
+        {'fieldname': 'user', 'label': 'Created By', 'expwidth': 20},
+        {'fieldname': 'image', 'label': 'Image', 'fieldtype': 'Image', 'expwidth': 15, 'export': False},
+    ]
+    return columns
+
+@frappe.whitelist()
+def export_file(**filters):
+    columns = get_columns()
+    data = get_export_data(filters)
+    file_name = 'Merchandising_Picture_Details_Report.xlsx'
+    generate_excel_and_download(columns, data, file_name, height=30)
+
+def get_export_data(filters):
+    query_result = get_absolute_data(filters, export=True)
+    return query_result

@@ -16,7 +16,7 @@ def generate_excel_and_download(columns, data, file_name, height=25):
     workbook = openpyxl.Workbook()
     worksheet = workbook.active
 
-    generate_row(worksheet, 1, labels, height=height)
+    generate_row(worksheet, 1, labels, height=20)
     row_count = 2
 
     for row in data:

@@ -121,7 +121,7 @@ class AppUserAttendanceReport {
         let table_body = this.table_body(diff, fields);
         this.form.get_field('preview').html(`<table class="table table-bordered" id="export_excel">${table_header}${table_body}</table>`);
     }
-        table_header = (headers) => {
+    table_header = (headers) => {
         let table_header = `<thead><tr>`;
 
         headers.forEach(function (data, index){

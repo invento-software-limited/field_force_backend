@@ -11,10 +11,10 @@ from field_force.field_force.report.utils import set_user_link, set_image_url, g
 def get_user_attendance_data(filters=None):
     columns = get_columns()
     filters = json.loads(filters)
-    data = get_absolute_date(filters)
+    data = get_absolute_data(filters)
     return data, columns
 
-def get_absolute_date(filters, export=False):
+def get_absolute_data(filters, export=False):
     data = get_query_data(filters)
     site_directory = get_site_directory_path()
     data_dict = {}
@@ -104,5 +104,5 @@ def export_file(**filters):
     generate_excel_and_download(columns, data, file_name, height=20)
 
 def get_export_data(filters):
-    query_result = get_absolute_date(filters, export=True)
+    query_result = get_absolute_data(filters, export=True)
     return query_result
