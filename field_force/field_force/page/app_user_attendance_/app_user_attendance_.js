@@ -9,6 +9,7 @@ frappe.pages['app-user-attendance-'].on_page_load = (wrapper) => {
     new AppUserAttendanceReport(page);
 };
 
+
 class AppUserAttendanceReport {
     constructor(page) {
         this.page = page;
@@ -64,6 +65,7 @@ class AppUserAttendanceReport {
                     label: __('Type'),
                     fieldtype: 'Select',
                     options: [
+                        "",
                         {"value": "Checkin", "label": __("Check In")},
                         {"value": "Checkout", "label": __("Check Out")},
                     ],
@@ -202,9 +204,9 @@ class AppUserAttendanceReport {
     // }
 
     export_excel = () => {
-        console.log("Export")
-
-        let url = '/api/method/field_force.field_force.page.app_user_attendance_.app_user_attendance_.export_data';
+        let {from_date, to_date, user, type} = this.form.get_values();
+        let url = `/api/method/field_force.field_force.page.app_user_attendance_.app_user_attendance_.export_file`;
+        url += `?from_date=${from_date||''}&to_date=${to_date||''}&user=${user||''}&type=${type||''}`;
         window.open(url, '_blank');
     }
 }

@@ -11,18 +11,13 @@ import openpyxl
 
 from field_force.field_force.report.utils import set_image_url, set_user_link, get_site_directory_path
 
-export_data = []
-
 @frappe.whitelist()
 def get_user_attendance_data(filters=None):
-    global export_data
     columns = get_columns()
     query_result = get_query_data(filters)
     site_directory = get_site_directory_path()
-    export_data = copy.deepcopy(query_result)
 
     for index, app_user_attendance in enumerate(query_result):
-        # generate_row_export_data(index, app_user_attendance)
         set_user_link(app_user_attendance)
 
         app_user_attendance['name'] = f'<a href="/app/app-user-attendance/{app_user_attendance.name}" ' \
@@ -38,12 +33,6 @@ def get_user_attendance_data(filters=None):
 
     # data = query_result
     return query_result, columns
-
-def generate_row_export_data(index, row):
-    export_data[index].server_date = f"{row.server_date}\n{row.server_time}"
-    export_data[index].device_date = f"{row.device_date}\n{row.device_time}"
-    export_data[index].cheated = 'Yes' if export_data[index].cheated else ''
-    export_data[index]['sl'] = index + 1
 
 def get_query_data(filters):
     try:
@@ -85,12 +74,12 @@ def get_conditions(filters):
 def get_columns():
     columns =  [
         {'fieldname': 'sl', 'label': 'SL', 'expwidth': 5},
-        {'fieldname': 'server_date', 'label': 'DateTime', 'expwidth': 15},
+        {'fieldname': 'server_date', 'label': 'DateTime', 'expwidth': 12},
         {'fieldname': 'name', 'label': 'ID', 'expwidth': 15},
         {'fieldname': 'user', 'label': 'User', 'expwidth': 15},
-        {'fieldname': 'type', 'label': 'Type', 'expwidth': 15},
+        {'fieldname': 'type', 'label': 'Type', 'expwidth': 10},
         {'fieldname': 'device_date', 'label': 'Device DateTime', 'expwidth': 15},
-        {'fieldname': 'cheated', 'label': 'Cheated', 'expwidth': 15},
+        {'fieldname': 'cheated', 'label': 'Cheated', 'expwidth': 10},
         {'fieldname': 'latitude', 'fieldtype': 'Currency', 'label': 'Latitude', 'expwidth': 15},
         {'fieldname': 'longitude', 'label': 'Longitude', 'expwidth': 15},
         {'fieldname': 'device_model', 'label': 'Model', 'expwidth': 15},
@@ -99,9 +88,21 @@ def get_columns():
     return columns
 
 @frappe.whitelist()
-def export_data():
+def export_file(**filters):
     columns = get_columns()
-    generate_excel_and_download(columns, export_data)
+    data = get_export_data(filters)
+    generate_excel_and_download(columns, data)
+def get_export_data(filters):
+    query_result = get_query_data(filters)
+
+    for index, app_user_attendance in enumerate(query_result):
+        app_user_attendance.user = app_user_attendance.user_fullname or app_user_attendance.user
+        app_user_attendance.server_date = f"{app_user_attendance.server_date}\n{app_user_attendance.server_time}"
+        app_user_attendance.device_date = f"{app_user_attendance.device_date}\n{app_user_attendance.device_time}"
+        app_user_attendance.cheated = 'Yes' if app_user_attendance.cheated else ''
+        app_user_attendance['sl'] = index + 1
+
+    return query_result
 
 def generate_excel_and_download(columns, data):
     fields, labels, row_widths= [], [], []
@@ -129,6 +130,7 @@ def generate_excel_and_download(columns, data):
     frappe.local.response.filename = 'App_User_Attendance_Report.xlsx'
     frappe.local.response.filecontent = byte_data.getvalue()
     frappe.local.response.type = "download"
+    return frappe.local.response
 
 
 def generate_row(ws, row_count, column_values, font=None, font_size=None, color=None, height=25, widths=None):
