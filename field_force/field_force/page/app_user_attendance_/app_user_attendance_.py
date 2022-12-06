@@ -1,14 +1,7 @@
-import copy
-import io
-import os
-
-from openpyxl.styles import Font, PatternFill, Alignment
-from openpyxl.utils import get_column_letter
-
 import frappe
 import json
-import openpyxl
 
+from field_force.field_force.page.utils import generate_excel_and_download
 from field_force.field_force.report.utils import set_image_url, set_user_link, get_site_directory_path
 
 @frappe.whitelist()
@@ -80,7 +73,7 @@ def get_columns():
         {'fieldname': 'type', 'label': 'Type', 'expwidth': 10},
         {'fieldname': 'device_date', 'label': 'Device DateTime', 'expwidth': 15},
         {'fieldname': 'cheated', 'label': 'Cheated', 'expwidth': 10},
-        {'fieldname': 'latitude', 'fieldtype': 'Currency', 'label': 'Latitude', 'expwidth': 15},
+        {'fieldname': 'latitude', 'label': 'Latitude', 'expwidth': 15},
         {'fieldname': 'longitude', 'label': 'Longitude', 'expwidth': 15},
         {'fieldname': 'device_model', 'label': 'Model', 'expwidth': 15},
         {'fieldname': 'image', 'label': 'Image', 'fieldtype': 'Image', 'expwidth': 15, 'export': False}
@@ -91,7 +84,9 @@ def get_columns():
 def export_file(**filters):
     columns = get_columns()
     data = get_export_data(filters)
-    generate_excel_and_download(columns, data)
+    file_name = 'App_User_Attendance_Report.xlsx'
+    generate_excel_and_download(columns, data, file_name)
+
 def get_export_data(filters):
     query_result = get_query_data(filters)
 
@@ -103,63 +98,3 @@ def get_export_data(filters):
         app_user_attendance['sl'] = index + 1
 
     return query_result
-
-def generate_excel_and_download(columns, data):
-    fields, labels, row_widths= [], [], []
-
-    for field in columns:
-        if field.get('export', True):
-            fields.append(field.get('fieldname'))
-            labels.append(field.get('label'))
-            row_widths.append(field.get('expwidth', 25))
-
-    workbook = openpyxl.Workbook()
-    worksheet = workbook.active
-
-    generate_row(worksheet, 1, labels, height=25)
-    row_count = 2
-
-    for row in data:
-        row_data = [row[field] for field in fields]
-        generate_row(worksheet, row_count, row_data, widths=row_widths, height=35)
-        row_count += 1
-
-    byte_data = io.BytesIO()
-    workbook.save(byte_data)
-
-    frappe.local.response.filename = 'App_User_Attendance_Report.xlsx'
-    frappe.local.response.filecontent = byte_data.getvalue()
-    frappe.local.response.type = "download"
-    return frappe.local.response
-
-
-def generate_row(ws, row_count, column_values, font=None, font_size=None, color=None, height=25, widths=None):
-    cells = []
-
-    for i, value in enumerate(column_values):
-        column_number = i + 1
-        cell = ws.cell(row=row_count, column=column_number)
-        cell.value = value
-
-        if font:
-            cell.font = font
-        elif font_size:
-            cell.font = Font(size=font_size)
-
-        if color:
-            cell.fill = PatternFill(fgColor=color, fill_type='solid')
-        if widths:
-            ws.column_dimensions[get_column_letter(i + 1)].width = widths[i]
-
-        if isinstance(value, int):
-            cell.number_format = "#,##0"
-        elif isinstance(value, float):
-            cell.number_format = "#,##0.00"
-
-        cell.alignment = Alignment(vertical='center')
-        cells.append(cell)
-
-    if height:
-        ws.row_dimensions[row_count].height = height
-
-    return cells

@@ -24,7 +24,9 @@ class AppUserAttendanceReport {
         this.page.add_action_icon("refresh", () => {
             this.fetch_and_render();
         });
-
+        this.page.add_menu_item("Export", ()=>{
+            this.export_excel()
+        })
     }
     make_form = () => {
         this.form = new frappe.ui.FieldGroup({
@@ -61,16 +63,6 @@ class AppUserAttendanceReport {
                 {
                     fieldtype: 'Column Break'
                 },
-                // {
-                //     fieldname: 'type',
-                //     label: __('Type'),
-                //     fieldtype: 'Select',
-                //     options: [
-                //         {"value": "Checkin", "label": __("Check In")},
-                //         {"value": "Checkout", "label": __("Check Out")},
-                //     ],
-                //     change: () => this.fetch_and_render(),
-                // },
                 {
                     fieldtype: 'Column Break'
                 },
@@ -100,7 +92,7 @@ class AppUserAttendanceReport {
         $('.main-section').append(html)
     }
     fetch_and_render = () => {
-        let {from_date, to_date, user, type} = this.form.get_values();
+        let {from_date, to_date, user} = this.form.get_values();
         if (!from_date) {
             this.form.get_field('preview').html('');
             return;
@@ -114,58 +106,91 @@ class AppUserAttendanceReport {
             filters: {
                 from_date: from_date,
                 to_date: to_date,
-                user: user,
-                type: type
+                user: user
             },
             freeze: true
         }).then(r => {
-            let diff = r.message;
-            this.render(diff);
+            let diff = r.message[0];
+            let fields = r.message[1];
+            this.render(diff, fields);
         });
     }
 
-    render = (diff) => {
-        let table_header = this.table_header();
-        let table_body = this.table_body(diff);
+    render = (diff, fields) => {
+        let table_header = this.table_header(fields);
+        let table_body = this.table_body(diff, fields);
         this.form.get_field('preview').html(`<table class="table table-bordered" id="export_excel">${table_header}${table_body}</table>`);
     }
+        table_header = (headers) => {
+        let table_header = `<thead><tr>`;
 
-    table_header = () => {
-        let table_header = '<thead>\n' +
-            '    <tr>\n' +
-            '      <th scope="col" >SL</th>\n' +
-            '      <th scope="col">Date</th>\n' +
-            // '      <th scope="col">Name</th>\n' +
-            '      <th scope="col">User</th>\n' +
-            '      <th scope="col">Checkin Time</th>\n' +
-            '      <th scope="col">Checkout Time</th>\n' +
-            '      <th scope="col">Checkin Device Time</th>\n' +
-            '      <th scope="col">Checkout Device Time</th>\n' +
-            '      <th scope="col">Cheated</th>\n' +
-            '      <th scope="col">Checkin Image</th>\n' +
-            '      <th scope="col">Checkout Image</th>\n' +
-            '    </tr>\n' +
-            '  </thead>\n';
+        headers.forEach(function (data, index){
+            table_header += `<th scope="col">${data.label || ''}</th>`;
+        })
+
+        table_header += `</tr>`;
         return table_header;
     }
-    table_body = (diff) => {
-        var html = "<tbody>";
+
+    table_body = (diff, fields) => {
+        var html = `<tbody>`;
+
         diff.forEach(function (data, index) {
             html += `<tr>`;
-            html += '<td>' + data.sl + '</td>';
-            html += '<td>' + `${data.server_date || ''}` + '</td>';
-            // html += '<td>' + `${data.name || ''}` + '</td>';
-            html += '<td>' + `${data.user || ''}` + '</td>';
-            html += '<td>' + `${data.server_time || ''}` + '</td>';
-            html += '<td>' + `${data.checkout_time || ''}` + '</td>';
-            html += '<td>' + `${data.device_time || ''}` + '</td>';
-            html += '<td>' + `${data.checkout_device_time || ''}` + '</td>';
-            html += '<td>' + `${data.cheated || ''}` + '</td>';
-            html += '<td style="height:100px; width:120px;"><a href="#"><img style="height:100%; width:100%" ' + 'src="' + data.checkin_image + '" onclick="(function(e){document.getElementById(\'modal_section\').style.display=\'block\';' + 'document.getElementById(\'img01\').src=e.path[0].currentSrc;return false;})(arguments[0]);return false;"></a></td>';
-            html += '<td style="height:100px; width:120px;"><a href="#"><img style="height:100%; width:100%" ' + 'src="' + data.checkout_image + '" onclick="(function(e){document.getElementById(\'modal_section\').style.display=\'block\';' + 'document.getElementById(\'img01\').src=e.path[0].currentSrc;return false;})(arguments[0]);return false;"></a></td>';
+
+            fields.forEach(function (field, index){
+               html += get_absolute_format_and_html(field, data[field.fieldname]);
+            })
+
             html += `</tr>`;
         })
-        html += "</tbody>";
+
+        html += `</tbody>`;
         return html
     }
-};
+
+    export_excel = () => {
+        let {from_date, to_date, user} = this.form.get_values();
+        let url = `/api/method/field_force.field_force.page.daily_app_user_atten.daily_app_user_atten.export_file`;
+        url += `?from_date=${from_date||''}&to_date=${to_date||''}&user=${user||''}`;
+        window.open(url, '_blank');
+    }
+}
+
+function get_absolute_format_and_html(field, value){
+    if (field.fieldtype === "Image"){
+        return get_image_html(value);
+    }
+    else if (field.fieldtype === "Currency"){
+        return get_currency_format(value);
+    }
+    else if (field.fieldtype ==="Data") {
+        return `<td>${value || ''}</td>`;
+    }
+    else {
+        return `<td>${value || ''}</td>`;
+    }
+}
+
+function get_image_html(image_url) {
+    return `
+        <td style="height:100px; width:120px;">
+            <a href="#">
+                <img style="height:100%; width:100%" src="${image_url}" onclick="(
+                    function(e){
+                        document.getElementById(\'modal_section\').style.display=\'block\';
+                        document.getElementById(\'img01\').src=e.path[0].currentSrc;
+                        return false;
+                    }
+                )(arguments[0]);
+                return false;">
+            </a>
+        </td>`;
+}
+
+function get_currency_format(value){
+    const company = frappe.defaults.get_user_default("company");
+    const currency = frappe.get_doc(":Company", company).default_currency;
+    let value_in_currency = format_currency(value, currency);
+    return `<td>${value_in_currency || ''}</td>`
+}
