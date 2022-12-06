@@ -67,6 +67,11 @@ def get_default(value):
     return 0
 
 def get_month_and_year(sales_order):
-    month =  datetime.datetime.strptime(sales_order.transaction_date, "%Y-%m-%d").month
     year = frappe.defaults.get_user_default('fiscal_year')
-    return month, year
+
+    if isinstance(sales_order.transaction_date, datetime.date):
+        return sales_order.transaction_date.month, year
+    elif isinstance(sales_order.transaction_date, str):
+        month =  datetime.datetime.strptime(sales_order.transaction_date, "%Y-%m-%d").month
+        return month, year
+    return None, None
