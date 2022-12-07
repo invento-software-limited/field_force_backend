@@ -50,8 +50,13 @@ frappe.geo.utils.return_coordinates = geo_location.return_coordinates
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-doctype_js = {"Sales Order" : "public/js/sales_order.js"}
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+doctype_js = {
+	"Sales Order" : "public/js/sales_order.js"
+}
+doctype_list_js = {
+	"Sales Order" : "public/js/sales_order_list.js"
+}
+
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
