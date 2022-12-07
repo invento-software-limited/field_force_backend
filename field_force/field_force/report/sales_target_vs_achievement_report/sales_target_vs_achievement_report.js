@@ -58,23 +58,44 @@ function get_type(sales_person) {
 	}
 }
 
+var months =[
+	"January",
+	"February",
+	"March",
+	"April",
+	"May",
+	"June",
+	"July",
+	"August",
+	"September",
+	"October",
+	"November",
+	"December"
+]
+
+const d = new Date();
+let month = d.getMonth();
+
+
 frappe.query_reports["Sales Target vs Achievement Report"] = {
 	"filters": [
 		{
-			"fieldname":"from_date",
-			"label": __("From Date"),
-			"fieldtype": "Date",
-			"default": frappe.datetime.month_start(),
-			"reqd": 1,
-			"width": "60px"
+			"fieldname":"month",
+			"label": __("Month"),
+			"fieldtype": "Select",
+			"default": months[month+1],
+			"options": months,
+			"width": "60px",
+			"reqd": 1
 		},
 		{
-			"fieldname":"to_date",
-			"label": __("To Date"),
-			"fieldtype": "Date",
-			"default": frappe.datetime.get_today(),
-			"reqd": 1,
-			"width": "60px"
+			"fieldname":"year",
+			"label": __("Year"),
+			"fieldtype": "Link",
+			"options": "Fiscal Year",
+			"default": frappe.defaults.get_user_default("fiscal_year"),
+			"width": "60px",
+			"reqd": 1
 		},
 		{
 			"fieldname": "sales_person",

@@ -6,6 +6,7 @@ import frappe
 from field_force.field_force.doctype.sales_target.sales_target import get_sales_persons
 from frappe import _
 import datetime, calendar
+import pandas as pd
 
 
 def get_currency_symbol():
@@ -19,9 +20,8 @@ def execute(filters=None):
     columns = get_columns(filters)
     conditions = get_conditions(filters)
 
-    month_number = datetime.datetime.strptime(filters.get('from_date'), '%Y-%m-%d').month
-    month = calendar.month_name[month_number]
-    year = frappe.defaults.get_user_default("fiscal_year")
+    month = filters.get('month')
+    year = filters.get("year")
     sales_person = get_current_sales_person(filters)
     data = []
 
@@ -123,6 +123,8 @@ def get_columns(filters):
     return columns
 
 def get_data(conditions, month, year, sales_person_names, group_wise=False):
+    print(conditions, month, year)
+
     sales_order_query = """select sum(sales_order.grand_total) as achievement_amount, sales_order.sales_person, 
                     sales_order.customer from `tabSales Order` sales_order %s group by sales_order.sales_person
                     order by achievement_amount desc""" % conditions
@@ -156,9 +158,10 @@ def get_data(conditions, month, year, sales_person_names, group_wise=False):
 
 
 def get_conditions(filters):
-    from_date = filters.get('from_date')
-    to_date = filters.get('to_date')
-    # sales_person = filters.get('sales_person')
+    month = filters.get('month')
+    year = filters.get('year')
+    from_date, to_date = get_from_date_and_to_date(month, year)
+    # print(from_date, to_date)
 
     conditions = ["sales_order.docstatus=1"]
     # conditions = []
@@ -250,6 +253,36 @@ def get_current_sales_person(filters):
         sales_person = None
 
     return sales_person
+
+
+def get_from_date_and_to_date(month, year):
+    months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+              'August', 'September', 'October', 'November', 'December']
+
+    year = get_absolute_year(month, year)
+    month = months.index(month) + 1
+    from_date = datetime.datetime(year, month, 1).date()
+
+    if month == 12:
+        to_date = datetime.datetime(year, month, 31).date()
+    else:
+        to_date = (datetime.datetime(year, month + 1, 1) - datetime.timedelta(days=1)).date()
+
+    return from_date, to_date
+
+def get_absolute_year(month, year):
+    fiscal_year = frappe.get_doc('Fiscal Year', year)
+    months = pd.date_range(fiscal_year.year_start_date, fiscal_year.year_end_date, freq='MS').strftime("%B-%Y").tolist()
+
+    for i, month_ in enumerate(months):
+        if month in month_:
+            return int(month_.split('-')[1])
+
+        elif month in months[-i]:
+            return int(month_.split('-')[1])
+
+    frappe.throw(f"'{month}' doesn't exist on Fiscal year '{fiscal_year.name}'")
+
 
 # # @frappe.whitelist()
 # # def sales_persons(doctype, txt, searchfield, start, page_len, filters, as_dict=False):
