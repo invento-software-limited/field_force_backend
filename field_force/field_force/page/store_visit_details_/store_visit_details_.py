@@ -1,29 +1,42 @@
 import frappe
 import json
 
+from field_force.field_force.page.utils import generate_excel_and_download
 from field_force.field_force.report.utils import set_user_link, set_image_url,\
     get_site_directory_path, set_link_to_doc
 
 
 @frappe.whitelist()
 def get_store_visit_data(filters=None):
+    columns = get_columns()
+    data = get_absolute_data(filters)
+    return data, columns
+
+def get_absolute_data(filters, export=False):
     query_result = get_query_data(filters)
     site_directory = get_site_directory_path()
 
     for index, store_visit in enumerate(query_result):
-        set_link_to_doc(store_visit, 'name', 'store-visit')
-        set_link_to_doc(store_visit, 'customer', 'customer')
-        set_user_link(store_visit)
         set_image_url(store_visit, site_directory)
 
-        server_time = str(store_visit.server_time).split('.')[0] if '.' in str(store_visit.server_time) else store_visit.server_time
-        device_time = str(store_visit.device_time).split('.')[0] if '.' in str(store_visit.device_time) else store_visit.device_time
-        store_visit.server_date = f"{store_visit.server_date}<br>{server_time}"
-        store_visit.device_date = f"{store_visit.device_date}<br>{device_time}"
+        server_time = str(store_visit.server_time).split('.')[0] \
+            if '.' in str(store_visit.server_time) else store_visit.server_time
+        device_time = str(store_visit.device_time).split('.')[0] \
+            if '.' in str(store_visit.device_time) else store_visit.device_time
 
-        if store_visit.cheated:
-            store_visit.cheated = 'Yes'
+        if not export:
+            set_link_to_doc(store_visit, 'name', 'merchandising-picture')
+            set_link_to_doc(store_visit, 'customer', 'customer')
+            set_user_link(store_visit)
 
+            store_visit.server_date = f"{store_visit.server_date}<br>{server_time}"
+            store_visit.device_date = f"{store_visit.device_date}<br>{device_time}"
+        else:
+            store_visit.user = store_visit.user_fullname or store_visit.user
+            store_visit.server_date = f"{store_visit.server_date}\n{server_time}"
+            store_visit.device_date = f"{store_visit.device_date}\n{device_time}"
+
+        store_visit.cheated = 'Yes' if store_visit.cheated else ''
         store_visit['sl'] = index + 1
 
     return query_result
@@ -63,3 +76,32 @@ def get_conditions(filters):
         conditions.append("store_visit.customer = '%s'" % customer)
 
     return " and ".join(conditions)
+
+def get_columns():
+    columns =  [
+        {'fieldname': 'sl', 'label': 'SL', 'expwidth': 5, 'export': False},
+        {'fieldname': 'server_date', 'label': 'Date', 'expwidth': 13},
+        {'fieldname': 'name', 'label': 'ID', 'expwidth': 20},
+        {'fieldname': 'customer', 'label': 'Customer', 'expwidth': 15},
+        {'fieldname': 'customer_address', 'label': 'Address', 'expwidth': 15},
+        {'fieldname': 'contact_number', 'label': 'Contact', 'expwidth': 15},
+        {'fieldname': 'device_date', 'label': 'Device Date Time', 'expwidth': 15},
+        {'fieldname': 'cheated', 'label': 'Cheated', 'fieldtype': 'Data', 'expwidth': 15},
+        {'fieldname': 'latitude', 'label': 'Latitude', 'fieldtype': 'Data', 'expwidth': 15},
+        {'fieldname': 'longitude', 'label': 'Longitude', 'fieldtype': 'Data', 'expwidth': 15},
+        {'fieldname': 'device_model', 'label': 'Device Model', 'fieldtype': 'Data', 'expwidth': 15},
+        {'fieldname': 'user', 'label': 'Created By', 'expwidth': 20},
+        {'fieldname': 'image', 'label': 'Image', 'fieldtype': 'Image', 'expwidth': 15, 'export': False},
+    ]
+    return columns
+
+@frappe.whitelist()
+def export_file(**filters):
+    columns = get_columns()
+    data = get_export_data(filters)
+    file_name = 'Store_Visit_Details_Report.xlsx'
+    generate_excel_and_download(columns, data, file_name, height=30)
+
+def get_export_data(filters):
+    query_result = get_absolute_data(filters, export=True)
+    return query_result

@@ -22,7 +22,9 @@ class StoreVisitDetailsReport {
         this.page.add_action_icon("refresh", () => {
             this.fetch_and_render();
         });
-
+        this.page.add_menu_item("Export", ()=>{
+            this.export_excel()
+        })
     }
     make_form = () => {
         this.form = new frappe.ui.FieldGroup({
@@ -114,61 +116,88 @@ class StoreVisitDetailsReport {
             },
             freeze: true
         }).then(r => {
-            let diff = r.message;
-            this.render(diff);
+            let diff = r.message[0];
+            let fields = r.message[1];
+            this.render(diff, fields);
         });
     }
 
-    render = (diff) => {
-        let table_header = this.table_header();
-        let table_body = this.table_body(diff);
+    render = (diff, fields) => {
+        let table_header = this.table_header(fields);
+        let table_body = this.table_body(diff, fields);
         this.form.get_field('preview').html(`<table class="table table-bordered" id="export_excel">${table_header}${table_body}</table>`);
     }
 
-    table_header = () => {
-        let table_header = '<thead>\n' +
-            '    <tr>\n' +
-            '      <th scope="col" >SL</th>\n' +
-            '      <th scope="col">DateTime</th>\n' +
-            // '      <th scope="col">Time</th>\n' +
-            '      <th scope="col">ID</th>\n' +
-            '      <th scope="col">Customer</th>\n' +
-            '      <th scope="col">Address</th>\n' +
-            '      <th scope="col">Contact</th>\n' +
-            '      <th scope="col">Device DateTime</th>\n' +
-            '      <th scope="col">Cheated</th>\n' +
-            // '      <th scope="col">Device Time</th>\n' +
-            '      <th scope="col">Latitude</th>\n' +
-            '      <th scope="col">Longitude</th>\n' +
-            '      <th scope="col">Model</th>\n' +
-            '      <th scope="col">Created By</th>\n' +
-            '      <th scope="col">Image</th>\n' +
-            '    </tr>\n' +
-            '  </thead>\n';
+    table_header = (headers) => {
+        let table_header = `<thead><tr>`;
+
+        headers.forEach(function (data, index){
+            table_header += `<th scope="col">${data.label || ''}</th>`;
+        })
+
+        table_header += `</tr>`;
         return table_header;
     }
-    table_body = (diff) => {
-        var html = "<tbody>";
+
+    table_body = (diff, fields) => {
+        var html = `<tbody>`;
+
         diff.forEach(function (data, index) {
             html += `<tr>`;
-            html += '<td>' + data.sl + '</td>';
-            html += '<td>' + `${data.server_date || ''}` + '</td>';
-            // html += '<td>' + `${data.server_time || ''}` + '</td>';
-            html += '<td>' + `${data.name || ''}` + '</td>';
-            html += '<td>' + `${data.customer || ''}` + '</td>';
-            html += '<td>' + `${data.customer_address || ''}` + '</td>';
-            html += '<td>' + `${data.contact_number || ''}` + '</td>';
-            html += '<td>' + `${data.device_date || ''}` + '</td>';
-            html += '<td>' + `${data.cheated || ''}` + '</td>';
-            // html += '<td>' + `${data.device_time || ''}` + '</td>';
-            html += '<td>' + `${data.latitude || ''}` + '</td>';
-            html += '<td>' + `${data.longitude || ''}` + '</td>';
-            html += '<td>' + `${data.device_model || ''}` + '</td>';
-            html += '<td>' + `${data.user || ''}` + '</td>';
-            html += '<td style="height:100px; width:120px;"><a href="#"><img style="height:100%; width:100%" src="' + data.image + '" onclick="(function(e){document.getElementById(\'modal_section\').style.display=\'block\';document.getElementById(\'img01\').src=e.path[0].currentSrc;return false;})(arguments[0]);return false;"></a></td>';
+
+            fields.forEach(function (field, index){
+               html += get_absolute_format_and_html(field, data[field.fieldname]);
+            })
+
             html += `</tr>`;
         })
-        html += "</tbody>";
+
+        html += `</tbody>`;
         return html
     }
-};
+    export_excel = () => {
+        let {from_date, to_date, customer, user} = this.form.get_values();
+        let url = `/api/method/field_force.field_force.page.store_visit_details_.store_visit_details_.export_file`;
+        url += `?from_date=${from_date||''}&to_date=${to_date||''}&customer=${customer||''}&user=${user||''}`;
+        window.open(url, '_blank');
+    }
+}
+
+
+function get_absolute_format_and_html(field, value){
+    if (field.fieldtype === "Image"){
+        return get_image_html(value);
+    }
+    else if (field.fieldtype === "Currency"){
+        return get_currency_format(value);
+    }
+    else if (field.fieldtype ==="Data") {
+        return `<td>${value || ''}</td>`;
+    }
+    else {
+        return `<td>${value || ''}</td>`;
+    }
+}
+
+function get_image_html(image_url) {
+    return `
+        <td style="height:100px; width:120px;">
+            <a href="#">
+                <img style="height:100%; width:100%" src="${image_url}" onclick="(
+                    function(e){
+                        document.getElementById(\'modal_section\').style.display=\'block\';
+                        document.getElementById(\'img01\').src=e.path[0].currentSrc;
+                        return false;
+                    }
+                )(arguments[0]);
+                return false;">
+            </a>
+        </td>`;
+}
+
+function get_currency_format(value){
+    const company = frappe.defaults.get_user_default("company");
+    const currency = frappe.get_doc(":Company", company).default_currency;
+    let value_in_currency = format_currency(value, currency);
+    return `<td>${value_in_currency || ''}</td>`
+}

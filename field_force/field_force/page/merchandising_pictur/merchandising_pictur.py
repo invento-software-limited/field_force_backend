@@ -82,6 +82,7 @@ def get_conditions(filters):
         conditions.append("merchandising_picture.brand = '%s'" % brand)
 
     return " and ".join(conditions)
+
 def get_columns():
     columns =  [
         {'fieldname': 'sl', 'label': 'SL', 'expwidth': 5, 'export': False},
