@@ -2,13 +2,13 @@ import frappe
 
 @frappe.whitelist()
 def set_customer_group(self, method):
-    if self.distributor:
+    if not self.customer_group:
         self.customer_group = 'Retail Shop'
 
 @frappe.whitelist()
 def create_distributor(self, method):
     if self.customer_group == 'Distributor':
-        if not self.distributor and not frappe.db.exists('Distributor', self.name):
+        if not self.created_from_distributor and (not self.distributor and not frappe.db.exists('Distributor', self.name)):
             distributor_info = {
                 'doctype': 'Distributor',
                 'distributor_name': self.name,

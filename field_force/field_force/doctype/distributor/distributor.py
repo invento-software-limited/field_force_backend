@@ -14,7 +14,7 @@ class Distributor(Document):
 				'doctype': 'Customer',
 				'customer_name': self.distributor_name,
 				'customer_group': 'Distributor',
-				'distributor': self.distributor_name,
+				'distributor_name': self.distributor_name,
 				'contact_person': self.contact_person,
 				'contact_number': self.contact_number,
 				'address': self.address,
@@ -22,7 +22,8 @@ class Distributor(Document):
 				'thana': self.thana,
 				'zip_code': self.zip_code,
 				'latitude': self.latitude,
-				'longitude': self.longitude
+				'longitude': self.longitude,
+				'created_from_distributor': 1
 			}
 			customer = frappe.get_doc(customer)
 			customer.insert()
