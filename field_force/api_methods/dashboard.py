@@ -54,7 +54,7 @@ def get_sales_target(month, year, month_start_date, today_date):
     return None
 
 def get_daily_sales(date):
-    daily_sales = frappe.db.sql("""select name, sum(grand_total) as total from `tabSales Order` where user='%s'
+    daily_sales = frappe.db.sql("""select name, sum(grand_total) as total from `tabRequisition` where user='%s'
                                  and docstatus!=2 and transaction_date='%s' group by user""" % (frappe.session.user,
                                                                                                 date), as_dict=1)
 
@@ -63,7 +63,7 @@ def get_daily_sales(date):
     return 0
 
 def get_monthly_sales(month_start_date, today_date):
-    monthly_sales = frappe.db.sql("""select name, sum(grand_total) as total from `tabSales Order` where user='%s'
+    monthly_sales = frappe.db.sql("""select name, sum(grand_total) as total from `tabRequisition` where user='%s'
                                  and docstatus!=2 and transaction_date between '%s' and '%s' group by user""" %
                                   (frappe.session.user, month_start_date, today_date), as_dict=1)
     if monthly_sales:
@@ -71,7 +71,7 @@ def get_monthly_sales(month_start_date, today_date):
     return 0
 
 def get_daily_customers(date):
-    daily_customers = frappe.db.sql("""select count(distinct customer) as total from `tabSales Order`
+    daily_customers = frappe.db.sql("""select count(distinct customer) as total from `tabRequisition`
                                 where user='%s' and docstatus!=2 and transaction_date='%s' group by 
                                 user""" % (frappe.session.user, date), as_dict=1)
 
@@ -80,7 +80,7 @@ def get_daily_customers(date):
     return None
 
 def get_monthly_customers(month_start_date, today_date):
-    monthly_customers = frappe.db.sql("""select count(distinct customer) as total from `tabSales Order`
+    monthly_customers = frappe.db.sql("""select count(distinct customer) as total from `tabRequisition`
                                 where user='%s' and docstatus!=2 and transaction_date between '%s' and '%s' group by 
                                 user""" % (frappe.session.user, month_start_date, today_date), as_dict=1)
 
@@ -89,7 +89,7 @@ def get_monthly_customers(month_start_date, today_date):
     return None
 
 def get_daily_sold_items(date):
-    daily_items = frappe.db.sql("""select sum(total_items) as total from `tabSales Order` where user='%s' and 
+    daily_items = frappe.db.sql("""select sum(total_items) as total from `tabRequisition` where user='%s' and 
                                     docstatus!=2 and transaction_date='%s' group by 
                                    user""" % (frappe.session.user, date), as_dict=1)
     if daily_items:
