@@ -21,7 +21,7 @@
         "address",
         "thana",
         "zip_code",
-        "lattitude",
+        "latitude",
         "longitude",
         "image"
     ],
