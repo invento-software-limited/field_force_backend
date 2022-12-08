@@ -118,8 +118,8 @@ def get_columns(filters):
     return columns
 
 def get_data(conditions, month, year, sales_person_names):
-    sales_order_query = """select sum(sales_order.grand_total) as achievement_amount, sales_order.sales_person, 
-                    sales_order.customer from `tabSales Order` sales_order %s group by sales_order.sales_person
+    requisition_query = """select sum(requisition.grand_total) as achievement_amount, requisition.sales_person, 
+                    requisition.customer from `tabRequisition` requisition %s group by requisition.sales_person
                     order by achievement_amount desc""" % conditions
 
     sales_target = """select sales_target.sales_person, sales_target.target_amount from `tabSales Person Target`
@@ -133,7 +133,7 @@ def get_data(conditions, month, year, sales_person_names):
                            ELSE 0 END) as achievement_percentage from `tabSales Person` sales_person 
                     left join (%s) sales on sales_person.name = sales.sales_person left join (%s) sales_target
                     on sales_person.name=sales_target.sales_person where sales_person.name in %s""" % (
-                    sales_order_query, sales_target, sales_person_names)
+                    requisition_query, sales_target, sales_person_names)
 
     query_result = frappe.db.sql(main_query, as_dict=1, debug=0)
     return query_result
@@ -145,15 +145,15 @@ def get_conditions(filters):
     from_date, to_date = get_from_date_and_to_date(month, year)
     # print(from_date, to_date)
 
-    conditions = ["sales_order.docstatus=1"]
+    conditions = ["requisition.docstatus=1"]
     # conditions = []
 
     if from_date:
-        conditions.append("sales_order.transaction_date >= '%s'" % from_date)
+        conditions.append("requisition.transaction_date >= '%s'" % from_date)
     if to_date:
-        conditions.append("sales_order.transaction_date <= '%s'" % to_date)
+        conditions.append("requisition.transaction_date <= '%s'" % to_date)
     # if sales_person:
-    #     conditions.append("sales_order.sales_person = '%s'" % sales_person)
+    #     conditions.append("requisition.sales_person = '%s'" % sales_person)
 
     return " and ".join(conditions)
 
@@ -168,7 +168,7 @@ def add_sales_person_to_condition(conditions, sales_person, all_child=False, inc
 
 
     if sales_person_names and conditions:
-        conditions_ = conditions + ' and sales_order.sales_person in ' + sales_person_names
+        conditions_ = conditions + ' and requisition.sales_person in ' + sales_person_names
         return ("where " + conditions_, sales_person_names)
 
     return (conditions_, None)

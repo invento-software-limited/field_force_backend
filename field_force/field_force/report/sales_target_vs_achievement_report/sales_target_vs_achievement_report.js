@@ -76,14 +76,13 @@ var months =[
 const d = new Date();
 let month = d.getMonth();
 
-
 frappe.query_reports["Sales Target vs Achievement Report"] = {
 	"filters": [
 		{
 			"fieldname":"month",
 			"label": __("Month"),
 			"fieldtype": "Select",
-			"default": months[month+1],
+			"default": months[month],
 			"options": months,
 			"width": "60px",
 			"reqd": 1
