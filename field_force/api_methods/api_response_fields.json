@@ -3,8 +3,10 @@
         "item_code",
         "item_name",
         "item_group",
+        "brand",
         "standard_rate",
-        "image"
+        "image",
+        "pack_size"
     ],
     "Employee": [
         "creation",
@@ -33,19 +35,23 @@
         "contact_number",
         "address",
         "email_address",
-        "transaction_date",
         "delivery_date",
         "order_type",
         "total_items",
         "total_qty",
-        "grand_total"
+        "grand_total",
+        "status",
+        "transaction_date"
     ],
     "Sales Order Item": [
         "name",
         "item_code",
         "item_name",
+        "brand",
         "qty",
-        "rate"
+        "rate",
+        "amount",
+        "image"
     ],
     "_Sales Order": [
         "items"
@@ -57,11 +63,10 @@
     ],
     "App User Attendance": [
         "name",
-        "employee",
         "type",
         "image",
-        "date",
-        "time",
+        "device_date",
+        "device_time",
         "server_date",
         "server_time",
         "latitude",
@@ -74,7 +79,8 @@
         "name",
         "video_topic",
         "provider",
-        "url"
+        "url",
+        "image"
     ],
     "Item Request": [
         "name",
@@ -85,10 +91,8 @@
     "App User Route": [
         "name",
         "user",
-        "employee",
-        "employee_name",
-        "date",
-        "time",
+        "device_date",
+        "device_time",
         "latitude",
         "longitude",
         "device_model",
@@ -99,12 +103,89 @@
     "Store Visit": [
         "name",
         "user",
-        "employee",
-        "employee_name",
         "customer",
         "customer_address",
+        "device_date",
+        "device_time",
+        "details",
+        "image",
+        "latitude",
+        "longitude",
+        "device_model",
+        "mac_address",
+        "ip_address",
+        "imei"
+    ],
+    "Store Visit Assign": [
+        "name",
+        "user",
+        "user_fullname",
+        "date"
+    ],
+    "_Store Visit Assign": [
+        "destinations"
+    ],
+    "Store Visit Destination": [
+        "idx",
+        "name",
+        "customer",
         "date",
-        "time",
+        "expected_time",
+        "expected_time_till",
+        "customer_address",
+        "contact_person",
+        "contact_number",
+        "store_visit",
+        "visited_time",
+        "status"
+    ],
+    "Requisition Item": [
+        "name",
+        "item_code",
+        "item_name",
+        "brand",
+        "qty",
+        "rate",
+        "amount",
+        "image"
+    ],
+    "Requisition": [
+        "name",
+        "customer",
+        "customer_name",
+        "distributor",
+        "contact_person",
+        "contact_number",
+        "address",
+        "email_address",
+        "total_items",
+        "total_qty",
+        "grand_total",
+        "transaction_date",
+        "delivery_date",
+        "status"
+    ],
+    "_Requisition": [
+        "items"
+    ],
+    "Batch": [
+        "batch_id",
+        "item",
+        "manufacturing_date",
+        "expiry_date",
+        "batch_qty",
+        "stock_uom"
+    ],
+    "_Item": [
+        "barcodes"
+    ],
+    "Merchandising Picture": [
+        "name",
+        "user",
+        "customer",
+        "customer_address",
+        "device_date",
+        "device_time",
         "details",
         "image",
         "latitude",
