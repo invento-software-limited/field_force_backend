@@ -26,19 +26,15 @@ def execute(filters=None):
     data = []
 
     if sales_person:
-        # print(sales_person.type, filters.get('type'))
-
         if sales_person.type in ['Channel Manager', 'Manager', None] and filters.get('type') == 'By Supervisor':
             sales_persons = get_sales_persons(sales_person.name, type='Supervisor')
-            # print("=====>>>", sales_persons)
 
             for sales_person_ in sales_persons:
                 if sales_person_.type == 'Supervisor' and sales_person_.is_group:
                     conditions_, sales_person_names  = add_sales_person_to_condition(conditions, sales_person_,
                                                                                      all_child=True, including_self=True)
-                    # print("====>>", sales_person_.sales_person, sales_person_names, conditions_)
                     if sales_person_names and conditions_:
-                        data_ = get_data(conditions_, month, year, sales_person_names, group_wise=False)
+                        data_ = get_data(conditions_, month, year, sales_person_names)
 
                         if data_:
                             row = make_sum_and_push_to_data_list(data, data_, sales_person_, is_group=True)
@@ -46,7 +42,6 @@ def execute(filters=None):
 
         elif sales_person.type in ['Channel Manager', None] and filters.get('type') == 'By Manager':
             sales_persons = get_sales_persons(sales_person.name, all_child=True, type='Manager')
-            # print(sales_persons)
 
             for sales_person_ in sales_persons:
                 if sales_person_.type == 'Manager' and sales_person_.is_group:
@@ -78,7 +73,7 @@ def get_data_by_supervisor(conditions, data,  sales_person_name, month, year, al
             conditions_, sales_person_names = add_sales_person_to_condition(conditions, sales_person_,
                                                                             including_self=True, all_child=all_child)
             if conditions_:
-                data_ = get_data(conditions_, month, year, sales_person_names, group_wise=False)
+                data_ = get_data(conditions_, month, year, sales_person_names)
 
                 if data_:
                     sub_row = make_sum_and_push_to_data_list([], data_, sales_person_)
@@ -122,38 +117,25 @@ def get_columns(filters):
 
     return columns
 
-def get_data(conditions, month, year, sales_person_names, group_wise=False):
-    print(conditions, month, year)
-
+def get_data(conditions, month, year, sales_person_names):
     sales_order_query = """select sum(sales_order.grand_total) as achievement_amount, sales_order.sales_person, 
                     sales_order.customer from `tabSales Order` sales_order %s group by sales_order.sales_person
                     order by achievement_amount desc""" % conditions
 
-    # target_query = """select sales_target.sales_person, sales_target.target_amount from `tabSales Person Target`
-    #                 sales_target where sales_target.sales_person in %s and sales_target.month='%s'
-    #                 and sales_target.year='%s'""" % (sales_person_names, month, year)
+    sales_target = """select sales_target.sales_person, sales_target.target_amount from `tabSales Person Target`
+                    sales_target where sales_target.sales_person in %s and sales_target.month='%s'
+                     and sales_target.year='%s'""" % (sales_person_names, month, year)
 
-    if group_wise:
-        sales_target_query = """select sum(sales.achievement_amount) as achievement_amount, sales.sales_person,
-                                sum(sales_target.target_amount) as target_amount,
-                                (CASE WHEN sum(sales_target.target_amount) is not null 
-                                       THEN 100/(sum(sales_target.target_amount)/sum(sales.achievement_amount))
-                                       ELSE 0
-                                END) as achievement_percentage from (%s) sales left join `tabSales Person Target` 
-                                sales_target on sales_target.sales_person=sales.sales_person where sales_target.month='%s'
-                                and sales_target.year='%s'""" % (sales_order_query, month, year)
-    else:
-        sales_target_query = """select sales.achievement_amount as achievement_amount, sales.sales_person,
-                                sales_target.target_amount as target_amount,
-                                (CASE WHEN sales_target.target_amount is not null 
-                                       THEN 100/(sales_target.target_amount/sales.achievement_amount)
-                                       ELSE 0
-                                END) as achievement_percentage from (%s) sales left join `tabSales Person Target` 
-                                sales_target on sales_target.sales_person=sales.sales_person where sales_target.month='%s'
-                                and sales_target.year='%s'""" % (sales_order_query, month, year)
+    main_query = """select sales_person.name as sales_person, IFNULL(sales.achievement_amount, 0)as achievement_amount,
+                    IFNULL(sales_target.target_amount, 0)as target_amount,
+                    (CASE WHEN sales_target.target_amount is not null
+                           THEN 100/(sales_target.target_amount/sales.achievement_amount)
+                           ELSE 0 END) as achievement_percentage from `tabSales Person` sales_person 
+                    left join (%s) sales on sales_person.name = sales.sales_person left join (%s) sales_target
+                    on sales_person.name=sales_target.sales_person where sales_person.name in %s""" % (
+                    sales_order_query, sales_target, sales_person_names)
 
-    # print(sales_target_query)
-    query_result = frappe.db.sql(sales_target_query, as_dict=1, debug=0)
+    query_result = frappe.db.sql(main_query, as_dict=1, debug=0)
     return query_result
 
 
@@ -220,9 +202,9 @@ def set_format(total_row, average_percentage=True):
     total_row['achievement_amount'] = currency_format(total_row['achievement_amount'])
 
     if average_percentage:
-        total_row['achievement_percentage'] = "{:.2f}".format(mean(total_row['achievement_percentages']))
+        total_row['achievement_percentage'] = "{:.2f}".format(mean(get_default(total_row.get('achievement_percentages'))))
     else:
-        total_row['achievement_percentage'] = "{:.2f}".format(total_row['achievement_percentage'])
+        total_row['achievement_percentage'] = "{:.2f}".format(get_default(total_row.get('achievement_percentages')))
 
     return total_row
 
@@ -238,7 +220,7 @@ def make_bold(row):
     row['achievement_percentage'] = f"<b>{row['achievement_percentage']}</b>"
 
 def currency_format(amount):
-    return frappe.utils.fmt_money(amount, currency=get_currency_symbol())
+    return frappe.utils.fmt_money(get_default(amount), currency=get_currency_symbol())
 
 def get_current_sales_person(filters):
     roles = frappe.get_roles(frappe.session.user)
@@ -282,38 +264,3 @@ def get_absolute_year(month, year):
             return int(month_.split('-')[1])
 
     frappe.throw(f"'{month}' doesn't exist on Fiscal year '{fiscal_year.name}'")
-
-
-# # @frappe.whitelist()
-# # def sales_persons(doctype, txt, searchfield, start, page_len, filters, as_dict=False):
-# #     # sales_person = get_current_sales_person({'sales_person': None})
-# #     return get_sales_persons('Sales Team')
-#
-# @frappe.whitelist()
-# # @frappe.validate_and_sanitize_search_inputs
-# def sales_persons(doctype, txt, searchfield, start, page_len, filters):
-#     sales_person_names = get_sales_persons_list(sales_person.sales_person, all_child, including_self, as_tuple_str=True)
-#
-#
-#     conditions = []
-#     fields = get_fields("Sales Person", ["name", "parent_sales_person"])
-#
-#     return frappe.db.sql("""select {fields} from `tabSales Person`
-# 		where ({key} like %(txt)s
-# 				or name like %(txt)s)
-# 			{fcond} {mcond}
-# 		order by
-# 			if(locate(%(_txt)s, name), locate(%(_txt)s, name), 99999),
-# 			idx desc,
-# 			name
-# 		limit %(start)s, %(page_len)s""".format(**{
-#         'fields': ", ".join(fields),
-#         'key': searchfield,
-#         'fcond': get_filters_cond(doctype, filters, conditions),
-#         'mcond': get_match_cond(doctype)
-#         }), {
-#          'txt': "%%%s%%" % txt,
-#          '_txt': txt.replace("%", ""),
-#          'start': start,
-#          'page_len': page_len
-#      })
