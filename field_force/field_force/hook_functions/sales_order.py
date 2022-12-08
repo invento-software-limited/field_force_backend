@@ -10,9 +10,8 @@ def set_extra_values(self, method):
         if not item.brand or not item.image:
             item.brand, item.image = frappe.db.get_value('Item', item.item_code, ['brand', 'image'])
 
+@frappe.whitelist()
 def add_sales_person(self, method):
-    print("======>>", method)
-
     if not self.sales_person and frappe.db.exists("Sales Person", {"user": self.owner}):
         self.sales_person, self.employee, self.user = frappe.db.get_value("Sales Person", {'user': self.owner},
                                                                ['name', 'employee', 'user'])
@@ -30,9 +29,7 @@ def add_sales_person(self, method):
     if not self.user:
         self.user = self.owner
 
-    add_amount_to_achievement(self, method)
-
-    # self.save()
+    # add_amount_to_achievement(self, method)
 
 def add_amount_to_achievement(self, method):
     # print("======>>", method)

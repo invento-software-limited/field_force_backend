@@ -1,5 +1,6 @@
 # Copyright (c) 2022, Invento Software Limited and contributors
 # For license information, please see license.txt
+import calendar
 import os
 import random
 
@@ -21,16 +22,24 @@ class Requisition(Document):
         self.validate_delivery_date()
         self.validate_items()
 
-    # def before_save(self):
-    #     generate_requisition_excel_and_attach(self)
+    def before_save(self):
+        set_extra_values(self)
+        add_sales_person(self)
+        add_amount_to_achievement(self)
+        set_allocated_amount(self)
+        # generate_requisition_excel_and_attach(self)
 
     def on_submit(self):
         if self.docstatus == 1:
             frappe.db.set_value(self.doctype, self.name, 'status', 'Submitted')
 
+        month, year = get_month_and_year(self)
+        set_amount_to_sales_target(self.sales_person, self.achievement_amount, month, year)
         generate_requisition_excel_and_attach(self)
 
     def on_cancel(self):
+        subtract_achievement_amount(self)
+
         if self.docstatus == 2:
             frappe.db.set_value(self.doctype, self.name, 'status', 'Cancelled')
 
@@ -119,6 +128,75 @@ class Requisition(Document):
         if not item.accepted_qty:
             item.accepted_qty = item.qty
 
+def set_extra_values(self):
+    self.total_items = len(self.items)
+
+    for item in self.items:
+        if not item.brand or not item.image:
+            item.brand, item.image = frappe.db.get_value('Item', item.item_code, ['brand', 'image'])
+
+def set_allocated_amount(self):
+    if self.sales_team:
+        for sales_person in self.sales_team:
+            sales_person.allocated_amount = (self.net_total * sales_person.allocated_percentage)/100
+
+def add_sales_person(self):
+    if not self.sales_person and frappe.db.exists("Sales Person", {"user": self.owner}):
+        self.sales_person, self.employee, self.user = frappe.db.get_value("Sales Person", {'user': self.owner},
+                                                               ['name', 'employee', 'user'])
+    if not self.sales_team and self.sales_person:
+        self.append("sales_team", {
+            "parent": self.name,
+            "parenttype": "Sales Order",
+            "sales_person": self.sales_person,
+            "allocated_percentage": 100,
+            "allocated_amount": self.grand_total,
+            "employee": self.employee,
+            "user": self.user
+        })
+
+    if not self.user:
+        self.user = self.owner
+
+def add_amount_to_achievement(self):
+    achievement_amount = get_default(self.grand_total) - get_default(self.achievement_amount)
+
+    if self.achievement_amount or self.achievement_amount == 0:
+        self.achievement_amount += achievement_amount
+    else:
+        self.achievement_amount = achievement_amount
+
+def subtract_achievement_amount(self):
+    month, year = get_month_and_year(self)
+    achievement_amount = -self.achievement_amount
+    set_amount_to_sales_target(self.sales_person, achievement_amount, month, year)
+
+def set_amount_to_sales_target(sales_person, achievement_amount, month, year):
+    filters = {
+        "sales_person": sales_person,
+        "month": calendar.month_name[month],
+        "year": year
+    }
+
+    if frappe.db.exists("Sales Person Target", filters):
+        sales_target = frappe.get_doc("Sales Person Target", filters)
+        sales_target.achievement_amount += achievement_amount
+        sales_target.save()
+
+def get_default(value):
+    if value:
+        return value
+    return 0
+
+def get_month_and_year(sales_order):
+    year = frappe.defaults.get_user_default('fiscal_year')
+
+    if isinstance(sales_order.transaction_date, datetime.date):
+        return sales_order.transaction_date.month, year
+    elif isinstance(sales_order.transaction_date, str):
+        month =  datetime.datetime.strptime(sales_order.transaction_date, "%Y-%m-%d").month
+        return month, year
+    return None, None
 
 def generate_requisition_excel_and_attach(requisition):
     workbook = openpyxl.Workbook()

@@ -57,17 +57,6 @@
   "net_total",
   "grand_total",
   "taxes_and_charges_section",
-  "tax_category",
-  "column_break_46",
-  "shipping_rule",
-  "section_break_48",
-  "sales_taxes_and_charges_template",
-  "sales_taxes_and_charges",
-  "section_break_53",
-  "base_total_taxes_and_charges",
-  "column_break_55",
-  "total_taxes_and_charges",
-  "additional_discount_and_coupon_code_section",
   "coupon_code",
   "apply_additional_discount_on",
   "base_discount_amount",
@@ -76,14 +65,11 @@
   "additional_discount_amount",
   "section_break_64",
   "base_grand_total",
-  "base_rounding_adjustment",
-  "base_rounded_total",
-  "base_in_words",
-  "column_break_67",
-  "rounding_adjustment",
-  "rounded_total",
-  "in_words",
-  "advance_paid"
+  "sales_team_section",
+  "sales_person",
+  "employee",
+  "achievement_amount",
+  "sales_team"
  ],
  "fields": [
   {
@@ -368,68 +354,6 @@
    "options": "fa fa-money"
   },
   {
-   "fieldname": "tax_category",
-   "fieldtype": "Link",
-   "label": "Tax Category",
-   "options": "Tax Category"
-  },
-  {
-   "fieldname": "column_break_46",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "shipping_rule",
-   "fieldtype": "Link",
-   "label": "Shipping Rule",
-   "options": "Shipping Rule"
-  },
-  {
-   "fieldname": "section_break_48",
-   "fieldtype": "Section Break",
-   "hidden": 1
-  },
-  {
-   "fieldname": "sales_taxes_and_charges_template",
-   "fieldtype": "Link",
-   "label": "Sales Taxes and Charges Template",
-   "options": "Sales Taxes and Charges Template"
-  },
-  {
-   "fieldname": "sales_taxes_and_charges",
-   "fieldtype": "Table",
-   "label": "Sales Taxes and Charges",
-   "options": "Sales Taxes and Charges"
-  },
-  {
-   "collapsible": 1,
-   "fieldname": "section_break_53",
-   "fieldtype": "Section Break",
-   "hidden": 1
-  },
-  {
-   "fieldname": "base_total_taxes_and_charges",
-   "fieldtype": "Currency",
-   "label": "Total Taxes and Charges (Company Currency)",
-   "options": "Company:company:default_currency"
-  },
-  {
-   "fieldname": "column_break_55",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "total_taxes_and_charges",
-   "fieldtype": "Currency",
-   "hidden": 1,
-   "label": "Total Taxes and Charges"
-  },
-  {
-   "collapsible": 1,
-   "fieldname": "additional_discount_and_coupon_code_section",
-   "fieldtype": "Section Break",
-   "hidden": 1,
-   "label": "Additional Discount and Coupon Code"
-  },
-  {
    "fieldname": "coupon_code",
    "fieldtype": "Link",
    "label": "Coupon Code",
@@ -475,63 +399,11 @@
    "read_only": 1
   },
   {
-   "fieldname": "base_rounding_adjustment",
-   "fieldtype": "Currency",
-   "label": "Rounding Adjustment (Company Currency)",
-   "options": "Company:company:default_currency",
-   "read_only": 1
-  },
-  {
-   "fieldname": "base_rounded_total",
-   "fieldtype": "Currency",
-   "label": "Rounded Total (Company Currency)",
-   "options": "base_rounded_total",
-   "read_only": 1
-  },
-  {
-   "fieldname": "base_in_words",
-   "fieldtype": "Data",
-   "label": "In Words (Company Currency)",
-   "read_only": 1
-  },
-  {
-   "fieldname": "column_break_67",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "grand_total",
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Grand Total",
    "options": "currency",
-   "read_only": 1
-  },
-  {
-   "fieldname": "rounding_adjustment",
-   "fieldtype": "Currency",
-   "label": "Rounding Adjustment",
-   "options": "currency",
-   "read_only": 1
-  },
-  {
-   "bold": 1,
-   "fieldname": "rounded_total",
-   "fieldtype": "Currency",
-   "label": "Rounded Total",
-   "options": "currency",
-   "read_only": 1
-  },
-  {
-   "fieldname": "in_words",
-   "fieldtype": "Data",
-   "label": "In Words",
-   "read_only": 1
-  },
-  {
-   "fieldname": "advance_paid",
-   "fieldtype": "Currency",
-   "label": "Advance Paid",
-   "options": "party_account_currency",
    "read_only": 1
   },
   {
@@ -573,6 +445,7 @@
    "label": "Requisition Excel"
   },
   {
+   "fetch_from": "sales_person.user",
    "fieldname": "user",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -600,12 +473,43 @@
    "fieldtype": "Attach",
    "label": "Requisition Excel File",
    "read_only": 1
+  },
+  {
+   "fieldname": "sales_team_section",
+   "fieldtype": "Section Break",
+   "label": "Sales Team"
+  },
+  {
+   "fieldname": "sales_person",
+   "fieldtype": "Link",
+   "label": "Sales Person",
+   "options": "Sales Person"
+  },
+  {
+   "fetch_from": "sales_person.employee",
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "achievement_amount",
+   "fieldtype": "Currency",
+   "hidden": 1,
+   "label": "Achievement Amount"
+  },
+  {
+   "fieldname": "sales_team",
+   "fieldtype": "Table",
+   "label": "Sales Team",
+   "options": "Sales Team"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-12-04 13:42:45.191624",
+ "modified": "2022-12-08 12:18:02.624718",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",
