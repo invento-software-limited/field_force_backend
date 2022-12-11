@@ -10,6 +10,17 @@ frappe.ui.form.on('Sales Target', {
 	// refresh: function(frm) {
 
 	// }
+
+    setup: function(frm) {
+		frm.set_query("reporting_person", function() {
+			return {
+				filters: [
+					["Sales Person","is_group", "=", 1]
+				]
+			}
+		});
+	},
+
     get_sales_persons: function (frm){
         get_sales_persons(frm)
     }
