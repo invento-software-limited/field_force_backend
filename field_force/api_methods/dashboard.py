@@ -19,13 +19,13 @@ def get_dashboard_data():
     dashboard_data = {
         "month": current_month_name,
         "year": current_year,
-        "daily_sold_items": get_daily_sold_items(sales_person_names, today_date),
-        "daily_sales": get_daily_sales(sales_person_names, today_date),
-        "daily_customers": get_daily_customers(sales_person_names, today_date),
+        "daily_sold_items": get_daily_sold_items(sales_person_names, today_date) or 0,
+        "daily_sales": get_daily_sales(sales_person_names, today_date) or 0,
+        "daily_customers": get_daily_customers(sales_person_names, today_date) or 0,
         "monthly_target": sales_target if sales_target else 0,
         # "monthly_sales": sales_target.achievement_amount if sales_target else 0,
-        "monthly_sales": get_monthly_sales(sales_person_names, month_start_date, today_date),
-        "monthly_customers": get_monthly_customers(sales_person_names, month_start_date, today_date),
+        "monthly_sales": get_monthly_sales(sales_person_names, month_start_date, today_date) or 0,
+        "monthly_customers": get_monthly_customers(sales_person_names, month_start_date, today_date) or 0,
         "announcements": get_announcements(today_date)
     }
 
