@@ -29,7 +29,9 @@
   "device_model",
   "mac_address",
   "ip_address",
-  "imei"
+  "imei",
+  "section_break_23",
+  "location"
  ],
  "fields": [
   {
@@ -176,12 +178,21 @@
    "fieldtype": "Data",
    "label": "Full Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_23",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Geolocation",
+   "label": "Location"
   }
  ],
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-09-26 12:03:29.938178",
+ "modified": "2022-12-11 14:33:31.508150",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "App User Attendance",

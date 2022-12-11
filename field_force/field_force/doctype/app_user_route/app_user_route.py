@@ -18,6 +18,18 @@ class AppUserRoute(Document):
 			if not self.user_fullname and user_fullname:
 				self.user_fullname = user_fullname
 
+		self.set_employee()
+		self.set_location()
+
+	def set_employee(self):
+		if self.owner and not self.employee:
+			if frappe.db.exists("Employee", {"user_id": self.owner}):
+				employee, employee_name = frappe.db.get_value("Employee", {"user_id": self.owner},
+															  ['name', 'employee_name'])
+				self.employee = employee
+				self.employee_name = employee_name
+
+	def set_location(self):
 		location = {
 			"type": "FeatureCollection",
 			"features": [
@@ -45,7 +57,6 @@ class AppUserRoute(Document):
 					]
 				}
 			})
-
 
 			for route in routes:
 				location['features'].append(get_location(route.latitude, route.longitude))

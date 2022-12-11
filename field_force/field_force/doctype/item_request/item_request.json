@@ -16,6 +16,8 @@
   "column_break_3",
   "user",
   "user_fullname",
+  "employee",
+  "employee_name",
   "date",
   "item_details"
  ],
@@ -94,11 +96,26 @@
    "in_standard_filter": 1,
    "label": "Distributor",
    "read_only": 1
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Employee Name",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-04 13:53:51.548846",
+ "modified": "2022-12-11 14:40:27.921118",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Item Request",

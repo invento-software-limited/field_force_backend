@@ -27,6 +27,15 @@ class StoreVisit(Document):
 				self.customer_address = customer_address
 
 		set_cheat_status(self)
+		self.set_employee()
+
+	def set_employee(self):
+		if self.owner and not self.employee:
+			if frappe.db.exists("Employee", {"user_id": self.owner}):
+				employee, employee_name = frappe.db.get_value("Employee", {"user_id": self.owner},
+															  ['name', 'employee_name'])
+				self.employee = employee
+				self.employee_name = employee_name
 
 	def after_insert(self):
 		filters = {

@@ -9,3 +9,12 @@ class ItemRequest(Document):
 		if not self.user:
 			self.user = frappe.session.user
 			self.user_fullname = frappe.db.get_value('User', self.user, 'full_name')
+
+		self.set_employee()
+	def set_employee(self):
+		if self.owner and not self.employee:
+			if frappe.db.exists("Employee", {"user_id": self.owner}):
+				employee, employee_name = frappe.db.get_value("Employee", {"user_id": self.owner},
+															  ['name', 'employee_name'])
+				self.employee = employee
+				self.employee_name = employee_name

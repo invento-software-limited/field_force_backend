@@ -24,3 +24,10 @@ def create_distributor(self, method):
             }
             distributor = frappe.get_doc(distributor_info)
             distributor.save()
+@frappe.whitelist()
+def set_employee(self, method):
+    if self.owner and not self.employee:
+        if frappe.db.exists("Employee", {"user_id": self.owner}):
+            employee, employee_name = frappe.db.get_value("Employee", {"user_id": self.owner}, ['name', 'employee_name'])
+            self.employee = employee
+            self.employee_name = employee_name
