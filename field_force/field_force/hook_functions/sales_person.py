@@ -15,6 +15,8 @@ def create_employee_and_set_role_profile(self, method):
             })
             gender.insert()
 
+        sales_person = frappe.get_doc("Sales Person", self.parent_sales_person)
+
         employee = frappe.get_doc({
             "doctype": "Employee",
             "first_name": self.sales_person_name,
@@ -27,13 +29,19 @@ def create_employee_and_set_role_profile(self, method):
         employee.insert()
         self.employee = employee.name
 
+        if sales_person.employee:
+            employee.reports_to = sales_person.employee
+            employee.save()
+
     if self.user and self.type:
         user = frappe.get_doc("User", self.user)
         create_role_profile(self.type)
 
         if user.role_profile_name != self.type:
             user.role_profile_name = self.type
-            user.save()
+
+        user.module_profile = get_or_create_field_force_module_profile()
+        user.save()
 
 def create_role_profile(role_profile_name):
     if not frappe.db.exists("Role Profile", {"name": role_profile_name}):
@@ -43,7 +51,7 @@ def create_role_profile(role_profile_name):
         })
 
         role_profile.insert()
-        print(f"'{role_profile_name}'")
+        # print(f"'{role_profile_name}'")
 
         roles = {
             "Merchandiser": [
@@ -73,3 +81,26 @@ def create_role_profile(role_profile_name):
             })
 
         role_profile.save()
+        return role_profile.name
+
+    return role_profile_name
+
+def get_or_create_field_force_module_profile():
+    if not frappe.db.exists("Module Profile", {"name": "Field Force"}):
+        module_profile = frappe.get_doc({
+                "doctype": "Module Profile",
+                "module_profile": ['Field Force']
+            }).insert()
+
+        modules = ["Field Force"]
+
+        for module in modules:
+            module_profile.append('block_modules', {
+                "doctype": "Block Module",
+                "module": module
+            })
+
+        module_profile.save()
+        return module_profile.name
+
+    return 'Field Force'
