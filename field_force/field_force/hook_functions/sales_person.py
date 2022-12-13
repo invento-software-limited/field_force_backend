@@ -3,7 +3,8 @@ import datetime
 
 @frappe.whitelist()
 def create_employee_and_set_role_profile(self, method):
-    if self.create_employee and not self.employee:
+    # if self.create_employee and not self.employee:
+    if self.employee_number and not self.employee:
         if self.user:
             if frappe.db.exists("Employee", {"user_id": self.user}):
                 frappe.throw(f"Employee already exists with user id '<b>{self.user}</b>'")
@@ -19,6 +20,7 @@ def create_employee_and_set_role_profile(self, method):
 
         employee = frappe.get_doc({
             "doctype": "Employee",
+            "employee_number": self.employee_number,
             "first_name": self.sales_person_name,
             "gender": "N/A",
             "date_of_birth": (datetime.datetime.today() - datetime.timedelta(days=1)).date(),
