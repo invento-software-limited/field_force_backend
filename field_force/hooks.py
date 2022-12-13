@@ -51,6 +51,7 @@ frappe.geo.utils.return_coordinates = geo_location.return_coordinates
 
 # include js in doctype views
 doctype_js = {
+	"User" : "public/js/user.js",
 	"Sales Order" : "public/js/sales_order.js"
 }
 doctype_list_js = {
