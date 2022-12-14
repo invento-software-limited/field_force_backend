@@ -3,8 +3,9 @@ import datetime
 
 @frappe.whitelist()
 def create_employee_and_set_role_profile(self, method):
-    # if self.create_employee and not self.employee:
-    if self.employee_number and not self.employee:
+    sales_person = frappe.get_doc("Sales Person", self.parent_sales_person)
+
+    if self.create_employee and self.employee_number and not self.employee:
         if self.user:
             if frappe.db.exists("Employee", {"user_id": self.user}):
                 frappe.throw(f"Employee already exists with user id '<b>{self.user}</b>'")
@@ -16,7 +17,6 @@ def create_employee_and_set_role_profile(self, method):
             })
             gender.insert()
 
-        sales_person = frappe.get_doc("Sales Person", self.parent_sales_person)
 
         employee = frappe.get_doc({
             "doctype": "Employee",
@@ -30,10 +30,20 @@ def create_employee_and_set_role_profile(self, method):
 
         employee.insert()
         self.employee = employee.name
+        self.employee_created = 1
+        employee.reports_to = sales_person.employee
+        employee.save()
 
-        if sales_person.employee:
-            employee.reports_to = sales_person.employee
-            employee.save()
+    elif sales_person.employee and frappe.db.exists("Employee", self.employee):
+        employee = frappe.get_doc("Employee", self.employee)
+        employee.reports_to = sales_person.employee
+
+        # if employee.user_id and employee.user_id != self.user:
+        #     frappe.throw("Employee's user id doesn't match with sales person's user")
+        # elif not employee.user_id and self.user:
+        #     employee.user_id = self.user
+
+        employee.save()
 
     if self.user and self.type:
         user = frappe.get_doc("User", self.user)
