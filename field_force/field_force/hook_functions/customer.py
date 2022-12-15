@@ -12,6 +12,7 @@ def create_distributor(self, method):
             distributor_info = {
                 'doctype': 'Distributor',
                 'distributor_name': self.name,
+                'sales_person': self.sales_person,
                 'customer': self.name,
                 'contact_person': self.contact_person,
                 'contact_number': self.contact_number,

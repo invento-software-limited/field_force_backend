@@ -15,6 +15,7 @@ class Distributor(Document):
 				'customer_name': self.distributor_name,
 				'customer_group': 'Distributor',
 				'distributor_name': self.distributor_name,
+				'sales_person': self.sales_person,
 				'contact_person': self.contact_person,
 				'contact_number': self.contact_number,
 				'address': self.address,

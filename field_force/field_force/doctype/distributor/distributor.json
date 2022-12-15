@@ -9,8 +9,12 @@
  "field_order": [
   "distributor_name",
   "customer",
-  "column_break_3",
   "customer_name",
+  "column_break_3",
+  "sales_person",
+  "employee",
+  "employee_name",
+  "user",
   "customer_address_and_contact_section",
   "contact_person",
   "contact_number",
@@ -115,11 +119,43 @@
    "fieldtype": "Table",
    "label": "Commissions",
    "options": "Distributor Brand Commission"
+  },
+  {
+   "fieldname": "sales_person",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Sales Person",
+   "options": "Sales Person",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "sales_person.employee",
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Employee Name"
+  },
+  {
+   "fetch_from": "sales_person.user",
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "User",
+   "options": "User"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-11-06 11:49:35.237002",
+ "modified": "2022-12-15 14:55:47.479892",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Distributor",
@@ -129,14 +165,14 @@
   {
    "create": 1,
    "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
    "read": 1,
-   "report": 1,
    "role": "System Manager",
-   "share": 1,
    "write": 1
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "role": "App User"
   }
  ],
  "sort_field": "modified",
