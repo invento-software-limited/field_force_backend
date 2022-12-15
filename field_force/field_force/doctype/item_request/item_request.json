@@ -13,12 +13,12 @@
   "address",
   "contact_number",
   "distributor",
-  "column_break_3",
   "sales_person",
   "employee",
   "employee_name",
   "user",
   "user_fullname",
+  "column_break_3",
   "date",
   "item_details"
  ],
@@ -77,6 +77,7 @@
    "fetch_from": "sales_person.user",
    "fieldname": "user",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "User",
    "options": "User"
   },
@@ -84,6 +85,7 @@
    "fetch_from": "user.full_name",
    "fieldname": "user_fullname",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Full Name",
    "read_only": 1
   },
@@ -123,7 +125,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-15 16:21:10.495768",
+ "modified": "2022-12-15 18:48:08.567374",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Item Request",
