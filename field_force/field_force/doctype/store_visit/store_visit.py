@@ -2,7 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
-from field_force.field_force.doctype.utils import set_location_to_map, set_cheat_status
+from field_force.field_force.doctype.utils import set_location_to_map, set_cheat_status, set_employee, set_sales_person
 from frappe.model.document import Document
 
 class StoreVisit(Document):
@@ -26,16 +26,9 @@ class StoreVisit(Document):
 			if not self.customer_address and customer_address:
 				self.customer_address = customer_address
 
+		set_sales_person(self)
+		set_employee(self)
 		set_cheat_status(self)
-		self.set_employee()
-
-	def set_employee(self):
-		if self.owner and not self.employee:
-			if frappe.db.exists("Employee", {"user_id": self.owner}):
-				employee, employee_name = frappe.db.get_value("Employee", {"user_id": self.owner},
-															  ['name', 'employee_name'])
-				self.employee = employee
-				self.employee_name = employee_name
 
 	def after_insert(self):
 		filters = {
