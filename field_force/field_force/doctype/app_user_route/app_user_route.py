@@ -4,6 +4,7 @@ import json
 
 import frappe
 from frappe.model.document import Document
+from field_force.field_force.doctype.utils import set_employee, set_sales_person
 
 class AppUserRoute(Document):
 	def validate(self):
@@ -18,16 +19,9 @@ class AppUserRoute(Document):
 			if not self.user_fullname and user_fullname:
 				self.user_fullname = user_fullname
 
-		self.set_employee()
+		set_sales_person(self)
+		set_employee(self)
 		self.set_location()
-
-	def set_employee(self):
-		if self.owner and not self.employee:
-			if frappe.db.exists("Employee", {"user_id": self.owner}):
-				employee, employee_name = frappe.db.get_value("Employee", {"user_id": self.owner},
-															  ['name', 'employee_name'])
-				self.employee = employee
-				self.employee_name = employee_name
 
 	def set_location(self):
 		location = {
