@@ -3,6 +3,8 @@
 
 import frappe
 from frappe.model.document import Document
+from field_force.field_force.doctype.utils import set_employee, set_sales_person
+
 
 class StoreVisitAssign(Document):
 	def validate(self):
@@ -19,3 +21,6 @@ class StoreVisitAssign(Document):
 			for destination in self.destinations:
 				destination.user = self.user
 				destination.date = self.date
+
+		set_sales_person(self)
+		set_employee(self)

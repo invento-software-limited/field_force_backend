@@ -8,27 +8,28 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "sales_person",
+  "employee",
+  "employee_name",
   "user",
   "user_fullname",
   "column_break_3",
   "date",
   "email",
-  "employee",
-  "employee_name",
   "section_break_5",
   "destinations"
  ],
  "fields": [
   {
+   "fetch_from": "sales_person.user",
    "fieldname": "user",
    "fieldtype": "Link",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
+   "hidden": 1,
    "label": "User",
-   "options": "User",
-   "reqd": 1
+   "options": "User"
   },
   {
+   "fetch_from": "sales_person.employee",
    "fieldname": "employee",
    "fieldtype": "Link",
    "hidden": 1,
@@ -70,6 +71,7 @@
    "fetch_from": "user.email",
    "fieldname": "email",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Email",
    "read_only": 1
   },
@@ -78,14 +80,23 @@
    "fetch_from": "user.full_name",
    "fieldname": "user_fullname",
    "fieldtype": "Data",
-   "in_list_view": 1,
+   "hidden": 1,
    "label": "Full Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "sales_person",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Sales Person",
+   "options": "Sales Person",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-10-30 17:35:02.980063",
+ "modified": "2022-12-15 18:09:21.132322",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Store Visit Assign",
@@ -117,13 +128,23 @@
   },
   {
    "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Sales Master Manager",
+   "role": "Sales User",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "App User",
    "share": 1,
    "write": 1
   }
