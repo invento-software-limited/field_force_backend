@@ -8,8 +8,8 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "type",
   "sales_person",
+  "type",
   "employee",
   "employee_name",
   "user",
@@ -202,7 +202,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-15 17:27:09.717909",
+ "modified": "2022-12-15 18:24:36.035904",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "App User Attendance",
