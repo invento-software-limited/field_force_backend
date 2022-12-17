@@ -1,0 +1,45 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format: APP-END-PER-{###}",
+ "creation": "2022-12-17 21:58:23.675731",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "permissions"
+ ],
+ "fields": [
+  {
+   "fieldname": "permissions",
+   "fieldtype": "Table",
+   "label": "Roll Profile Wise Permissions",
+   "options": "App End Permission Role Profile",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2022-12-17 21:59:31.071720",
+ "modified_by": "Administrator",
+ "module": "Field Force",
+ "name": "App End Permission",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
