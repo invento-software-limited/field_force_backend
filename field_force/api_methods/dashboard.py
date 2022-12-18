@@ -2,6 +2,7 @@ import datetime
 
 import frappe
 from field_force.response import build_custom_response
+from field_force.auth import get_allowed_doctypes
 import calendar
 
 @frappe.whitelist()
@@ -26,7 +27,8 @@ def get_dashboard_data():
         # "monthly_sales": sales_target.achievement_amount if sales_target else 0,
         "monthly_sales": get_monthly_sales(sales_person_names, month_start_date, today_date) or 0,
         "monthly_customers": get_monthly_customers(sales_person_names, month_start_date, today_date) or 0,
-        "announcements": get_announcements(today_date)
+        "announcements": get_announcements(today_date),
+        "allowed_doctypes": get_allowed_doctypes(frappe.session.user)
     }
 
     frappe.local.response.total_items = 0

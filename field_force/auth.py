@@ -18,12 +18,14 @@ def login(username, password):
         user_doc = frappe.get_doc('User', user)
 
         del frappe.local.response['home_page']
+        user = frappe.session.user
 
         frappe.local.response.data = {
             "user": user_doc.name,
             "full_name": frappe.local.response.pop('full_name'),
             "email": user_doc.email,
             "token": get_api_key_and_api_secret(user_doc),
+            "allowed_doctypes": get_allowed_doctypes(user)
         }
 
         frappe.local.response['http_status_code'] = 200
@@ -50,3 +52,13 @@ def get_api_key_and_api_secret(user_details):
         user_details.save()
 
     return f"{user_details.api_key}:{user_details.get_password('api_secret')}"
+
+def get_allowed_doctypes(user):
+    role_profile = frappe.db.get_value('User', user, 'role_profile_name')
+
+    if role_profile:
+        allowed_doctypes = frappe.db.get_value("App End Permission Role Profile",
+                                               {"role_profile": role_profile}, "doctypes")
+        return allowed_doctypes.split(',')
+
+    return []
