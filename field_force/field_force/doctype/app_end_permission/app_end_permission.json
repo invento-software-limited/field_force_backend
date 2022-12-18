@@ -7,20 +7,34 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "permissions"
+  "roll_profile_wise_permissions",
+  "permissions",
+  "check_validation"
  ],
  "fields": [
   {
    "fieldname": "permissions",
    "fieldtype": "Table",
-   "label": "Roll Profile Wise Permissions",
+   "label": "Permissions",
    "options": "App End Permission Role Profile",
    "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "check_validation",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Check Validation"
+  },
+  {
+   "fieldname": "roll_profile_wise_permissions",
+   "fieldtype": "Section Break",
+   "label": "Roll Profile Wise Permission"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-17 21:59:31.071720",
+ "modified": "2022-12-18 15:15:52.891700",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "App End Permission",
