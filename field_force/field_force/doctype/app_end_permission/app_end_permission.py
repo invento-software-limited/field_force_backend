@@ -20,10 +20,11 @@ class AppEndPermission(Document):
 					for doctype in doctypes:
 						doctype = doctype.replace("_", " ")
 
-						if doctype and not frappe.db.exists("Doctype", {'name': doctype}):
+						if doctype and not frappe.db.exists({"doctype": doctype}):
 							frappe.throw(f"<b>{permission.role_profile}:</b> '{doctype}' doctype not found!")
 		# else:
 		# 	frappe.throw("Must have one role permission")
+
 
 	# def save(self, *args, **kwargs):
 	# 	super().save(*args, **kwargs)
