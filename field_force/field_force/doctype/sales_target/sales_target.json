@@ -13,10 +13,12 @@
   "user",
   "get_sales_persons",
   "column_break_2",
+  "date",
   "month",
   "year",
   "section_break_9",
-  "sales_persons_targets"
+  "sales_persons_targets",
+  "amended_from"
  ],
  "fields": [
   {
@@ -90,11 +92,29 @@
    "label": "Targets",
    "options": "Sales Person Target",
    "reqd": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Sales Target",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2022-11-17 10:41:30.074167",
+ "modified": "2022-12-18 17:30:26.612389",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Sales Target",
@@ -138,5 +158,6 @@
   }
  ],
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "track_changes": 1
 }
