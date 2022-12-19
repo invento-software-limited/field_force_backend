@@ -2,22 +2,25 @@ import frappe
 
 role_profiles = {
     "Merchandiser": [
-        "Sales User"
+        "Merchandiser",
         "App User"
     ],
     "Sales Representative": [
-        "Sales User",
+        "Sales Representative",
         "App User"
     ],
     "Supervisor": [
+        "Supervisor",
         "Sales User"
         "App User"
     ],
     "Manager": [
+        "Manager",
         "Sales User",
         "Sales Manager",
     ],
     "Channel Manager": [
+        "Channel Manager"
         "Sales User",
         "Sales Manager",
         "Sales Master Manager"
@@ -46,4 +49,4 @@ def create_role_profile(role_profiles):
 
             role_profile.save()
 
-        print(f"Role Profile '{role_profile}' created.")
+        print(f"Role Profile '{role_profile}' created")
