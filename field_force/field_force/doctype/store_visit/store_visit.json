@@ -226,7 +226,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-15 18:28:34.893389",
+ "modified": "2022-12-20 11:09:01.885233",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Store Visit",
@@ -253,20 +253,55 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Sales Manager",
+   "role": "Channel Manager",
    "share": 1,
    "write": 1
   },
   {
    "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
    "read": 1,
-   "role": "Sales User",
+   "report": 1,
+   "role": "Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Supervisor",
+   "share": 1,
    "write": 1
   },
   {
    "create": 1,
    "export": 1,
    "read": 1,
+   "report": 1,
+   "role": "Sales Representative",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Merchandiser",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "export": 1,
+   "read": 1,
+   "report": 1,
    "role": "App User",
    "write": 1
   }

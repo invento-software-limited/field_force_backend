@@ -202,7 +202,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-15 18:38:50.865549",
+ "modified": "2022-12-20 11:17:46.005444",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "App User Attendance",
@@ -228,30 +228,56 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Sales Manager",
+   "role": "Channel Manager",
    "share": 1,
    "write": 1
   },
   {
    "create": 1,
+   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Sales User",
+   "role": "Manager",
    "share": 1,
    "write": 1
   },
   {
    "create": 1,
+   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Supervisor",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Representative",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Merchandiser",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "export": 1,
    "read": 1,
    "report": 1,
    "role": "App User",
-   "share": 1,
    "write": 1
   }
  ],

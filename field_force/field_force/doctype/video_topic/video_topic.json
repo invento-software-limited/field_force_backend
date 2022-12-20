@@ -19,7 +19,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-08-23 09:49:40.746133",
+ "modified": "2022-12-20 11:38:49.985259",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Video Topic",
@@ -37,6 +37,30 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Channel Manager"
+  },
+  {
+   "read": 1,
+   "role": "Manager"
+  },
+  {
+   "read": 1,
+   "role": "Supervisor"
+  },
+  {
+   "read": 1,
+   "role": "Sales Representative"
+  },
+  {
+   "read": 1,
+   "role": "Merchandiser"
+  },
+  {
+   "read": 1,
+   "role": "App User"
   }
  ],
  "sort_field": "modified",
