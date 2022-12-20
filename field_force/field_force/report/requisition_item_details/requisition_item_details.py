@@ -24,13 +24,13 @@ def execute(filters=None):
             requisition_item.customer = None
             requisition_item.distributor = None
             requisition_item.delivery_date = None
-            requisition_item.user = None
+            requisition_item.sales_person = None
             requisition_item.grand_total = None
             requisition_item.status = None
             requisition_item.company = None
         else:
             requisition_name = requisition_item.name
-            set_user_link(requisition_item)
+            # set_user_link(requisition_item)
 
             if item_count > 1:
                 # requisition_items.append(subtotal)
@@ -110,8 +110,9 @@ def get_columns():
         {"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 100},
         {"label": _("Total"), "fieldname": "grand_total", "fieldtype": "Currency", "width": 100},
         {"label": _("Delivery Date"), "fieldname": "delivery_date", "width": 100},
-		{"label": _("Created By"), "fieldname": "user", "width": 100, "fieldtype": "Data"},
-		{"label": _("Status"), "fieldname": "status", "width": 80},
+        {"label": _("Sales Person"), "fieldname": "sales_person", "fieldtype": "Link", "options": "Sales Person",
+         "width": 100},
+        {"label": _("Status"), "fieldname": "status", "width": 80},
 		{"label": _("Company"), "fieldname": "company", "width": 100, "fieldtype": "Link", "options": "Company"},
     ]
 
@@ -119,15 +120,15 @@ def get_columns():
 def get_data(filters):
     conditions = get_conditions(filters)
 
-    query_string = """SELECT requisition.name, requisition.transaction_date,requisition.delivery_date, requisition.user,
-                    requisition.user_fullname, requisition.customer, requisition.contact_number, requisition.distributor,
+    query_string = '''SELECT requisition.name, requisition.transaction_date,requisition.delivery_date,
+                    requisition.sales_person, requisition.customer, requisition.contact_number, requisition.distributor,
                     requisition.grand_total, requisition_item.item_code, requisition_item.item_name, requisition_item.item_group,
                     requisition_item.uom, requisition_item.brand, requisition_item.price_list_rate, requisition_item.qty,
                     requisition_item.discount_percentage, requisition_item.discount_amount, requisition_item.rate,
                     requisition_item.amount, requisition.user, requisition.company, requisition.status
                     from `tabRequisition` requisition left join `tabRequisition Item` requisition_item 
                     on requisition.name=requisition_item.parent where %s order by 
-                    requisition.transaction_date desc""" % conditions
+                    requisition.transaction_date desc''' % conditions
 
     # print(query_string)
     query_result = frappe.db.sql(query_string, as_dict=1, debug=0)
@@ -137,7 +138,7 @@ def get_data(filters):
 def get_conditions(filters):
     from_date = filters.get('from_date')
     to_date = filters.get('to_date')
-    user = filters.get('user')
+    sales_person = filters.get('sales_person')
     customer = filters.get('customer')
     distributor = filters.get('distributor')
     item = filters.get('item')
@@ -148,24 +149,24 @@ def get_conditions(filters):
     conditions = []
 
     if from_date:
-        conditions.append("requisition.transaction_date >= '%s'" % from_date)
+        conditions.append('requisition.transaction_date >= "%s"' % from_date)
     if to_date:
-        conditions.append("requisition.transaction_date <= '%s'" % to_date)
-    if user:
-        conditions.append("requisition.user = '%s'" % user)
+        conditions.append('requisition.transaction_date <= "%s"' % to_date)
+    if sales_person:
+        conditions.append('requisition.sales_person = "%s"' % sales_person)
     if customer:
-        conditions.append("requisition.customer = '%s'" % customer)
+        conditions.append('requisition.customer = "%s"' % customer)
     if distributor:
-        conditions.append("requisition.distributor = '%s'" % distributor)
+        conditions.append('requisition.distributor = "%s"' % distributor)
     if company:
-        conditions.append("requisition.company = '%s'" % company)
+        conditions.append('requisition.company = "%s"' % company)
     if status:
-        conditions.append("requisition.status = '%s'" % status)
+        conditions.append('requisition.status = "%s"' % status)
     if delivery_date:
-        conditions.append("requisition.delivery_date = '%s'" % delivery_date)
+        conditions.append('requisition.delivery_date = "%s"' % delivery_date)
 
     if item:
-        conditions.append("requisition_item.item_code = '%s'" % item)
+        conditions.append('requisition_item.item_code = "%s"' % item)
 
     return " and ".join(conditions)
 
