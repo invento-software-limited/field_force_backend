@@ -11,19 +11,13 @@ role_profiles = {
     ],
     "Supervisor": [
         "Supervisor",
-        "Sales User"
         "App User"
     ],
     "Manager": [
         "Manager",
-        "Sales User",
-        "Sales Manager",
     ],
     "Channel Manager": [
         "Channel Manager"
-        "Sales User",
-        "Sales Manager",
-        "Sales Master Manager"
     ]
 }
 

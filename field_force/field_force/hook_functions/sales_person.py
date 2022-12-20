@@ -67,22 +67,22 @@ def create_role_profile(role_profile_name):
 
         roles = {
             "Merchandiser": [
-                "Sales User"
+                "Merchandiser",
+                "App User"
             ],
             "Sales Representative": [
-                "Sales User"
+                "Sales Representative",
+                "App User"
             ],
             "Supervisor": [
-                "Sales User"
+                "Supervisor",
+                "App User"
             ],
             "Manager": [
-                "Sales User",
-                "Sales Manager",
+                "Manager",
             ],
             "Channel Manager": [
-                "Sales User",
-                "Sales Manager",
-                "Sales Master Manager"
+                "Channel Manager"
             ]
         }
 
