@@ -32,7 +32,7 @@ def execute(filters=None):
             for sales_person_ in sales_persons:
                 if sales_person_.type == 'Supervisor' and sales_person_.is_group:
                     conditions_, sales_person_names  = add_sales_person_to_condition(conditions, sales_person_,
-                                                                                     all_child=True, including_self=True)
+                                                                                     all_child=True)
                     if sales_person_names and conditions_:
                         data_ = get_data(conditions_, month, year, sales_person_names)
 
