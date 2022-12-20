@@ -9,7 +9,7 @@
  "filters": [],
  "idx": 0,
  "is_standard": "Yes",
- "modified": "2022-09-11 09:06:22.206957",
+ "modified": "2022-12-20 18:04:42.355336",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Store Visit Details Report",
@@ -23,10 +23,13 @@
    "role": "System Manager"
   },
   {
-   "role": "Sales Manager"
+   "role": "Channel Manager"
   },
   {
-   "role": "Sales User"
+   "role": "Manager"
+  },
+  {
+   "role": "Supervisor"
   }
  ]
 }

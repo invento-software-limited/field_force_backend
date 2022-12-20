@@ -9,7 +9,7 @@
  "filters": [],
  "idx": 0,
  "is_standard": "Yes",
- "modified": "2022-09-06 12:59:49.772924",
+ "modified": "2022-12-20 18:05:56.839137",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition Details Report",
@@ -23,10 +23,13 @@
    "role": "System Manager"
   },
   {
-   "role": "Sales User"
+   "role": "Channel Manager"
   },
   {
-   "role": "Sales Manager"
+   "role": "Manager"
+  },
+  {
+   "role": "Supervisor"
   }
  ]
 }
