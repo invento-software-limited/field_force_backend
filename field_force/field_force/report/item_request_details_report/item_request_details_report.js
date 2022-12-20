@@ -35,11 +35,11 @@ frappe.query_reports["Item Request Details Report"] = {
 			"options": "Customer",
 		},
 		{
-			"fieldname": "user",
-			"label": __("Created By"),
+			"fieldname": "sales_person",
+			"label": __("Sales Person"),
 			"fieldtype": "Link",
 			"width": "100",
-			"options": "User",
+			"options": "Sales Person",
 		},
 	]
 };
