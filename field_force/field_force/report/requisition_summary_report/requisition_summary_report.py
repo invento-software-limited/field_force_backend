@@ -7,11 +7,6 @@ from frappe import _
 def execute(filters=None):
     columns = get_columns(filters)
     data = get_data(filters)
-    print(data)
-    for requisition in data:
-        if requisition.user:
-            requisition['user'] = f'<a href="/app/user/{requisition.user}" target="_blank">{requisition.user_fullname}</a>'
-
     return columns, data
 
 def get_columns(filters):
@@ -35,7 +30,8 @@ def get_columns(filters):
         columns[1] = {"label": _("Customer"), "fieldname": "customer", "fieldtype":"Link",
                       "options":"Customer", "width": 160}
     else:
-        columns[1] = {"label": _("Created By"), "fieldname": "user", "fieldtype":"Data", "width": 160}
+        columns[1] = {"label": _("Sales Person"), "fieldname": "sales_person", "fieldtype": "Link",
+                      "options":"Sales Person", "width": 160}
 
     return columns
 
@@ -46,14 +42,14 @@ def get_data(filters):
     elif filters.get('group_by') == 'Customer':
         group_by = 'requisition.customer'
     else:
-        group_by = 'requisition.user'
+        group_by = 'requisition.sales_person'
 
-    query_string = """SELECT requisition.transaction_date, requisition.user, requisition.user_fullname,
-                    requisition.customer, requisition.distributor, count(*) as total_requisitions, sum(requisition.total_items) 
+    query_string = '''select requisition.transaction_date, requisition.sales_person, requisition.customer,
+                    requisition.distributor, count(*) as total_requisitions, sum(requisition.total_items) 
                     as total_items, requisition.company, sum(requisition.total_qty) as total_qty, requisition.status,
                     sum(requisition.grand_total) as total_amount from `tabRequisition` requisition 
                     where %s group by %s
-                    order by total_amount desc""" % (conditions, group_by)
+                    order by total_amount desc''' % (conditions, group_by)
 
     query_result = frappe.db.sql(query_string, as_dict=1, debug=0)
     return query_result
@@ -63,25 +59,25 @@ def get_conditions(filters):
     from_date = filters.get('from_date')
     to_date = filters.get('to_date')
     group_by = filters.get('group_by')
-    user = filters.get('user')
+    sales_person = filters.get('sales_person')
     distributor = filters.get('distributor')
     customer = filters.get('customer')
     status = filters.get('status')
 
     conditions = [
-        "requisition.status = '%s'" % status
+        'requisition.status = "%s"' % status
     ]
 
     if from_date:
-        conditions.append("requisition.transaction_date >= '%s'" % from_date)
+        conditions.append('requisition.transaction_date >= "%s"' % from_date)
     if to_date:
-        conditions.append("requisition.transaction_date <= '%s'" % to_date)
+        conditions.append('requisition.transaction_date <= "%s"' % to_date)
 
     if group_by == 'Distributor' and distributor:
-        conditions.append("requisition.distributor = '%s'" % distributor)
+        conditions.append('requisition.distributor = "%s"' % distributor)
     elif group_by == 'Customer' and customer:
-        conditions.append("requisition.customer = '%s'" % customer)
-    elif group_by == 'Created By' and user:
-        conditions.append("requisition.user = '%s'" % distributor)
+        conditions.append('requisition.customer = "%s"' % customer)
+    elif group_by == 'Sales Person' and sales_person:
+        conditions.append('requisition.sales_person = "%s"' % sales_person)
 
     return " and ".join(conditions)

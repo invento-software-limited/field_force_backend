@@ -28,7 +28,7 @@ frappe.query_reports["Requisition Summary Report"] = {
 			"options": [
 				"Distributor",
 				"Customer",
-				"Created By"
+				"Sales Person"
 			],
 			"default": "Distributor"
 		},
@@ -49,12 +49,12 @@ frappe.query_reports["Requisition Summary Report"] = {
 			"depends_on": 'eval:doc.group_by=="Customer"'
 		},
 		{
-			"fieldname": "user",
-			"label": __("Created By"),
+			"fieldname": "sales_person",
+			"label": __("Sales Person"),
 			"fieldtype": "Link",
 			"width": "100",
-			"options": "User",
-			"depends_on": 'eval:doc.group_by=="Created By"'
+			"options": "Sales Person",
+			"depends_on": 'eval:doc.group_by=="Sales Person"'
 		},
 		{
 			"fieldname": "status",
