@@ -62,6 +62,17 @@ frappe.ui.form.on('Requisition', {
     // setup: function (frm){
     //     frm.add_fetch('customer', 'tax_id', 'tax_id');
     // },
+	partner_group: function (frm){
+		frm.set_value("customer", null);
+
+		frm.set_query("customer", function() {
+			return {
+				filters: [
+					["Customer","partner_group", "=", frm.doc.partner_group]
+				]
+			}
+		});
+	},
 	customer: function (frm){
 		if (frm.doc.customer) {
 			brand_commissions = get_brands_commissions(frm.doc.customer)

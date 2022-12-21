@@ -7,13 +7,13 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "partner_group",
   "customer",
   "customer_name",
   "distributor",
   "order_type",
   "skip_delivery_note",
   "status",
-  "email",
   "column_break_9",
   "amended_from",
   "company",
@@ -25,12 +25,12 @@
   "customer_address_and_contact_section",
   "contact_person",
   "contact_number",
-  "address",
   "email_address",
   "customer_image",
-  "customer_group",
   "latitude",
   "column_break_21",
+  "customer_group",
+  "address",
   "user",
   "user_fullname",
   "longitude",
@@ -56,6 +56,8 @@
   "total",
   "net_total",
   "grand_total",
+  "delivered_date",
+  "delivered_amount",
   "taxes_and_charges_section",
   "coupon_code",
   "apply_additional_discount_on",
@@ -155,15 +157,13 @@
   {
    "fieldname": "po_no",
    "fieldtype": "Data",
-   "label": "Customer's Purchase Order",
-   "read_only": 1
+   "label": "Customer's Purchase Order"
   },
   {
    "depends_on": "eval:doc.po_no",
    "fieldname": "po_date",
    "fieldtype": "Date",
-   "label": "Customer's Purchase Order Date",
-   "read_only": 1
+   "label": "Customer's Purchase Order Date"
   },
   {
    "fieldname": "tax_id",
@@ -188,7 +188,7 @@
    "fetch_from": "customer.address",
    "fieldname": "address",
    "fieldtype": "Data",
-   "label": "Address",
+   "label": "Customer Address",
    "read_only": 1
   },
   {
@@ -448,6 +448,7 @@
    "fetch_from": "sales_person.user",
    "fieldname": "user",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "User",
    "options": "User",
    "read_only": 1
@@ -456,15 +457,9 @@
    "fetch_from": "user.full_name",
    "fieldname": "user_fullname",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Full Name",
    "read_only": 1
-  },
-  {
-   "fetch_from": "user.email",
-   "fieldname": "email",
-   "fieldtype": "Button",
-   "hidden": 1,
-   "label": "Email"
   },
   {
    "depends_on": "eval:doc.requisition_excel != null;",
@@ -506,12 +501,34 @@
    "fieldtype": "Table",
    "label": "Sales Team",
    "options": "Sales Team"
+  },
+  {
+   "fieldname": "partner_group",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Partner Group",
+   "options": "Partner Group",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "delivered_amount",
+   "fieldtype": "Currency",
+   "label": "Delivered Amount",
+   "precision": "2"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "delivered_date",
+   "fieldtype": "Date",
+   "label": "Delivered Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-12-20 14:31:44.059939",
+ "modified": "2022-12-21 17:00:58.742456",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",
