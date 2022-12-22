@@ -30,13 +30,16 @@ class Requisition(Document):
         set_allocated_amount(self)
         # generate_requisition_excel_and_attach(self)
 
+    def before_submit(self):
+        generate_requisition_excel_and_attach(self)
+
+
     def on_submit(self):
         if self.docstatus == 1:
             frappe.db.set_value(self.doctype, self.name, 'status', 'Submitted')
 
         month, year = get_month_and_year(self)
         set_amount_to_sales_target(self.sales_person, self.achievement_amount, month, year)
-        generate_requisition_excel_and_attach(self)
 
     def on_cancel(self):
         subtract_achievement_amount(self)
