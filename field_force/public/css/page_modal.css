@@ -7,9 +7,16 @@
 #myImg:hover {
     opacity: 0.7;
 }
+#modal_section{
+    outline: 0px;
+}
+
+#modal_section:focus{
+    outline: 0px;
+}
 
 /* The Modal (background) */
-.modal {
+.modal_ {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
@@ -24,7 +31,7 @@
 }
 
 /* Modal Content (image) */
-.modal-content {
+.modal-content_ {
     margin: auto;
     display: block;
     width: 70%;
@@ -105,7 +112,7 @@
 
 /* 100% Image Width on Smaller Screens */
 @media only screen and (max-width: 400px) {
-    .modal-content {
+    .modal-content_ {
         width: 100%;
     }
 }

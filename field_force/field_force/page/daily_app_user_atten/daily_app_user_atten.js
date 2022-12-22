@@ -82,9 +82,9 @@ class AppUserAttendanceReport {
         this.form.make();
     }
     initialize_modal = () => {
-        let html = '<div id="modal_section" class="modal">\n' +
+        let html = '<div id="modal_section" class="modal_">\n' +
             '  <div class="modal-image">\n' +
-            '  <img class="modal-content" id="img01" alt="img">\n' +
+            '  <img class="modal-content_" id="img01" alt="img">\n' +
             '  <span class="close" onclick="document.getElementById(\'modal_section\').style.display=\'none\'">&times;</span>\n' +
             '  </div>\n' +
             '</div>'
@@ -179,7 +179,12 @@ function get_image_html(image_url) {
                 <img style="height:100%; width:100%" src="${image_url}" onclick="(
                     function(e){
                         document.getElementById(\'modal_section\').style.display=\'block\';
-                        document.getElementById(\'img01\').src=e.path[0].currentSrc;
+                        var nAgt = navigator.userAgent;
+                        if (nAgt.indexOf('Safari') !== -1) {
+                            document.getElementById(\'img01\').src=e.target.currentSrc;
+                        }else{
+                            document.getElementById(\'img01\').src=e.path[0].currentSrc;
+                        }
                         return false;
                     }
                 )(arguments[0]);
