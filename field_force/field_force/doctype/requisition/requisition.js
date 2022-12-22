@@ -44,6 +44,7 @@ function get_brands_commissions(customer, brand=null){
 
 frappe.ui.form.on('Requisition', {
 	on_load: function (){
+		console.log("========>>>", frm.doc.partner_group);
 		if (frm.doc.requisition_excel === null){
 			frm.set_df_property("requisition_excel", "hidden", true);
 		}
@@ -52,6 +53,8 @@ frappe.ui.form.on('Requisition', {
 		}
 	},
 	refresh: function (frm){
+		console.log("========>>>", frm.doc.partner_group);
+
 		if (frm.doc.customer){
 			brand_commissions = get_brands_commissions(frm.doc.customer)
 		}
@@ -88,19 +91,34 @@ frappe.ui.form.on('Requisition', {
 	sales_person: function (frm){
         console.log("Custom js working");
 
-        if (frm.doc.sales_person !=="" ){
-            let row = frm.add_child('sales_team', {
+		if (!is_sales_person_exists(frm) && frm.doc.sales_person !==""){
+            frm.add_child('sales_team', {
                 sales_person: frm.doc.sales_person,
                 allocated_percentage: 100,
                 employee: frm.doc.employee,
                 user: frm.doc.user,
             });
-
             frm.refresh_fields("sales_team");
         }
     }
 
 });
+
+function is_sales_person_exists(frm) {
+	var exists = false;
+
+	if (frm.doc.sales_te){
+		frm.doc.sales_team.forEach(function (data) {
+			console.log(data.sales_person);
+
+			if (frm.doc.sales_person === data.sales_person) {
+				exists = true;
+				return 0;
+			}
+		})
+	}
+	return exists;
+}
 
 function set_absolute_values(frm){
 	let total = 0;

@@ -18,6 +18,7 @@ class Requisition(Document):
     def validate(self):
         self.set_user()
         self.set_customer_info()
+        self.set_partner_group()
         self.set_brand_and_image_to_requisition_items()
         self.validate_delivery_date()
         self.validate_items()
@@ -65,6 +66,10 @@ class Requisition(Document):
 
             if not self.distributor and distributor:
                 self.distributor = distributor
+
+    def set_partner_group(self):
+        if not self.partner_group:
+            self.partner_group = frappe.db.get_value('Customer', {'name': self.customer}, 'partner_group')
 
     def set_brand_and_image_to_requisition_items(self):
         for item in self.items:
