@@ -1,0 +1,32 @@
+{
+ "content": null,
+ "creation": "2022-11-21 10:44:07.361668",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2022-12-26 18:21:51.244049",
+ "modified_by": "Administrator",
+ "module": "Field Force",
+ "name": "daily-app-user-attendance-report",
+ "owner": "Administrator",
+ "page_name": "daily-app-user-attendance-report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Channel Manager"
+  },
+  {
+   "role": "Manager"
+  },
+  {
+   "role": "Supervisor"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Daily App User Attendance Report"
+}

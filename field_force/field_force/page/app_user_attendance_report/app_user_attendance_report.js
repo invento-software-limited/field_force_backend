@@ -1,15 +1,14 @@
-frappe.pages['daily-app-user-atten'].on_page_load = (wrapper) => {
+frappe.pages['app-user-attendance-report'].on_page_load = (wrapper) => {
     frappe.require("assets/field_force/css/page_modal.css");
-
     var page = frappe.ui.make_app_page({
         parent: wrapper,
-        title: 'Daily App User Attendance Report',
+        title: 'App User Attendance Report',
         single_column: true
     });
-
     $('.page-body').css('background', '#FFFFFF');
     new AppUserAttendanceReport(page);
 };
+
 
 class AppUserAttendanceReport {
     constructor(page) {
@@ -17,7 +16,6 @@ class AppUserAttendanceReport {
         this.make_form();
         this.make_menu();
         this.initialize_modal();
-        // this.open_image_modal()
     }
 
     make_menu = () => {
@@ -32,7 +30,6 @@ class AppUserAttendanceReport {
         this.form = new frappe.ui.FieldGroup({
             fields: [
                 {
-
                     fieldname: 'from_date',
                     label: __('From Date'),
                     fieldtype: 'Date',
@@ -54,14 +51,25 @@ class AppUserAttendanceReport {
                     fieldtype: 'Column Break'
                 },
                 {
-                    fieldname: 'user',
-                    label: __('User'),
+                    fieldname: 'sales_person',
+                    label: __('Sales Person'),
                     fieldtype: 'Link',
-                    options: 'User',
+                    options: 'Sales Person',
                     change: () => this.fetch_and_render(),
                 },
                 {
                     fieldtype: 'Column Break'
+                },
+                {
+                    fieldname: 'type',
+                    label: __('Type'),
+                    fieldtype: 'Select',
+                    options: [
+                        "",
+                        {"value": "Checkin", "label": __("Check In")},
+                        {"value": "Checkout", "label": __("Check Out")},
+                    ],
+                    change: () => this.fetch_and_render(),
                 },
                 {
                     fieldtype: 'Column Break'
@@ -92,7 +100,7 @@ class AppUserAttendanceReport {
         $('.main-section').append(html)
     }
     fetch_and_render = () => {
-        let {from_date, to_date, user} = this.form.get_values();
+        let {from_date, to_date, sales_person, type} = this.form.get_values();
         if (!from_date) {
             this.form.get_field('preview').html('');
             return;
@@ -102,13 +110,15 @@ class AppUserAttendanceReport {
         		${__("Fetching...")}
         	</div>
         `);
-        frappe.call('field_force.field_force.page.daily_app_user_atten.daily_app_user_atten.get_user_attendance_data', {
+        frappe.call('field_force.field_force.page.app_user_attendance_report.app_user_attendance_report.get_user_attendance_data', {
             filters: {
                 from_date: from_date,
                 to_date: to_date,
-                user: user
+                sales_person: sales_person,
+                type: type
             },
             freeze: true
+
         }).then(r => {
             let diff = r.message[0];
             let fields = r.message[1];
@@ -121,6 +131,27 @@ class AppUserAttendanceReport {
         let table_body = this.table_body(diff, fields);
         this.form.get_field('preview').html(`<table class="table table-bordered" id="export_excel">${table_header}${table_body}</table>`);
     }
+
+    // table_header = () => {
+    //     let table_header = '<thead>\n' +
+    //         '    <tr>\n' +
+    //         '      <th scope="col" >SL</th>\n' +
+    //         '      <th scope="col">DateTime</th>\n' +
+    //         // '      <th scope="col">Time</th>\n' +
+    //         '      <th scope="col">ID</th>\n' +
+    //         '      <th scope="col">User</th>\n' +
+    //         '      <th scope="col">Type</th>\n' +
+    //         '      <th scope="col">Device DateTime</th>\n' +
+    //         '      <th scope="col">Cheated</th>\n' +
+    //         // '      <th scope="col">Device Time</th>\n' +
+    //         '      <th scope="col">Latitude</th>\n' +
+    //         '      <th scope="col">Longitude</th>\n' +
+    //         '      <th scope="col">Model</th>\n' +
+    //         '      <th scope="col">Image</th>\n' +
+    //         '    </tr>\n' +
+    //         '  </thead>\n';
+    //     return table_header;
+
     table_header = (headers) => {
         let table_header = `<thead><tr>`;
 
@@ -149,10 +180,33 @@ class AppUserAttendanceReport {
         return html
     }
 
+    // table_body = (diff) => {
+    //     var html = "<tbody>";
+    //     diff.forEach(function (data, index) {
+    //         html += `<tr>`;
+    //         html += '<td>' + data.sl + '</td>';
+    //         html += '<td>' + `${data.server_date || ''}` + '</td>';
+    //         // html += '<td>' + `${data.server_time || ''}` + '</td>';
+    //         html += '<td>' + `${data.name || ''}` + '</td>';
+    //         html += '<td>' + `${data.user || ''}` + '</td>';
+    //         html += '<td>' + `${data.type || ''}` + '</td>';
+    //         html += '<td>' + `${data.device_date || ''}` + '</td>';
+    //         // html += '<td>' + `${data.device_time || ''}` + '</td>';
+    //         html += '<td>' + `${data.cheated || ''}` + '</td>';
+    //         html += '<td>' + `${data.latitude || ''}` + '</td>';
+    //         html += '<td>' + `${data.longitude || ''}` + '</td>';
+    //         html += '<td>' + `${data.device_model || ''}` + '</td>';
+    //         html += '<td style="height:100px; width:120px;"><a href="#"><img style="height:100%; width:100%" src="' + data.image + '" onclick="(function(e){document.getElementById(\'modal_section\').style.display=\'block\';document.getElementById(\'img01\').src=e.path[0].currentSrc;return false;})(arguments[0]);return false;"></a></td>';
+    //         html += `</tr>`;
+    //     })
+    //     html += "</tbody>";
+    //     return html
+    // }
+
     export_excel = () => {
-        let {from_date, to_date, user} = this.form.get_values();
-        let url = `/api/method/field_force.field_force.page.daily_app_user_atten.daily_app_user_atten.export_file`;
-        url += `?from_date=${from_date||''}&to_date=${to_date||''}&user=${user||''}`;
+        let {from_date, to_date, user, type} = this.form.get_values();
+        let url = `/api/method/field_force.field_force.page.app_user_attendance_report.app_user_attendance_report.export_file`;
+        url += `?from_date=${from_date||''}&to_date=${to_date||''}&user=${user||''}&type=${type||''}`;
         window.open(url, '_blank');
     }
 }
@@ -171,12 +225,11 @@ function get_absolute_format_and_html(field, value){
         return `<td>${value || ''}</td>`;
     }
 }
-
 function get_image_html(image_url) {
     return `
         <td style="height:100px; width:120px;">
             <a href="#">
-                <img style="height:100%; width:100%" src="${image_url}" onclick="(
+                <img style="height:100%; width:100%" src="${image_url}" img-path="${image_url}" onclick="(
                     function(e){
                         document.getElementById(\'modal_section\').style.display=\'block\';
                         var nAgt = navigator.userAgent;
