@@ -57,8 +57,8 @@ def get_query_data(filters):
     base_query = '''select app_user_attendance.name, app_user_attendance.user, app_user_attendance.user_fullname, 
                     app_user_attendance.server_date, app_user_attendance.server_time, app_user_attendance.device_time,
                     app_user_attendance.type, app_user_attendance.image, app_user_attendance.cheated, app_user_attendance.sales_person 
-                    from `tabApp User Attendance` app_user_attendance where %s order by app_user_attendance.server_date desc, 
-                    app_user_attendance.server_time desc''' % conditions
+                    from `tabApp User Attendance` app_user_attendance where %s order by app_user_attendance.server_date, 
+                    app_user_attendance.server_time''' % conditions
 
     query_result = frappe.db.sql(base_query, as_dict=1, debug=0)
     return query_result
