@@ -4,7 +4,7 @@
  "docstatus": 0,
  "doctype": "Page",
  "idx": 0,
- "modified": "2022-11-09 12:18:58.665906",
+ "modified": "2022-12-26 19:46:18.511056",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "app-user-attendance-report",
@@ -15,14 +15,18 @@
    "role": "System Manager"
   },
   {
-   "role": "HR Manager"
+   "role": "Channel Manager"
   },
   {
-   "role": "HR User"
+   "role": "Manager"
+  },
+  {
+   "role": "Supervisor"
   }
  ],
  "script": null,
  "standard": "Yes",
  "style": null,
- "system_page": 0
+ "system_page": 0,
+ "title": "App User Attendance Report"
 }

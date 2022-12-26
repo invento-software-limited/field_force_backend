@@ -204,9 +204,9 @@ class AppUserAttendanceReport {
     // }
 
     export_excel = () => {
-        let {from_date, to_date, user, type} = this.form.get_values();
+        let {from_date, to_date, sales_person, type} = this.form.get_values();
         let url = `/api/method/field_force.field_force.page.app_user_attendance_report.app_user_attendance_report.export_file`;
-        url += `?from_date=${from_date||''}&to_date=${to_date||''}&user=${user||''}&type=${type||''}`;
+        url += `?from_date=${from_date||''}&to_date=${to_date||''}&sales_person=${sales_person||''}&type=${type||''}`;
         window.open(url, '_blank');
     }
 }
