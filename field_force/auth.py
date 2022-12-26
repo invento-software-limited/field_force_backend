@@ -23,6 +23,7 @@ def login(username, password):
         frappe.local.response.data = {
             "user": user_doc.name,
             "full_name": frappe.local.response.pop('full_name'),
+            "user_image": user_doc.user_image,
             "email": user_doc.email,
             "token": get_api_key_and_api_secret(user_doc),
             "allowed_doctypes": get_allowed_doctypes(user)
