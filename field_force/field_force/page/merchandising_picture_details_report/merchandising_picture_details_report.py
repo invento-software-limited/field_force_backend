@@ -2,7 +2,7 @@ import frappe
 import json
 
 from field_force.field_force.page.utils import generate_excel_and_download
-from field_force.field_force.report.utils import set_link_to_doc, set_user_link, set_image_url, get_site_directory_path
+from field_force.field_force.report.utils import set_link_to_doc, set_image_url, get_site_directory_path
 
 
 @frappe.whitelist()
@@ -27,16 +27,15 @@ def get_absolute_data(filters, export=False):
             set_link_to_doc(merchandising_picture, 'name', 'merchandising-picture')
             set_link_to_doc(merchandising_picture, 'customer', 'customer')
             set_link_to_doc(merchandising_picture, 'brand', 'brand')
-            set_user_link(merchandising_picture)
+            set_link_to_doc(merchandising_picture, 'sales_person', 'sales-person')
 
-            merchandising_picture.server_date = f"{merchandising_picture.server_date}<br>{server_time}"
+            # merchandising_picture.server_date = f"{merchandising_picture.server_date}<br>{server_time}"
             merchandising_picture.device_date = f"{merchandising_picture.device_date}<br>{device_time}"
         else:
-            merchandising_picture.user = merchandising_picture.user_fullname or merchandising_picture.user
-            merchandising_picture.server_date = f"{merchandising_picture.server_date}\n{server_time}"
+            # merchandising_picture.server_date = f"{merchandising_picture.server_date}\n{server_time}"
             merchandising_picture.device_date = f"{merchandising_picture.device_date}\n{device_time}"
 
-        merchandising_picture.cheated = 'Yes' if merchandising_picture.cheated else ''
+        merchandising_picture.cheated = 'Yes' if merchandising_picture.cheated else 'No'
         merchandising_picture['sl'] = index + 1
 
     return query_result
@@ -48,14 +47,14 @@ def get_query_data(filters):
         pass
     conditions = get_conditions(filters)
 
-    query_string = """select merchandising_picture.name, merchandising_picture.user, merchandising_picture.user_fullname,
+    query_string = '''select merchandising_picture.name, merchandising_picture.sales_person, merchandising_picture.details,
                     merchandising_picture.customer, merchandising_picture.image, merchandising_picture.contact_number,
                     merchandising_picture.server_date, time(merchandising_picture.server_time) as server_time,
                     merchandising_picture.device_date, time(merchandising_picture.device_time) as device_time,
                     merchandising_picture.latitude, merchandising_picture.longitude, merchandising_picture.brand,
                     merchandising_picture.device_model, merchandising_picture.customer_address,
                     merchandising_picture.cheated from `tabMerchandising Picture` merchandising_picture where %s
-                    order by merchandising_picture.server_date desc""" % conditions
+                    order by merchandising_picture.server_date desc, merchandising_picture.server_time desc''' % conditions
 
     query_result = frappe.db.sql(query_string, as_dict=1, debug=0)
     return query_result
@@ -64,22 +63,22 @@ def get_query_data(filters):
 def get_conditions(filters):
     from_date = filters.get('from_date')
     to_date = filters.get('to_date')
-    user = filters.get('user')
+    sales_person = filters.get('sales_person')
     customer = filters.get('customer')
     brand = filters.get('brand')
 
     conditions = []
 
     if from_date:
-        conditions.append("merchandising_picture.server_date >= '%s'" % from_date)
+        conditions.append('merchandising_picture.server_date >= "%s"' % from_date)
     if to_date:
-        conditions.append("merchandising_picture.server_date <= '%s'" % to_date)
-    if user:
-        conditions.append("merchandising_picture.user = '%s'" % user)
+        conditions.append('merchandising_picture.server_date <= "%s"' % to_date)
+    if sales_person:
+        conditions.append('merchandising_picture.sales_person = "%s"' % sales_person)
     if customer:
-        conditions.append("merchandising_picture.customer = '%s'" % customer)
+        conditions.append('merchandising_picture.customer = "%s"' % customer)
     if brand:
-        conditions.append("merchandising_picture.brand = '%s'" % brand)
+        conditions.append('merchandising_picture.brand = "%s"' % brand)
 
     return " and ".join(conditions)
 
@@ -87,17 +86,19 @@ def get_columns():
     columns =  [
         {'fieldname': 'sl', 'label': 'SL', 'expwidth': 5, 'export': False},
         {'fieldname': 'server_date', 'label': 'Date', 'expwidth': 13},
+        {'fieldname': 'server_time', 'label': 'Time', 'expwidth': 13},
         {'fieldname': 'name', 'label': 'ID', 'expwidth': 20},
         {'fieldname': 'brand', 'label': 'Brand', 'expwidth': 15},
         {'fieldname': 'customer', 'label': 'Customer', 'expwidth': 15},
-        {'fieldname': 'customer_address', 'label': 'Address', 'expwidth': 15},
+        # {'fieldname': 'customer_address', 'label': 'Address', 'expwidth': 15},
         {'fieldname': 'contact_number', 'label': 'Contact', 'expwidth': 15},
+        {'fieldname': 'details', 'label': 'Details', 'expwidth': 13},
+        # {'fieldname': 'latitude', 'label': 'Latitude', 'fieldtype': 'Data', 'expwidth': 15},
+        # {'fieldname': 'longitude', 'label': 'Longitude', 'fieldtype': 'Data', 'expwidth': 15},
+        # {'fieldname': 'device_model', 'label': 'Device Model', 'fieldtype': 'Data', 'expwidth': 15},
+        {'fieldname': 'sales_person', 'label': 'Sales Person', 'expwidth': 20},
         {'fieldname': 'device_date', 'label': 'Device Date Time', 'expwidth': 15},
         {'fieldname': 'cheated', 'label': 'Cheated', 'fieldtype': 'Data', 'expwidth': 15},
-        {'fieldname': 'latitude', 'label': 'Latitude', 'fieldtype': 'Data', 'expwidth': 15},
-        {'fieldname': 'longitude', 'label': 'Longitude', 'fieldtype': 'Data', 'expwidth': 15},
-        {'fieldname': 'device_model', 'label': 'Device Model', 'fieldtype': 'Data', 'expwidth': 15},
-        {'fieldname': 'user', 'label': 'Created By', 'expwidth': 20},
         {'fieldname': 'image', 'label': 'Image', 'fieldtype': 'Image', 'expwidth': 15, 'export': False},
     ]
     return columns

@@ -4,21 +4,24 @@
  "docstatus": 0,
  "doctype": "Page",
  "idx": 0,
- "modified": "2022-11-16 12:37:30.590493",
+ "modified": "2022-12-27 07:58:11.575672",
  "modified_by": "Administrator",
  "module": "Field Force",
- "name": "merchandising-pictur",
+ "name": "merchandising-picture-details-report",
  "owner": "Administrator",
- "page_name": "merchandising-pictur",
+ "page_name": "merchandising-picture-details-report",
  "roles": [
   {
    "role": "System Manager"
   },
   {
-   "role": "HR Manager"
+   "role": "Channel Manager"
   },
   {
-   "role": "HR User"
+   "role": "Manager"
+  },
+  {
+   "role": "Supervisor"
   }
  ],
  "script": null,

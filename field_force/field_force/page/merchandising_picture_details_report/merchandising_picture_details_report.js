@@ -1,4 +1,4 @@
-frappe.pages['merchandising-pictur'].on_page_load = function(wrapper) {
+frappe.pages['merchandising-picture-details-report'].on_page_load = function(wrapper) {
     frappe.require("assets/field_force/css/page_modal.css");
     var page = frappe.ui.make_app_page({
         parent: wrapper,
@@ -73,10 +73,10 @@ class StoreVisitDetailsReport {
                     fieldtype: 'Column Break'
                 },
                 {
-                    fieldname: 'user',
-                    label: __('Created By'),
+                    fieldname: 'sales_person',
+                    label: __('Sales Person'),
                     fieldtype: 'Link',
-                    options: 'User',
+                    options: 'Sales Person',
                     change: () => this.fetch_and_render(),
                 },
                 {
@@ -102,7 +102,7 @@ class StoreVisitDetailsReport {
         $('.main-section').append(html)
     }
     fetch_and_render = () => {
-        let {from_date, to_date, brand, customer, user} = this.form.get_values();
+        let {from_date, to_date, brand, customer, sales_person} = this.form.get_values();
         if (!from_date) {
             this.form.get_field('preview').html('');
             return;
@@ -112,11 +112,11 @@ class StoreVisitDetailsReport {
         		${__("Fetching...")}
         	</div>
         `);
-        frappe.call('field_force.field_force.page.merchandising_pictur.merchandising_pictur.get_merchandising_picture_data', {
+        frappe.call('field_force.field_force.page.merchandising_picture_details_report.merchandising_picture_details_report.get_merchandising_picture_data', {
             filters: {
                 from_date: from_date,
                 to_date: to_date,
-                user: user,
+                sales_person: sales_person,
                 customer: customer,
                 brand: brand
             },
@@ -162,9 +162,9 @@ class StoreVisitDetailsReport {
     }
 
     export_excel = () => {
-        let {from_date, to_date, brand, customer, user} = this.form.get_values();
-        let url = `/api/method/field_force.field_force.page.merchandising_pictur.merchandising_pictur.export_file`;
-        url += `?from_date=${from_date||''}&to_date=${to_date||''}&brand=${brand||''}&customer=${customer||''}&user=${user||''}`;
+        let {from_date, to_date, brand, customer, sales_person} = this.form.get_values();
+        let url = `/api/method/field_force.field_force.page.merchandising_picture_details_report.merchandising_picture_details_report.export_file`;
+        url += `?from_date=${from_date||''}&to_date=${to_date||''}&brand=${brand||''}&customer=${customer||''}&sales_person=${sales_person||''}`;
         window.open(url, '_blank');
     }
 }
