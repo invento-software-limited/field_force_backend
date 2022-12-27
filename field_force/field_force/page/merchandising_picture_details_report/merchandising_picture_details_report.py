@@ -30,9 +30,11 @@ def get_absolute_data(filters, export=False):
             set_link_to_doc(merchandising_picture, 'sales_person', 'sales-person')
 
             # merchandising_picture.server_date = f"{merchandising_picture.server_date}<br>{server_time}"
+            merchandising_picture.server_time = server_time
             merchandising_picture.device_date = f"{merchandising_picture.device_date}<br>{device_time}"
         else:
             # merchandising_picture.server_date = f"{merchandising_picture.server_date}\n{server_time}"
+            merchandising_picture.server_time = server_time
             merchandising_picture.device_date = f"{merchandising_picture.device_date}\n{device_time}"
 
         merchandising_picture.cheated = 'Yes' if merchandising_picture.cheated else 'No'
