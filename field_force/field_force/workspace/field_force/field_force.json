@@ -198,7 +198,7 @@
    "hidden": 0,
    "is_query_report": 1,
    "label": "Store Visit Details Report",
-   "link_to": "store-visit-details-",
+   "link_to": "store-visit-details-report",
    "link_type": "Page",
    "onboard": 0,
    "type": "Link"
@@ -300,7 +300,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Merchandising Picture Details Report",
-   "link_to": "merchandising-pictur",
+   "link_to": "merchandising-picture-details-report",
    "link_type": "Page",
    "onboard": 0,
    "type": "Link"
@@ -433,7 +433,7 @@
    "hidden": 0,
    "is_query_report": 1,
    "label": "Store Visit Details Report",
-   "link_to": "store-visit-details-",
+   "link_to": "store-visit-details-report",
    "link_type": "Page",
    "onboard": 0,
    "type": "Link"
@@ -442,13 +442,13 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Merchandising Picture Details Report",
-   "link_to": "merchandising-pictur",
+   "link_to": "merchandising-picture-details-report",
    "link_type": "Page",
    "onboard": 0,
    "type": "Link"
   }
  ],
- "modified": "2022-12-26 20:15:01.515561",
+ "modified": "2022-12-27 09:35:56.441301",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Field Force",
