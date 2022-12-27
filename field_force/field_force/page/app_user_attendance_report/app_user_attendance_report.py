@@ -91,9 +91,9 @@ def get_export_data(filters):
     query_result = get_query_data(filters)
 
     for index, app_user_attendance in enumerate(query_result):
-        app_user_attendance.user = app_user_attendance.user_fullname or app_user_attendance.user
-        app_user_attendance.server_date = f"{app_user_attendance.server_date}\n{app_user_attendance.server_time}"
-        app_user_attendance.device_date = f"{app_user_attendance.device_date}\n{app_user_attendance.device_time}"
+        # app_user_attendance.user = app_user_attendance.user_fullname or app_user_attendance.user
+        # app_user_attendance.server_date = f"{app_user_attendance.server_date}\n{app_user_attendance.server_time}"
+        # app_user_attendance.device_date = f"{app_user_attendance.device_date}\n{app_user_attendance.device_time}"
         app_user_attendance.cheated = 'Yes' if app_user_attendance.cheated else 'No'
         app_user_attendance['sl'] = index + 1
 
