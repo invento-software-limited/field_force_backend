@@ -2,8 +2,7 @@ import frappe
 import json
 
 from field_force.field_force.page.utils import generate_excel_and_download
-from field_force.field_force.report.utils import set_user_link, set_image_url,\
-    get_site_directory_path, set_link_to_doc
+from field_force.field_force.report.utils import set_image_url, get_site_directory_path, set_link_to_doc
 
 
 @frappe.whitelist()
@@ -25,18 +24,20 @@ def get_absolute_data(filters, export=False):
             if '.' in str(store_visit.device_time) else store_visit.device_time
 
         if not export:
-            set_link_to_doc(store_visit, 'name', 'merchandising-picture')
+            set_link_to_doc(store_visit, 'name', 'store-visit')
             set_link_to_doc(store_visit, 'customer', 'customer')
-            set_user_link(store_visit)
+            set_link_to_doc(store_visit, 'sales_person', 'sales-person')
 
-            store_visit.server_date = f"{store_visit.server_date}<br>{server_time}"
+            # store_visit.server_date = f"{store_visit.server_date}<br>{server_time}"
+            store_visit.server_time = server_time
             store_visit.device_date = f"{store_visit.device_date}<br>{device_time}"
         else:
-            store_visit.user = store_visit.user_fullname or store_visit.user
-            store_visit.server_date = f"{store_visit.server_date}\n{server_time}"
+            # store_visit.user = store_visit.user_fullname or store_visit.user
+            # store_visit.server_date = f"{store_visit.server_date}\n{server_time}"
+            store_visit.server_time = server_time
             store_visit.device_date = f"{store_visit.device_date}\n{device_time}"
 
-        store_visit.cheated = 'Yes' if store_visit.cheated else ''
+        store_visit.cheated = 'Yes' if store_visit.cheated else 'No'
         store_visit['sl'] = index + 1
 
     return query_result
@@ -48,11 +49,11 @@ def get_query_data(filters):
         pass
     conditions = get_conditions(filters)
 
-    query_string = """select store_visit.name, store_visit.user, store_visit.user_fullname, store_visit.customer,
+    query_string = '''select store_visit.name, store_visit.sales_person, store_visit.customer, store_visit.details,
                     store_visit.image, store_visit.contact_number, store_visit.server_date, store_visit.server_time,
                     store_visit.device_date, store_visit.device_time, store_visit.latitude, store_visit.longitude,
                     store_visit.device_model, store_visit.customer_address, store_visit.cheated from `tabStore Visit` 
-                    store_visit where %s order by store_visit.server_date desc""" % conditions
+                    store_visit where %s order by store_visit.server_date desc, store_visit.server_time desc''' % conditions
 
     query_result = frappe.db.sql(query_string, as_dict=1, debug=0)
     return query_result
@@ -61,19 +62,19 @@ def get_query_data(filters):
 def get_conditions(filters):
     from_date = filters.get('from_date')
     to_date = filters.get('to_date')
-    user = filters.get('user')
+    sales_person = filters.get('sales_person')
     customer = filters.get('customer')
 
     conditions = []
 
     if from_date:
-        conditions.append("store_visit.server_date >= '%s'" % from_date)
+        conditions.append('store_visit.server_date >= "%s"' % from_date)
     if to_date:
-        conditions.append("store_visit.server_date <= '%s'" % to_date)
-    if user:
-        conditions.append("store_visit.user = '%s'" % user)
+        conditions.append('store_visit.server_date <= "%s"' % to_date)
+    if sales_person:
+        conditions.append('store_visit.sales_person = "%s"' % sales_person)
     if customer:
-        conditions.append("store_visit.customer = '%s'" % customer)
+        conditions.append('store_visit.customer = "%s"' % customer)
 
     return " and ".join(conditions)
 
@@ -81,16 +82,18 @@ def get_columns():
     columns =  [
         {'fieldname': 'sl', 'label': 'SL', 'expwidth': 5, 'export': False},
         {'fieldname': 'server_date', 'label': 'Date', 'expwidth': 13},
+        {'fieldname': 'server_time', 'label': 'Time', 'expwidth': 13},
         {'fieldname': 'name', 'label': 'ID', 'expwidth': 20},
         {'fieldname': 'customer', 'label': 'Customer', 'expwidth': 15},
-        {'fieldname': 'customer_address', 'label': 'Address', 'expwidth': 15},
+        # {'fieldname': 'customer_address', 'label': 'Address', 'expwidth': 15},
         {'fieldname': 'contact_number', 'label': 'Contact', 'expwidth': 15},
+        {'fieldname': 'details', 'label': 'Details', 'expwidth': 15},
+        {'fieldname': 'sales_person', 'label': 'Sales Person', 'expwidth': 20},
         {'fieldname': 'device_date', 'label': 'Device Date Time', 'expwidth': 15},
         {'fieldname': 'cheated', 'label': 'Cheated', 'fieldtype': 'Data', 'expwidth': 15},
-        {'fieldname': 'latitude', 'label': 'Latitude', 'fieldtype': 'Data', 'expwidth': 15},
-        {'fieldname': 'longitude', 'label': 'Longitude', 'fieldtype': 'Data', 'expwidth': 15},
-        {'fieldname': 'device_model', 'label': 'Device Model', 'fieldtype': 'Data', 'expwidth': 15},
-        {'fieldname': 'user', 'label': 'Created By', 'expwidth': 20},
+        # {'fieldname': 'latitude', 'label': 'Latitude', 'fieldtype': 'Data', 'expwidth': 15},
+        # {'fieldname': 'longitude', 'label': 'Longitude', 'fieldtype': 'Data', 'expwidth': 15},
+        # {'fieldname': 'device_model', 'label': 'Device Model', 'fieldtype': 'Data', 'expwidth': 15},
         {'fieldname': 'image', 'label': 'Image', 'fieldtype': 'Image', 'expwidth': 15, 'export': False},
     ]
     return columns

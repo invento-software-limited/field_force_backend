@@ -1,4 +1,4 @@
-frappe.pages['store-visit-details-'].on_page_load = function(wrapper) {
+frappe.pages['store-visit-details-report'].on_page_load = function(wrapper) {
     frappe.require("assets/field_force/css/page_modal.css");
     var page = frappe.ui.make_app_page({
         parent: wrapper,
@@ -62,10 +62,10 @@ class StoreVisitDetailsReport {
                     fieldtype: 'Column Break'
                 },
                 {
-                    fieldname: 'user',
-                    label: __('Created By'),
+                    fieldname: 'sales_person',
+                    label: __('Sales Person'),
                     fieldtype: 'Link',
-                    options: 'User',
+                    options: 'Sales Person',
                     change: () => this.fetch_and_render(),
                 },
                 {
@@ -97,7 +97,7 @@ class StoreVisitDetailsReport {
         $('.main-section').append(html)
     }
     fetch_and_render = () => {
-        let {from_date, to_date, user, customer} = this.form.get_values();
+        let {from_date, to_date, sales_person, customer} = this.form.get_values();
         if (!from_date) {
             this.form.get_field('preview').html('');
             return;
@@ -107,11 +107,11 @@ class StoreVisitDetailsReport {
         		${__("Fetching...")}
         	</div>
         `);
-        frappe.call('field_force.field_force.page.store_visit_details_.store_visit_details_.get_store_visit_data', {
+        frappe.call('field_force.field_force.page.store_visit_details_report.store_visit_details_report.get_store_visit_data', {
             filters: {
                 from_date: from_date,
                 to_date: to_date,
-                user: user,
+                sales_person: sales_person,
                 customer: customer
             },
             freeze: true
@@ -156,9 +156,9 @@ class StoreVisitDetailsReport {
         return html
     }
     export_excel = () => {
-        let {from_date, to_date, customer, user} = this.form.get_values();
-        let url = `/api/method/field_force.field_force.page.store_visit_details_.store_visit_details_.export_file`;
-        url += `?from_date=${from_date||''}&to_date=${to_date||''}&customer=${customer||''}&user=${user||''}`;
+        let {from_date, to_date, customer, sales_person} = this.form.get_values();
+        let url = `/api/method/field_force.field_force.page.store_visit_details_report.store_visit_details_report.export_file`;
+        url += `?from_date=${from_date||''}&to_date=${to_date||''}&customer=${customer||''}&sales_person=${sales_person||''}`;
         window.open(url, '_blank');
     }
 }
