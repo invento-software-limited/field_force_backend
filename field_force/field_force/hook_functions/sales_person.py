@@ -101,16 +101,16 @@ def get_or_create_field_force_module_profile():
     if not frappe.db.exists("Module Profile", {"name": "Field Force"}):
         module_profile = frappe.get_doc({
                 "doctype": "Module Profile",
-                "module_profile": ['Field Force']
+                "module_profile_name": "Field Force"
             }).insert()
 
-        modules = ["Field Force"]
+        # modules = ["Field Force"]
 
-        for module in modules:
-            module_profile.append('block_modules', {
-                "doctype": "Block Module",
-                "module": module
-            })
+        # for module in modules:
+        #     module_profile.append('block_modules', {
+        #         "doctype": "Block Module",
+        #         "module": module
+        #     })
 
         module_profile.save()
         return module_profile.name
