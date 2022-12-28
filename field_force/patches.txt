@@ -1,3 +1,5 @@
 field_force.patches.v1.create_role
 field_force.patches.v1.create_role_profile
 field_force.patches.v1.create_module_profile
+field_force.patches.v1.set_permissions_to_roles
+field_force.patches.v1.create_sales_team

@@ -57,4 +57,6 @@ def create_role(role):
         role = frappe.get_doc(role_dict)
         role.insert()
 
+        frappe.db.commit()
         print(f"===>> '{role_name}' role created")
+    
