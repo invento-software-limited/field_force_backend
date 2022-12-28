@@ -50,7 +50,7 @@ def get_absolute_data(filters, export=False):
         return list(data_dict.values())[::-1]
 
     return []
-
+    
 def get_query_data(filters):
     conditions = get_conditions(filters)
 
