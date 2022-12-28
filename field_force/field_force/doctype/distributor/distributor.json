@@ -130,12 +130,12 @@
    "reqd": 1
   },
   {
-   "fetch_from": "sales_person.employee",
-   "fieldname": "employee",
+   "fetch_from": "sales_person.user",
+   "fieldname": "user",
    "fieldtype": "Link",
    "hidden": 1,
-   "label": "Employee",
-   "options": "Employee"
+   "label": "User",
+   "options": "User"
   },
   {
    "fetch_from": "employee.employee_name",
@@ -145,17 +145,16 @@
    "label": "Employee Name"
   },
   {
-   "fetch_from": "sales_person.user",
-   "fieldname": "user",
-   "fieldtype": "Link",
+   "fetch_from": "sales_person.employee",
+   "fieldname": "employee",
+   "fieldtype": "Data",
    "hidden": 1,
-   "label": "User",
-   "options": "User"
+   "label": "Employee"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-20 11:21:33.406402",
+ "modified": "2022-12-28 16:59:10.478230",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Distributor",

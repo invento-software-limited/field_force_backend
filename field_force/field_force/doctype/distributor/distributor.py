@@ -7,13 +7,24 @@ from frappe.model.document import Document
 class Distributor(Document):
 
 	def validate(self):
+		partner_group_name = self.distributor_name
+
+		if not frappe.db.exists('Partner Group', self.distributor_name):
+			partner_group = frappe.get_doc({
+				"doctype": "Partner Group",
+				"partner_group_name": self.distributor_name
+			}).insert()
+			partner_group_name = partner_group.name
+
 		if not self.customer and frappe.db.exists('Customer', self.distributor_name):
 			self.customer = self.distributor_name
+
 		elif not self.customer:
 			customer = {
 				'doctype': 'Customer',
 				'customer_name': self.distributor_name,
 				'customer_group': 'Distributor',
+				'partner_group': partner_group_name,
 				'distributor_name': self.distributor_name,
 				'sales_person': self.sales_person,
 				'contact_person': self.contact_person,
