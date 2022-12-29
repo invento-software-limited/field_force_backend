@@ -115,6 +115,9 @@ def get_role_permissions():
                 "read": 1,
                 "write": 1,
                 "create": 1,
+                "submit": 1,
+                "cancel": 1,
+                "amend": 1,
                 "delete": 1,
                 "report": 1,
                 "export": 1,
@@ -254,6 +257,9 @@ def get_role_permissions():
                 "read": 1,
                 "write": 1,
                 "create": 1,
+                "submit": 1,
+                "cancel": 1,
+                "amend": 1,
                 "delete": 1,
                 "report": 1,
                 "export": 1,
@@ -350,6 +356,9 @@ def get_role_permissions():
                 "read": 1,
                 "write": 1,
                 "create": 1,
+                "submit": 1,
+                "cancel": 1,
+                "amend": 1,
                 "delete": 1,
                 "report": 1,
                 "export": 1,
@@ -481,7 +490,6 @@ def get_role_permissions():
                 "print": 1,
                 "email": 1
             },
-
         ],
         "Merchandiser": [
             {
@@ -526,7 +534,7 @@ def get_role_permissions():
                 "print": 1,
                 "email": 1
             },
-                                    {
+            {
                 "parent": "Item Price",
                 "select": 1,
                 "read": 1,
