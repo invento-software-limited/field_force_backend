@@ -14,10 +14,9 @@ def get_custom_data(doctype):
     return method[doctype](doctype)
 
 def get_customer_list(doctype):
-    frappe.local.form_dict['filters'] = [['customer_group', 'in', ['Retail Shop', 'Modern Retails']]]
+    frappe.local.form_dict['filters'] = [['customer_group', 'in', ['Retail Shop', 'MT']]]
     frappe.local.response.total_items = len(frappe.get_list(doctype, frappe.local.form_dict.get('filters')))
     return frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
-
 
 def get_items_list(doctype):
     _, child_table_fields = get_api_fields(doctype, with_child_fields=True)
