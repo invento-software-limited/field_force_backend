@@ -60,6 +60,7 @@ def get_allowed_doctypes(user):
     if role_profile:
         allowed_doctypes = frappe.db.get_value("App End Permission Role Profile",
                                                {"role_profile": role_profile}, "doctypes")
-        return allowed_doctypes.split(',')
+        if allowed_doctypes:
+            return allowed_doctypes.split(',')
 
     return []
