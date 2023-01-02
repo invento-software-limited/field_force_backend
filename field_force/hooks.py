@@ -40,8 +40,8 @@ doctype_js = {
 	"User" : "public/js/user.js",
 	"Sales Order" : "public/js/sales_order.js",
 	"Sales Person" : "public/js/sales_person.js"
-
 }
+
 doctype_list_js = {
 	"Sales Order" : "public/js/sales_order_list.js"
 }
@@ -122,7 +122,7 @@ doc_events = {
 	"Customer": {
 		"validate": [
 			"field_force.field_force.hook_functions.customer.set_customer_group",
-			"field_force.field_force.hook_functions.customer.set_employee"
+			"field_force.field_force.hook_functions.customer.set_sales_person_and_employee"
 		],
 		"after_insert": [
 			"field_force.field_force.hook_functions.customer.create_distributor",
