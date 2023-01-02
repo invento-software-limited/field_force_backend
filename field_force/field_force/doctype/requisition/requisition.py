@@ -62,7 +62,7 @@ class Requisition(Document):
 
     def set_customer_info(self):
         if not self.customer_name or not self.distributor:
-            customer_name, distributor= frappe.db.get_value('Customer', self.customer, ['customer_name', 'distributor'])
+            customer_name, distributor = frappe.db.get_value('Customer', self.customer, ['customer_name', 'distributor'])
 
             if not self.customer_name and customer_name:
                 self.customer_name = customer_name
@@ -80,13 +80,7 @@ class Requisition(Document):
                 item.brand, item.image = frappe.db.get_value('Item', item.item_code, ['brand', 'image'])
 
     def validate_items(self):
-        commission_brand_list = frappe.get_list('Customer Brand Commission',
-                                                {'parent': self.customer}, ['brand', 'commission_rate'])
-        commission_brand_dict = {}
-
-        for commission in commission_brand_list:
-            commission_brand_dict[commission.brand] = commission.commission_rate
-
+        commission_brand_dict = get_brands_commission(self.customer)
         total_items = 0
         total_qty = 0
         total = 0
@@ -304,15 +298,16 @@ def set_column_width(worksheet, column=None, width=None):
         for i, width_ in enumerate([12, 15, 12, 12, 12, 15]):
             worksheet.column_dimensions[get_column_letter(i + 1)].width = width_
 
-
 @frappe.whitelist()
 def get_brands_commission(customer, brand=None):
     customer = frappe.get_doc('Customer', customer)
+    brand_wise_commission_dict = {}
 
     if customer.customer_group == "Retail Shop":
         distributor = frappe.get_doc("Distributor", customer.distributor)
         brand_wise_commission_dict = get_commissions_in_dict(distributor.commissions)
-    else:
+
+    if not brand_wise_commission_dict:
         brand_wise_commission_dict = get_commissions_in_dict(customer.commissions)
 
     if brand:
