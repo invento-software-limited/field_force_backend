@@ -67,12 +67,16 @@ frappe.ui.form.on('Requisition', {
     // },
 	partner_group: function (frm){
 		frm.set_value("customer", null);
+		var filters_ = [];
 
-		frm.set_query("customer", function() {
+		if (frm.doc.partner_group!=='' && frm.doc.partner_group!==null && frm.doc.partner_group !== undefined) {
+			filters_ = [
+				["Customer", "partner_group", "=", frm.doc.partner_group]
+			]
+		}
+		frm.set_query("customer", function () {
 			return {
-				filters: [
-					["Customer","partner_group", "=", frm.doc.partner_group]
-				]
+				filters: filters_
 			}
 		});
 	},

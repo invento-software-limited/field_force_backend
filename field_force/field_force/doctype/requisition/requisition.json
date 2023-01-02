@@ -85,7 +85,6 @@
  "fields": [
   {
    "bold": 1,
-   "depends_on": "eval:doc.partner_group!=='' && doc.partner_group!==null && doc.partner_group !== undefined;",
    "fieldname": "customer",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -517,8 +516,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Partner Group",
-   "options": "Partner Group",
-   "reqd": 1
+   "options": "Partner Group"
   },
   {
    "allow_on_submit": 1,
@@ -598,7 +596,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-12-22 15:41:59.868110",
+ "modified": "2023-01-02 12:39:27.407842",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",
