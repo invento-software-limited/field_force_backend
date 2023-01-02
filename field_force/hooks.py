@@ -12,8 +12,10 @@ app_license = "MIT"
 # Includes in <head>
 # ------------------
 
-# from field_force import custom_hooks
-# custom_hooks.execute()
+
+# For applying the customization of api endpoints and methods
+from field_force import custom_hooks
+custom_hooks.execute()
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/field_force/css/field_force.css"
