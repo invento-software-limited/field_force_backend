@@ -8,9 +8,9 @@ from openpyxl.styles import Font, PatternFill, Alignment
 from openpyxl.utils import get_column_letter
 
 import frappe
+import time
 import datetime
 from frappe.model.document import Document
-from frappe.core.doctype.communication import email
 
 import openpyxl
 
@@ -62,13 +62,16 @@ class Requisition(Document):
 
     def set_customer_info(self):
         if not self.customer_name or not self.distributor:
-            customer_name, distributor = frappe.db.get_value('Customer', self.customer, ['customer_name', 'distributor'])
-
+            customer_name, distributor, customer_group = frappe.db.get_value('Customer', self.customer,
+                                                                             ['customer_name', 'distributor', 'customer_group'])
             if not self.customer_name and customer_name:
                 self.customer_name = customer_name
 
             if not self.distributor and distributor:
                 self.distributor = distributor
+
+            if not self.customer_group and customer_group:
+                self.customer_group = customer_group
 
     def set_partner_group(self):
         if not self.partner_group:
@@ -81,6 +84,7 @@ class Requisition(Document):
 
     def validate_items(self):
         commission_brand_dict = get_brands_commission(self.customer)
+
         total_items = 0
         total_qty = 0
         total = 0
@@ -300,20 +304,40 @@ def set_column_width(worksheet, column=None, width=None):
 
 @frappe.whitelist()
 def get_brands_commission(customer, brand=None):
-    customer = frappe.get_doc('Customer', customer)
+    customer_group, distributor = frappe.db.get_value("Customer", customer, ['customer_group', 'distributor'])
     brand_wise_commission_dict = {}
 
-    if customer.customer_group == "Retail Shop":
-        distributor = frappe.get_doc("Distributor", customer.distributor)
-        brand_wise_commission_dict = get_commissions_in_dict(distributor.commissions)
+    if customer_group == "Retail Shop" and distributor:
+        commissions = frappe.db.get_all('Distributor Brand Commission', {'parent': distributor},
+                                        ['brand', 'commission_rate'])
+        brand_wise_commission_dict = get_commissions_in_dict(commissions)
 
     if not brand_wise_commission_dict:
-        brand_wise_commission_dict = get_commissions_in_dict(customer.commissions)
+        commissions = frappe.db.get_all('Customer Brand Commission', {'parent': customer},
+                                        ['brand', 'commission_rate'])
+        brand_wise_commission_dict = get_commissions_in_dict(commissions)
 
     if brand:
         return brand_wise_commission_dict.get(brand, 0)
 
     return brand_wise_commission_dict
+
+# @frappe.whitelist()
+# def get_brands_commission(customer, brand=None):
+#     customer = frappe.get_doc('Customer', customer)
+#     brand_wise_commission_dict = {}
+#
+#     if customer.customer_group == "Retail Shop":
+#         distributor = frappe.get_doc("Distributor", customer.distributor)
+#         brand_wise_commission_dict = get_commissions_in_dict(distributor.commissions)
+#
+#     if not brand_wise_commission_dict:
+#         brand_wise_commission_dict = get_commissions_in_dict(customer.commissions)
+#
+#     if brand:
+#         return brand_wise_commission_dict.get(brand, 0)
+#
+#     return brand_wise_commission_dict
 
 def get_commissions_in_dict(commissions):
     brand_wise_commission_dict = {}
