@@ -144,7 +144,8 @@ def set_extra_values(self):
 def set_allocated_amount(self):
     if self.sales_team:
         for sales_person in self.sales_team:
-            sales_person.allocated_amount = (self.net_total * sales_person.allocated_percentage)/100
+            if self.total and sales_person.allocated_percentage:
+                sales_person.allocated_amount = (self.total * sales_person.allocated_percentage)/100
 
 def add_sales_person(self):
     if not self.sales_person and frappe.db.exists("Sales Person", {"user": self.owner}):
