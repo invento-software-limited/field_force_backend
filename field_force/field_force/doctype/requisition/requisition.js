@@ -30,7 +30,6 @@ function get_brands_commissions(customer, brand=null){
 		callback: function(r) {
 			if (!r.exc) {
 				// code snippet
-				console.log("=====>>>", r.message);
 				brand_commissions = r.message;
 			}
 			else{
@@ -44,7 +43,6 @@ function get_brands_commissions(customer, brand=null){
 
 frappe.ui.form.on('Requisition', {
 	on_load: function (){
-		console.log("========>>>", frm.doc.partner_group);
 		if (frm.doc.requisition_excel === null){
 			frm.set_df_property("requisition_excel", "hidden", true);
 		}
@@ -53,8 +51,6 @@ frappe.ui.form.on('Requisition', {
 		}
 	},
 	refresh: function (frm){
-		console.log("========>>>", frm.doc.partner_group);
-
 		if (frm.doc.customer){
 			brand_commissions = get_brands_commissions(frm.doc.customer)
 		}
@@ -148,9 +144,6 @@ function set_absolute_values(frm){
 
 frappe.ui.form.on("Requisition Item", {
 	item_code: function(frm,cdt,cdn) {
-		console.log("Item added");
-		console.log("======>>>", brand_commissions);
-
 		var row = locals[cdt][cdn];
 		if (frm.doc.delivery_date) {
 			row.delivery_date = frm.doc.delivery_date;
@@ -172,12 +165,11 @@ frappe.ui.form.on("Requisition Item", {
 			},
 			callback: function(r) {
 				if (!r.exc) {
-					// console.log(r.message);
 					let item = r.message;
 					frappe.model.set_value(cdt, cdn, "price_list_rate", item.price_list_rate);
+					frm.refresh_field(cdt, cdn, "price_list_rate");
 
 					if (item.brand) {
-						// console.log("commission ===>>", brand_commissions);
 						if (brand_commissions[item.brand] !== undefined){
 							frappe.model.set_value(cdt, cdn, "discount_percentage", brand_commissions[item.brand])
 						}
@@ -185,10 +177,14 @@ frappe.ui.form.on("Requisition Item", {
 							frappe.model.set_value(cdt, cdn, "discount_percentage", 0);
 						}
 					}
+					frm.refresh()
 					set_absolute_values(frm);
 				}
 			}
 		});
+	},
+	price_list_rate: function (frm, cdt, cdn){
+		set_rate_and_amount(frm, cdt, cdn);
 	},
 	qty: function(frm, cdt, cdn){
 		set_amount(frm, cdt, cdn);
@@ -221,8 +217,6 @@ frappe.ui.form.on("Requisition Item", {
 
 function set_rate_and_amount(frm, cdt, cdn){
 	let row = locals[cdt][cdn];
-	// console.log("rate====>>>", row.rate);
-	// console.log("prate====>>>", row.price_list_rate);
 
 	if (row.discount_percentage > 0){
 		let discount_amount = (row.price_list_rate * (row.discount_percentage/100));
