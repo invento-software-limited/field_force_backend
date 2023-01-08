@@ -145,6 +145,13 @@ function set_absolute_values(frm){
 frappe.ui.form.on("Requisition Item", {
 	item_code: function(frm,cdt,cdn) {
 		var row = locals[cdt][cdn];
+
+		if (row.item_code && !frm.doc.customer){
+			frappe.model.set_value(cdt, cdn, "item_code");
+			frm.refresh_field(cdt, cdn, "item_code");
+			frappe.throw("Please specify: Customer. It is needed to fetch Item Details.\n")
+		}
+
 		if (frm.doc.delivery_date) {
 			row.delivery_date = frm.doc.delivery_date;
 			refresh_field("delivery_date", cdn, "items");
@@ -166,19 +173,9 @@ frappe.ui.form.on("Requisition Item", {
 			callback: function(r) {
 				if (!r.exc) {
 					let item = r.message;
-					frappe.model.set_value(cdt, cdn, "price_list_rate", item.price_list_rate);
-					frm.refresh_field(cdt, cdn, "price_list_rate");
-
-					if (item.brand) {
-						if (brand_commissions[item.brand] !== undefined){
-							frappe.model.set_value(cdt, cdn, "discount_percentage", brand_commissions[item.brand])
-						}
-						else{
-							frappe.model.set_value(cdt, cdn, "discount_percentage", 0);
-						}
-					}
-					frm.refresh()
-					set_absolute_values(frm);
+					set_item_values(frm, cdt, cdn, item);
+					set_discount_percentage(frm, cdt, cdn, item);
+					set_absolute_values(frm)
 				}
 			}
 		});
@@ -187,12 +184,17 @@ frappe.ui.form.on("Requisition Item", {
 		set_rate_and_amount(frm, cdt, cdn);
 	},
 	qty: function(frm, cdt, cdn){
+		parse_value_to_float(cdt, cdn, 'qty');
 		set_amount(frm, cdt, cdn);
+		set_absolute_values(frm);
 	},
 	discount_percentage: function (frm, cdt, cdn){
+		parse_value_to_float(cdt, cdn, 'discount_percentage');
 		set_rate_and_amount(frm, cdt, cdn);
 	},
 	discount_amount: function(frm, cdt, cdn){
+		parse_value_to_float(cdt, cdn, 'rate');
+
 		let row = locals[cdt][cdn];
 		let rate = row.price_list_rate - row.discount_amount
 
@@ -205,10 +207,12 @@ frappe.ui.form.on("Requisition Item", {
 		set_absolute_values(frm);
 	},
 	rate: function(frm, cdt, cdn){
-		set_rate_and_amount(frm, cdt, cdn);
+		parse_value_to_float(cdt, cdn, 'rate');
+		set_amount(frm, cdt, cdn);
+		calculate_discount_and_amount(frm, cdt, cdn);
+		// set_rate_and_amount(frm, cdt, cdn);
 	},
 	delivery_date: function(frm, cdt, cdn) {
-
 		if(!frm.doc.delivery_date) {
 			erpnext.utils.copy_value_in_all_rows(frm.doc, cdt, cdn, "items", "delivery_date");
 		}
@@ -232,8 +236,50 @@ function set_rate_and_amount(frm, cdt, cdn){
 	set_absolute_values(frm);
 }
 
+function set_discount_percentage(frm, cdt, cdn, item){
+	if (item.brand) {
+		if (brand_commissions[item.brand] !== undefined){
+			frappe.model.set_value(cdt, cdn, "discount_percentage", brand_commissions[item.brand])
+		}
+		else{
+			frappe.model.set_value(cdt, cdn, "discount_percentage", 0);
+		}
+		frm.refresh_field(cdt, cdn, "discount_percentage")
+	}
+}
+
 function set_amount(frm, cdt, cdn){
 	var row = locals[cdt][cdn];
 	frappe.model.set_value(cdt, cdn, "amount", row.qty * row.rate);
-	set_absolute_values(frm);
+}
+
+function set_item_values(frm, cdt, cdn, item){
+	frappe.model.set_value(cdt, cdn, "item_name", item.item_name);
+	frappe.model.set_value(cdt, cdn, "brand", item.brand);
+	frappe.model.set_value(cdt, cdn, "price_list_rate", item.price_list_rate);
+
+	frm.refresh_field(cdt, cdn, "item_name");
+	frm.refresh_field(cdt, cdn, "brand");
+	frm.refresh_field(cdt, cdn, "price_list_rate");
+}
+
+function calculate_discount_and_amount(frm, cdt, cdn) {
+	let row = locals[cdt][cdn];
+	console.log(row.price_list_rate, row.rate);
+
+	if (row.price_list_rate && row.rate){
+		let discount_amount = row.price_list_rate - row.rate;
+		let discount_percentage = (row.rate / row.price_list_rate) * 100;
+		frappe.model.set_value(cdt, cdn, 'discount_amount', discount_amount);
+		frappe.model.set_value(cdt, cdn, 'discount_percentage', discount_percentage);
+		frm.refresh_fields()
+	}
+}
+
+function parse_value_to_float(cdt, cdn, field){
+	let item = locals[cdt][cdn]
+
+	if(typeof item[field] === 'string'){
+		frappe.model.set_value(cdt, cdn, field, parseFloat(item[field]));
+	}
 }

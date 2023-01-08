@@ -84,7 +84,6 @@ class Requisition(Document):
 
     def validate_items(self):
         commission_brand_dict = get_brands_commission(self.customer)
-
         total_items = 0
         total_qty = 0
         total = 0
@@ -113,10 +112,10 @@ class Requisition(Document):
                         item.rate = item.price_list_rate - item.discount_amount
 
                     item.amount = item.qty * item.rate
-                    total += item.amount
+                    total += float(item.amount)
 
                 total_items += 1
-                total_qty += item.qty
+                total_qty += int(item.qty)
                 self.validate_accepted_qty(item)
         else:
             frappe.throw("Items are required")
