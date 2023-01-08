@@ -31,7 +31,8 @@ class Requisition(Document):
         # generate_requisition_excel_and_attach(self)
 
     def before_submit(self):
-        generate_requisition_excel_and_attach(self)
+        generate_csv_and_attach_file(self)
+        # generate_requisition_excel_and_attach(self)
 
 
     def on_submit(self):
@@ -346,3 +347,29 @@ def get_commissions_in_dict(commissions):
         brand_wise_commission_dict[commission.brand] = commission.commission_rate
 
     return brand_wise_commission_dict
+
+import csv
+
+def generate_csv_and_attach_file(requisition):
+    file_name = f"Requisition_{requisition.name}.csv"
+    file_path = get_directory_path('requisition/')
+    absolute_path = file_path + file_name
+
+    columns = ['Product #', 'Product Name', 'UOM', 'Quantity', 'Unit Price', 'Nett Price']
+
+    with open(absolute_path, 'w+', encoding='UTF8') as f:
+        writer = csv.writer(f)
+
+        # write the header
+        writer.writerow(columns)
+
+        for item in requisition.items:
+            item_row_data = [item.product_id, item.item_name, item.uom, item.qty, item.rate, item.amount]
+            # write the data
+            writer.writerow(item_row_data)
+
+
+    file = attach_file(requisition, absolute_path, file_name)
+    requisition.requisition_excel = file.file_url
+    requisition.requisition_excel_file = f'<a class="attached-file-link" href="{file.file_url}"' \
+                                         f' target="_blank">{file_name}</a>'

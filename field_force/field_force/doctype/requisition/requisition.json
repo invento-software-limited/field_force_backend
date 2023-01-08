@@ -472,7 +472,7 @@
    "depends_on": "eval:doc.requisition_excel != null;",
    "fieldname": "requisition_excel_file",
    "fieldtype": "Attach",
-   "label": "Requisition Excel File",
+   "label": "Requisition File",
    "read_only": 1
   },
   {
@@ -606,7 +606,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-04 13:38:06.837916",
+ "modified": "2023-01-08 18:12:00.376461",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",

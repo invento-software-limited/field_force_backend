@@ -8,6 +8,7 @@
  "engine": "InnoDB",
  "field_order": [
   "item_code",
+  "product_id",
   "item_name",
   "item_group",
   "col_break1",
@@ -486,11 +487,17 @@
    "hidden": 1,
    "in_list_view": 1,
    "label": "Accepted Quantity"
+  },
+  {
+   "fetch_from": "item_code.product_id",
+   "fieldname": "product_id",
+   "fieldtype": "Data",
+   "label": "Product ID"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2023-01-08 15:03:55.718912",
+ "modified": "2023-01-08 17:41:04.176308",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition Item",
