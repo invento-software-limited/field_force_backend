@@ -355,7 +355,7 @@ def generate_csv_and_attach_file(requisition):
     file_path = get_directory_path('requisition/')
     absolute_path = file_path + file_name
 
-    columns = ['Product #', 'Product Name', 'UOM', 'Quantity', 'Unit Price', 'Nett Price']
+    columns = ['Product #', 'Product Name', 'UOM', 'Quantity', 'Unit Price', 'Discount', 'Nett Price', 'Amount']
 
     with open(absolute_path, 'w+', encoding='UTF8') as f:
         writer = csv.writer(f)
@@ -364,7 +364,7 @@ def generate_csv_and_attach_file(requisition):
         writer.writerow(columns)
 
         for item in requisition.items:
-            item_row_data = [item.product_id, item.item_name, item.uom, item.qty, item.rate, item.amount]
+            item_row_data = [item.product_id, item.item_name, item.uom, item.qty, item.rate, '', item.rate, item.amount]
             # write the data
             writer.writerow(item_row_data)
 
