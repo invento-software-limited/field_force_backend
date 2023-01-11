@@ -323,22 +323,27 @@ def get_brands_commission(customer, brand=None):
 
     return brand_wise_commission_dict
 
-# @frappe.whitelist()
-# def get_brands_commission(customer, brand=None):
-#     customer = frappe.get_doc('Customer', customer)
-#     brand_wise_commission_dict = {}
-#
-#     if customer.customer_group == "Retail Shop":
-#         distributor = frappe.get_doc("Distributor", customer.distributor)
-#         brand_wise_commission_dict = get_commissions_in_dict(distributor.commissions)
-#
-#     if not brand_wise_commission_dict:
-#         brand_wise_commission_dict = get_commissions_in_dict(customer.commissions)
-#
-#     if brand:
-#         return brand_wise_commission_dict.get(brand, 0)
-#
-#     return brand_wise_commission_dict
+@frappe.whitelist()
+def get_item_details(item_code, fields=None):
+    fields = fields or ['name as item_code', 'product_id', 'item_name', 'brand']
+    item = {}
+
+    if frappe.db.exists("Item", {'item_code': item_code}):
+        item = frappe.db.get_value("Item", item_code, fields , as_dict=1)
+
+    elif frappe.db.exists("Item", {'product_id': item_code}):
+        item = frappe.db.get_value("Item", {'product_id': item_code}, fields, as_dict=1)
+
+    if item:
+        try:
+            item.price_list_rate = frappe.db.get_value("Item Price", {'item_code': item.item_code,
+                                                                      'selling':1}, 'price_list_rate')
+        except:
+            item.price_list_rate = 0
+
+    print("=====>>", item)
+    return item
+
 
 def get_commissions_in_dict(commissions):
     brand_wise_commission_dict = {}
