@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "format:REQ-{YY}{MM}{#####}",
  "creation": "2022-08-30 11:47:28.784443",
@@ -606,7 +607,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-08 18:12:00.376461",
+ "modified": "2023-01-15 14:37:44.675888",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",
@@ -690,5 +691,6 @@
   }
  ],
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "track_changes": 1
 }
