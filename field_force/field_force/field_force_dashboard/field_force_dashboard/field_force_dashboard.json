@@ -1,0 +1,66 @@
+{
+ "cards": [
+  {
+   "card": "Total Requisition"
+  },
+  {
+   "card": "Total Sales"
+  },
+  {
+   "card": "Total Active Items"
+  },
+  {
+   "card": "Active Customers"
+  },
+  {
+   "card": "Total Sales Persons"
+  },
+  {
+   "card": "Store Visits"
+  },
+  {
+   "card": "Merchandising Pictures"
+  },
+  {
+   "card": "Attendance"
+  }
+ ],
+ "charts": [
+  {
+   "chart": "Requisition Trends",
+   "width": "Half"
+  },
+  {
+   "chart": "Sales Trends",
+   "width": "Half"
+  },
+  {
+   "chart": "Group Wise Requisition",
+   "width": "Half"
+  },
+  {
+   "chart": "Partner Group Wise Requisition",
+   "width": "Half"
+  },
+  {
+   "chart": "Brand Wise Requisition",
+   "width": "Half"
+  },
+  {
+   "chart": "Sales Persons",
+   "width": "Half"
+  }
+ ],
+ "creation": "2023-01-05 15:42:56.285518",
+ "dashboard_name": "Field Force Dashboard",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 1,
+ "is_standard": 1,
+ "modified": "2023-01-15 17:01:36.434146",
+ "modified_by": "munim@invento.com.bd",
+ "module": "Field Force",
+ "name": "Field Force Dashboard",
+ "owner": "munim@invento.com.bd"
+}

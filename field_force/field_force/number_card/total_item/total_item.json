@@ -1,0 +1,23 @@
+{
+ "aggregate_function_based_on": "",
+ "creation": "2023-01-15 11:04:55.513517",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "Item",
+ "dynamic_filters_json": "[]",
+ "filters_json": "[[\"Item\",\"disabled\",\"=\",0,false]]",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "Total Item",
+ "modified": "2023-01-15 11:05:35.926785",
+ "modified_by": "munim@invento.com.bd",
+ "module": "Field Force",
+ "name": "Total Item",
+ "owner": "munim@invento.com.bd",
+ "report_function": "Sum",
+ "show_percentage_stats": 0,
+ "stats_time_interval": "Daily",
+ "type": "Document Type"
+}

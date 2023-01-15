@@ -1,0 +1,23 @@
+{
+ "aggregate_function_based_on": "base_grand_total",
+ "creation": "2023-01-15 10:57:32.617235",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "Requisition",
+ "dynamic_filters_json": "[]",
+ "filters_json": "[]",
+ "function": "Sum",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "Total Requisition Amount",
+ "modified": "2023-01-15 10:57:32.617235",
+ "modified_by": "munim@invento.com.bd",
+ "module": "Field Force",
+ "name": "Total Requisition Amount",
+ "owner": "munim@invento.com.bd",
+ "report_function": "Sum",
+ "show_percentage_stats": 1,
+ "stats_time_interval": "Daily",
+ "type": "Document Type"
+}
