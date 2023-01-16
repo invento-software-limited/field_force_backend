@@ -12,14 +12,7 @@ class SalesTarget(Document):
 			target.month = self.month
 			target.year = self.year
 
-			filters = {
-				"name": ["!=", target.name],
-				"sales_person": target.sales_person,
-				"month": target.month,
-				"year": target.year
-			}
-
-			if frappe.db.exists("Sales Person Target", filters):
+			if already_has_sales_target(target):
 				messages += f"Target already exists of sales person <b>{target.sales_person}</b>" \
 							f" for <b>{target.month}</b>, <b>{target.year}</b><br><hr>"
 
@@ -67,3 +60,18 @@ def get_all_children(sales_persons_list, tree_dict, parent, exclude_group=False,
 def get_child(parent):
 	return frappe.db.sql("""select name as sales_person, sales_person_name, employee, is_group, type
 	 						from `tabSales Person` where parent_sales_person='%s'""" % parent, as_dict=1)
+
+
+def already_has_sales_target(target):
+	targets = frappe.db.sql('''select 
+					sales_person,
+					target_amount 
+					from `tabSales Person Target` sales_person_target
+					join `tabSales Target` sales_target on sales_person_target.parent = sales_target.name 
+					where sales_target.docstatus = 1 
+					and sales_person_target.name != "%s" 
+					and sales_person_target.sales_person = "%s"
+					and sales_person_target.month = "%s" 
+					and sales_person_target.year = "%s"''' % (target.name, target.sales_person,
+															  target.month, target.year), as_dict=1)
+	return targets
