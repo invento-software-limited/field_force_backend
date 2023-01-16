@@ -39,6 +39,10 @@
    "width": "Half"
   },
   {
+   "chart": "Group Wise Sales",
+   "width": "Half"
+  },
+  {
    "chart": "Partner Group Wise Requisition",
    "width": "Half"
   },
@@ -54,7 +58,7 @@
  "idx": 0,
  "is_default": 1,
  "is_standard": 1,
- "modified": "2023-01-16 10:01:53.217368",
+ "modified": "2023-01-16 10:25:28.668080",
  "modified_by": "munim@invento.com.bd",
  "module": "Field Force",
  "name": "Field Force Dashboard",
