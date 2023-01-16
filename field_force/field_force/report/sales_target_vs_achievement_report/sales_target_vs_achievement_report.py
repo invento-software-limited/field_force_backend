@@ -1,6 +1,5 @@
 # Copyright (c) 2022, Invento Software Limited and contributors
 # For license information, please see license.txt
-from numpy import mean
 
 import frappe
 from field_force.field_force.doctype.sales_target.sales_target import get_sales_persons
@@ -201,8 +200,10 @@ def set_format(total_row, average_percentage=True):
     total_row['target_amount'] = currency_format(total_row['target_amount'])
     total_row['achievement_amount'] = currency_format(total_row['achievement_amount'])
 
-    if average_percentage:
-        total_row['achievement_percentage'] = "{:.2f}".format(mean(get_default(total_row.get('achievement_percentages'))))
+    if average_percentage and total_row.get('achievement_percentages'):
+        percentages = total_row.get('achievement_percentages')
+        average = sum(percentages) / len(percentages)
+        total_row['achievement_percentage'] = "{:.2f}".format(average)
     else:
         total_row['achievement_percentage'] = "{:.2f}".format(get_default(total_row.get('achievement_percentages')))
 
