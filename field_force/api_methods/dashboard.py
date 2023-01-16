@@ -16,6 +16,7 @@ def get_dashboard_data():
 
     sales_person_names = get_sales_person_names(frappe.session.user)
     sales_target = get_sales_target(sales_person_names, current_month_name, current_year,  month_start_date, today_date)
+    monthly_sales = get_monthly_sales(sales_person_names, month_start_date, today_date)
 
     dashboard_data = {
         "month": current_month_name,
@@ -23,9 +24,10 @@ def get_dashboard_data():
         "daily_sold_items": get_daily_sold_items(sales_person_names, today_date) or 0,
         "daily_sales": get_daily_sales(sales_person_names, today_date) or 0,
         "daily_customers": get_daily_customers(sales_person_names, today_date) or 0,
-        "monthly_target": sales_target if sales_target else 0,
+        "monthly_target": sales_target or 0,
+        "monthly_sales": monthly_sales or 0,
         # "monthly_sales": sales_target.achievement_amount if sales_target else 0,
-        "monthly_sales": get_monthly_sales(sales_person_names, month_start_date, today_date) or 0,
+        "progress_percentage": get_progress_percentage(sales_target, monthly_sales),
         "monthly_customers": get_monthly_customers(sales_person_names, month_start_date, today_date) or 0,
         "announcements": get_announcements(today_date),
         "allowed_doctypes": get_allowed_doctypes(frappe.session.user)
@@ -56,7 +58,7 @@ def get_sales_target(sales_person_names, month, year, month_start_date, today_da
         return 0
 
     sales_target = frappe.db.sql("""select SUM(IFNULL(target_amount, 0)) as target_amount from
-                                    `tabSales Person Target` where sales_person in %s and month='%s'
+                                    `tabSales Person Target` where docstatus=1 and sales_person in %s and month='%s'
                                     and year='%s'""" % (sales_person_names, month, year), as_dict=1)
     if sales_target:
         return sales_target[0].target_amount
@@ -104,3 +106,9 @@ def get_announcements(date):
                                     disabled=0 and from_date <= '%s' and to_date >= '%s' order by 
                                     announcement_date desc, creation desc """ % (date, date), as_dict=1)
     return announcements
+
+def get_progress_percentage(monthly_target, monthly_sales):
+    if  monthly_target and monthly_sales:
+        return float("{:.2f}".format((monthly_sales / monthly_target) * 100))
+
+    return 0
