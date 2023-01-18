@@ -167,6 +167,8 @@
   {
    "fieldname": "po_no",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "PO Number"
   },
   {
@@ -528,7 +530,8 @@
    "fieldname": "delivered_amount",
    "fieldtype": "Currency",
    "label": "Delivered Amount",
-   "precision": "2"
+   "precision": "2",
+   "read_only_depends_on": "eval: doc.docstatus==1 && doc.delivered_amount > 0;"
   },
   {
    "allow_on_submit": 1,
@@ -620,7 +623,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-16 14:46:49.458411",
+ "modified": "2023-01-18 15:28:35.758221",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",
