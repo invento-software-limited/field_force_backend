@@ -4,7 +4,8 @@ import json
 
 import frappe
 from field_force.field_force.page.utils import generate_excel_and_download
-from field_force.field_force.report.utils import set_link_to_doc, set_image_url, get_site_directory_path
+from field_force.field_force.report.utils import set_link_to_doc, set_image_url, get_site_directory_path,\
+    set_google_map_location_button
 
 
 @frappe.whitelist()
@@ -12,6 +13,7 @@ def get_user_attendance_data(filters=None):
     columns = get_columns()
     filters = json.loads(filters)
     data = get_absolute_data(filters)
+    print(data)
     return data, columns
 
 def get_absolute_data(filters, export=False):
@@ -21,18 +23,21 @@ def get_absolute_data(filters, export=False):
     index = 1
 
     for app_user_attendance in data:
+        print("====>>", app_user_attendance.image)
+
         set_image_url(app_user_attendance, site_directory)
         data_key = f"{app_user_attendance.server_date}_{app_user_attendance.user}"
         app_user_attendance.cheated = 'Yes' if app_user_attendance.cheated else 'No'
 
         if data_key not in data_dict.keys():
             data_dict[data_key] = app_user_attendance
+            data_dict[data_key]['sl'] = index
             data_dict[data_key]['checkin_time'] = app_user_attendance.server_time
             data_dict[data_key]['checkin_device_time'] = app_user_attendance.device_time
             data_dict[data_key]['checkin_name'] = app_user_attendance.name
             data_dict[data_key]['checkin_image'] = app_user_attendance.image
-            data_dict[data_key]['checkout_image'] = app_user_attendance.image
-            data_dict[data_key]['sl'] = index
+            data_dict[data_key]['checkout_image'] = '/files/default-image.png'
+            data_dict[data_key]['checkin_location'] = set_google_map_location_button(app_user_attendance)
 
             if export:
                 app_user_attendance.user = app_user_attendance.user_fullname or app_user_attendance.user
@@ -45,6 +50,7 @@ def get_absolute_data(filters, export=False):
             data_dict[data_key]['checkout_device_time'] = app_user_attendance.device_time
             data_dict[data_key]['checkout_name'] = app_user_attendance.name
             data_dict[data_key]['checkout_image'] = app_user_attendance.image
+            data_dict[data_key]['checkout_location'] = set_google_map_location_button(app_user_attendance)
 
     if data_dict.values():
         return list(data_dict.values())[::-1]
@@ -56,7 +62,8 @@ def get_query_data(filters):
 
     base_query = '''select app_user_attendance.name, app_user_attendance.user, app_user_attendance.user_fullname, 
                     app_user_attendance.server_date, app_user_attendance.server_time, app_user_attendance.device_time,
-                    app_user_attendance.type, app_user_attendance.image, app_user_attendance.cheated, app_user_attendance.sales_person 
+                    app_user_attendance.type, app_user_attendance.image, app_user_attendance.cheated, 
+                    app_user_attendance.sales_person, app_user_attendance.latitude, app_user_attendance.longitude 
                     from `tabApp User Attendance` app_user_attendance where %s order by app_user_attendance.server_date, 
                     app_user_attendance.server_time''' % conditions
 
@@ -91,8 +98,10 @@ def get_columns():
         {'fieldname': 'checkin_device_time', 'label': 'IN Device Time', 'expwidth': 15},
         {'fieldname': 'checkout_device_time', 'label': 'OUT Device Time', 'expwidth': 15},
         {'fieldname': 'cheated', 'label': 'Cheated', 'fieldtype': 'Data', 'expwidth': 15},
-        {'fieldname': 'checkin_image', 'label': 'Checkin Image', 'fieldtype': 'Image', 'expwidth': 15, 'export': False},
-        {'fieldname': 'checkout_image', 'label': 'Checkout Image', 'fieldtype': 'Image', 'expwidth': 15, 'export': False}
+        {'fieldname': 'checkin_location', 'label': 'IN<br>Location', 'export': False},
+        {'fieldname': 'checkout_location', 'label': 'OUT<br>Location', 'export': False},
+        {'fieldname': 'checkin_image', 'label': 'IN Image', 'fieldtype': 'Image', 'expwidth': 15, 'export': False},
+        {'fieldname': 'checkout_image', 'label': 'OUT Image', 'fieldtype': 'Image', 'expwidth': 15, 'export': False},
     ]
     return columns
 

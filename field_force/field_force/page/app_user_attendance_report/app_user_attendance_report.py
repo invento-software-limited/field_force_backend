@@ -2,7 +2,8 @@ import frappe
 import json
 
 from field_force.field_force.page.utils import generate_excel_and_download
-from field_force.field_force.report.utils import set_image_url, set_link_to_doc, get_site_directory_path
+from field_force.field_force.report.utils import set_image_url, set_link_to_doc, get_site_directory_path, \
+    set_google_map_location_button
 
 @frappe.whitelist()
 def get_user_attendance_data(filters=None):
@@ -19,6 +20,7 @@ def get_user_attendance_data(filters=None):
         # app_user_attendance.device_date = f"{app_user_attendance.device_date}<br>{app_user_attendance.device_time}"
 
         app_user_attendance.cheated = 'Yes' if app_user_attendance.cheated else 'No'
+        app_user_attendance.location = set_google_map_location_button(app_user_attendance)
         set_image_url(app_user_attendance, site_directory)
         app_user_attendance['sl'] = index + 1
 
@@ -73,9 +75,7 @@ def get_columns():
         {'fieldname': 'device_date', 'label': 'Device Date', 'expwidth': 15},
         {'fieldname': 'device_time', 'label': 'Device Time', 'expwidth': 15},
         {'fieldname': 'cheated', 'label': 'Cheated', 'expwidth': 10},
-        # {'fieldname': 'latitude', 'label': 'Latitude', 'expwidth': 15},
-        # {'fieldname': 'longitude', 'label': 'Longitude', 'expwidth': 15},
-        # {'fieldname': 'device_model', 'label': 'Model', 'expwidth': 15},
+        {'fieldname': 'location', 'label': 'Location', 'expwidth': 15},
         {'fieldname': 'image', 'label': 'Image', 'fieldtype': 'Image', 'expwidth': 15, 'export': False}
     ]
     return columns
