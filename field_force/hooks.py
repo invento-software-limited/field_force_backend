@@ -131,8 +131,12 @@ doc_events = {
 		# "on_update": "field_force.field_force.hook_functions.customer.set_image",
 	},
 	"Sales Order": {
-		"validate": "field_force.field_force.hook_functions.sales_order.set_extra_values",
-		"before_save": "field_force.field_force.hook_functions.sales_order.add_sales_person",
+		"validate": [
+			"field_force.field_force.hook_functions.sales_order.set_extra_values",
+			"field_force.field_force.hook_functions.sales_order.add_sales_person"
+		],
+		"after_insert": "field_force.field_force.hook_functions.sales_order.after_insert",
+		# "before_save": "field_force.field_force.hook_functions.sales_order.add_sales_person",
 		# "on_update": "field_force.field_force.hook_functions.sales_order.add_amount_to_achievement"
 		# "on_cancel": "field_force.field_force.hook_functions.sales_order.subtract_achievement_amount"
 	},
@@ -141,6 +145,10 @@ doc_events = {
 	}
 
 }
+
+# override_doctype_class = {
+#     "Sales Order": "field_force.field_force.overridden_doctypes.sales_order.CustomSalesOrder",
+# }
 
 # Scheduled Tasks
 # ---------------

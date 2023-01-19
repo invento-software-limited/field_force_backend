@@ -1,7 +1,7 @@
 import frappe
 import json
 
-from field_force.api_methods.custom_methods import get_custom_data
+from field_force.api_methods.custom_methods import get_custom_data, set_custom_data_before_creation
 from field_force.response import build_custom_response
 from frappe import _
 from frappe.permissions import has_permission
@@ -92,6 +92,7 @@ def execute(doctype=None, name=None):
                 # fetch data form dict
                 data = get_request_form_data()
                 data.update({"doctype": doctype})
+                set_custom_data_before_creation(doctype, data)
 
                 # insert document from request data
                 doc = frappe.get_doc(data).insert()

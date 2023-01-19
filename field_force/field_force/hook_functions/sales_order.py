@@ -2,6 +2,10 @@ import frappe
 import calendar
 import datetime
 
+def after_insert(self, method):
+    if self.created_from_app:
+        self.submit()
+
 @frappe.whitelist()
 def set_extra_values(self, method):
     self.total_items = len(self.items)
