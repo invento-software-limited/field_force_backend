@@ -64,7 +64,7 @@ def execute(doctype=None, name=None):
                 # set limit of records for frappe.get_list
                 frappe.local.form_dict.setdefault(
                     "limit_page_length",
-                    frappe.local.form_dict.limit or frappe.local.form_dict.limit_page_length or 20,
+                    frappe.local.form_dict.limit or frappe.local.form_dict.limit_page_length or 500,
                 )
 
                 # convert strings to native types - only as_dict and debug accept bool
