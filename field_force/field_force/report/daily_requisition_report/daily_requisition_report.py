@@ -8,21 +8,24 @@ from frappe import _
 def execute(filters=None):
     columns = get_columns()
     data = get_data(filters)
+    print(data)
 
     return columns, data
 
 def get_columns():
     """ Columns of Report Table"""
     return [
-        {"label": _(" Requisition Date"), "fieldname": "transaction_date", "width": 130},
-        {"label": _("Partner"), "fieldname": "partner_group", "width": 150, "fieldtype": "Link", "options": "Requisition"},
-		{"label": _("Outlet Name"), "fieldname": "customer", "width": 240, "fieldtype": "Link", "options": "Customer"},
-		{"label": _("PO Number"), "fieldname": "po_no", "width": 120},
+        {"label": _(" Requisition Date"), "fieldname": "transaction_date", "width": 110},
+        {"label": _("Partner"), "fieldname": "partner_group", "width": 120, "fieldtype": "Link", "options": "Requisition"},
+		{"label": _("Outlet Name"), "fieldname": "customer", "width": 200, "fieldtype": "Link", "options": "Customer"},
+		{"label": _("PO Number"), "fieldname": "po_no", "width": 100},
         {"label": _("Sales Person"), "fieldname": "sales_person", "fieldtype": "Link", "options": "Sales Person",
-         "width": 150},
-        {"label": _("Delivered Date"), "fieldname": "delivered_date", "fieldtype": "Date", "width": 120},
-        {"label": _("Requisition Amount"), "fieldname": "total_amount", "fieldtype": "Currency", "width": 150},
-        {"label": _("Delivered Amount"), "fieldname": "delivered_amount", "fieldtype": "Currency", "width": 150},
+         "width": 140},
+        {"label": _("Delivered Date"), "fieldname": "delivered_date", "fieldtype": "Date", "width": 110},
+        {"label": _("Requisition Amount"), "fieldname": "total_amount", "fieldtype": "Currency", "width": 120},
+        {"label": _("Delivered Amount"), "fieldname": "delivered_amount", "fieldtype": "Currency", "width": 120},
+        {"label": _("Lead Time"), "fieldname": "lead_time", "width": 100},
+        {"label": _("Gap"), "fieldname": "gap", "fieldtype": "Currency", "width": 120},
     ]
 
 
@@ -38,7 +41,9 @@ def get_data(filters):
                         requisition.delivered_amount,
                         requisition.sales_person,
                         requisition.customer, 
-                        requisition.grand_total as total_amount
+                        requisition.grand_total as total_amount,
+                        ABS(DATEDIFF(requisition.delivered_date, requisition.transaction_date)) as lead_time,
+                        (requisition.grand_total - requisition.delivered_amount) as gap
                     from `tabRequisition` requisition
                     where %s order by requisition.transaction_date desc''' % conditions
 
