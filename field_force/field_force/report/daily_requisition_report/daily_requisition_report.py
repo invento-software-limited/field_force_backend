@@ -42,7 +42,9 @@ def get_data(filters):
                         requisition.sales_person,
                         requisition.customer, 
                         requisition.grand_total as total_amount,
-                        ABS(DATEDIFF(requisition.delivered_date, requisition.transaction_date)) as lead_time,
+                        IF(requisition.delivered_date is not null, 
+                            ABS(DATEDIFF(requisition.delivered_date, requisition.transaction_date)),
+                             DATEDIFF(CURDATE(), requisition.transaction_date)) as lead_time,
                         (requisition.grand_total - requisition.delivered_amount) as gap
                     from `tabRequisition` requisition
                     where %s order by requisition.transaction_date desc''' % conditions
