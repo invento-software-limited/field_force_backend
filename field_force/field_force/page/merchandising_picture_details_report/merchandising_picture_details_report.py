@@ -2,7 +2,8 @@ import frappe
 import json
 
 from field_force.field_force.page.utils import generate_excel_and_download
-from field_force.field_force.report.utils import set_link_to_doc, set_image_url, get_site_directory_path
+from field_force.field_force.report.utils import set_link_to_doc, set_image_url, get_site_directory_path,\
+    set_image_download_button
 
 
 @frappe.whitelist()
@@ -16,6 +17,7 @@ def get_absolute_data(filters, export=False):
     site_directory = get_site_directory_path()
 
     for index, merchandising_picture in enumerate(query_result):
+        set_image_download_button(merchandising_picture, site_directory)
         set_image_url(merchandising_picture, site_directory)
 
         server_time = str(merchandising_picture.server_time).split('.')[0] \
@@ -40,6 +42,7 @@ def get_absolute_data(filters, export=False):
         merchandising_picture.cheated = 'Yes' if merchandising_picture.cheated else 'No'
         merchandising_picture['sl'] = index + 1
 
+    print(query_result)
     return query_result
 
 def get_query_data(filters):
@@ -92,16 +95,13 @@ def get_columns():
         {'fieldname': 'name', 'label': 'ID', 'expwidth': 20},
         {'fieldname': 'brand', 'label': 'Brand', 'expwidth': 15},
         {'fieldname': 'customer', 'label': 'Customer', 'expwidth': 15},
-        # {'fieldname': 'customer_address', 'label': 'Address', 'expwidth': 15},
         {'fieldname': 'contact_number', 'label': 'Contact', 'expwidth': 15},
         {'fieldname': 'details', 'label': 'Details', 'expwidth': 13},
-        # {'fieldname': 'latitude', 'label': 'Latitude', 'fieldtype': 'Data', 'expwidth': 15},
-        # {'fieldname': 'longitude', 'label': 'Longitude', 'fieldtype': 'Data', 'expwidth': 15},
-        # {'fieldname': 'device_model', 'label': 'Device Model', 'fieldtype': 'Data', 'expwidth': 15},
         {'fieldname': 'sales_person', 'label': 'Sales Person', 'expwidth': 20},
         {'fieldname': 'device_date', 'label': 'Device Date Time', 'expwidth': 15},
         {'fieldname': 'cheated', 'label': 'Cheated', 'fieldtype': 'Data', 'expwidth': 15},
         {'fieldname': 'image', 'label': 'Image', 'fieldtype': 'Image', 'expwidth': 15, 'export': False},
+        {'fieldname': 'image_download', 'label': '', 'fieldtype': 'Data', 'expwidth': 15, 'export': False},
     ]
     return columns
 
