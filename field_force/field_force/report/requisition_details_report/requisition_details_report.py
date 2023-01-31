@@ -18,9 +18,9 @@ def get_columns():
         {"label": _("ID"), "fieldname": "name", "width": 130, "fieldtype": "Link", "options": "Requisition"},
         {"label": _("Distributor"), "fieldname": "distributor", "width": 120, "fieldtype": "Link",
          "options": "Distributor"},
-		{"label": _("Customer"), "fieldname": "customer", "width": 120, "fieldtype": "Link", "options": "Customer"},
-		{"label": _("Contact"), "fieldname": "contact_number", "width": 100},
-        {"label": _("Delivery Date"), "fieldname": "delivery_date", "width": 100},
+		{"label": _("Customer"), "fieldname": "customer", "width": 200, "fieldtype": "Link", "options": "Customer"},
+        {"label": _("PO Number"), "fieldname": "po_no", "width": 120},
+        {"label": _("Delivery Date"), "fieldname": "delivery_date", "width": 110},
         # {"label": _("Total Items"), "fieldname": "total_items", "width": 100},
         {"label": _("Total Qty"), "fieldname": "total_qty", "fieldtype": "Int", "width": 100},
         {"label": _("Total Amount"), "fieldname": "total_amount", "fieldtype": "Currency", "width": 150},
@@ -33,11 +33,19 @@ def get_columns():
 def get_data(filters):
     conditions = get_conditions(filters)
 
-    query_string = '''select requisition.name, requisition.transaction_date,requisition.delivery_date,
-                    requisition.sales_person, requisition.customer, requisition.contact_number, requisition.distributor,
-                    requisition.total_items, requisition.total_qty, requisition.grand_total as total_amount,
-                    requisition.status, requisition.company from `tabRequisition` requisition where %s order by 
-                    requisition.transaction_date desc''' % conditions
+    query_string = '''select 
+                        requisition.name,
+                        requisition.transaction_date,
+                        requisition.delivery_date,
+                        requisition.sales_person,
+                        requisition.customer,
+                        requisition.po_no,
+                        requisition.distributor,
+                        requisition.total_items,
+                        requisition.total_qty,
+                        requisition.grand_total as total_amount,
+                        requisition.status, requisition.company
+                from `tabRequisition` requisition where %s order by requisition.transaction_date desc''' % conditions
 
     query_result = frappe.db.sql(query_string, as_dict=1, debug=0)
     return query_result

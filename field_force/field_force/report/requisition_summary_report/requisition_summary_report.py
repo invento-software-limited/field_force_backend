@@ -12,26 +12,25 @@ def execute(filters=None):
 def get_columns(filters):
     """ Columns of Report Table"""
     columns = [
-        {"label": _("Date"), "fieldname": "transaction_date", "width": 140},
+        {"label": _("Date"), "fieldname": "transaction_date", "width": 120},
         {},
         {"label": _("Total Requisition"), "fieldname": "total_requisitions", "width": 150},
         {"label": _("Total Item"), "fieldname": "total_items", "width": 160},
         {"label": _("Total Qty"), "fieldname": "total_qty", "fieldtype": "Int", "width": 160},
         {"label": _("Total Amount"), "fieldname": "total_amount", "fieldtype": "Currency", "width": 160},
-        # {"label": _("Created By"), "fieldname": "user", "fieldtype":"Data", "width": 140},
         {"label": _("Status"), "fieldname": "status", "fieldtype":"Data", "width": 120},
-        {"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company","width": 160},
+        {"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company","width": 140},
     ]
 
     if filters.get('group_by') == 'Distributor':
         columns[1] = {"label": _("Distributor"), "fieldname": "distributor", "fieldtype":"Link",
-                      "options":"Distributor", "width": 160}
+                      "options":"Distributor", "width": 200}
     elif filters.get('group_by') == 'Customer':
         columns[1] = {"label": _("Customer"), "fieldname": "customer", "fieldtype":"Link",
-                      "options":"Customer", "width": 160}
+                      "options":"Customer", "width": 200}
     else:
         columns[1] = {"label": _("Sales Person"), "fieldname": "sales_person", "fieldtype": "Link",
-                      "options":"Sales Person", "width": 160}
+                      "options":"Sales Person", "width": 200}
 
     return columns
 

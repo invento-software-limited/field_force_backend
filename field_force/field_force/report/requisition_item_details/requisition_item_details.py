@@ -96,7 +96,8 @@ def get_columns():
         {"label": _("ID"), "fieldname": "name", "width": 130, "fieldtype": "Link", "options": "Requisition"},
         {"label": _("Distributor"), "fieldname": "distributor", "width": 130, "fieldtype": "Link",
          "options": "Distributor"},
-        {"label": _("Customer"), "fieldname": "customer", "width": 130, "fieldtype": "Link", "options": "Customer"},
+        {"label": _("Customer"), "fieldname": "customer", "width": 200, "fieldtype": "Link", "options": "Customer"},
+        {"label": _("PO Number"), "fieldname": "po_no", "width": 120},
         {"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Link", "options": "Item", "width": 140},
         {"label": _("Item Name"), "fieldname": "item_name", "width": 100},
         {"label": _("Item Group"), "fieldname": "item_group", "fieldtype": "Link", "options": "Item Group", "width": 80},
@@ -120,15 +121,33 @@ def get_columns():
 def get_data(filters):
     conditions = get_conditions(filters)
 
-    query_string = '''SELECT requisition.name, requisition.transaction_date,requisition.delivery_date,
-                    requisition.sales_person, requisition.customer, requisition.contact_number, requisition.distributor,
-                    requisition.grand_total, requisition_item.item_code, requisition_item.item_name, requisition_item.item_group,
-                    requisition_item.uom, requisition_item.brand, requisition_item.price_list_rate, requisition_item.qty,
-                    requisition_item.discount_percentage, requisition_item.discount_amount, requisition_item.rate,
-                    requisition_item.amount, requisition.user, requisition.company, requisition.status
+    query_string = '''SELECT 
+                        requisition.name,
+                        requisition.transaction_date,
+                        requisition.delivery_date,
+                        requisition.sales_person,
+                        requisition.customer,
+                        requisition.contact_number,
+                        requisition.distributor,
+                        requisition.po_no,
+                        requisition.grand_total,
+                        requisition_item.item_code,
+                        requisition_item.item_name,
+                        requisition_item.item_group,
+                        requisition_item.uom,
+                        requisition_item.brand,
+                        requisition_item.price_list_rate,
+                        requisition_item.qty,
+                        requisition_item.discount_percentage,
+                        requisition_item.discount_amount,
+                        requisition_item.rate,
+                        requisition_item.amount,
+                        requisition.user,
+                        requisition.company,
+                        requisition.status
                     from `tabRequisition` requisition left join `tabRequisition Item` requisition_item 
-                    on requisition.name=requisition_item.parent where %s order by 
-                    requisition.transaction_date desc''' % conditions
+                    on requisition.name=requisition_item.parent
+                    where %s order by requisition.transaction_date desc''' % conditions
 
     # print(query_string)
     query_result = frappe.db.sql(query_string, as_dict=1, debug=0)
