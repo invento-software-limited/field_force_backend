@@ -119,16 +119,17 @@ def get_columns():
 
 def get_data(filters):
     conditions = get_conditions(filters)
+    status = filters.get('status')
 
     query_string = '''SELECT sales_order.name, sales_order.transaction_date,sales_order.delivery_date,
                     sales_order.sales_person, sales_order.customer, sales_order.contact_number, sales_order.distributor,
                     sales_order.grand_total, sales_order_item.item_code, sales_order_item.item_name, sales_order_item.item_group,
                     sales_order_item.uom, sales_order_item.brand, sales_order_item.price_list_rate, sales_order_item.qty,
                     sales_order_item.discount_percentage, sales_order_item.discount_amount, sales_order_item.rate,
-                    sales_order_item.amount, sales_order.user, sales_order.company, sales_order.status
+                    sales_order_item.amount, sales_order.user, sales_order.company, "%s" as status
                     from `tabSales Order` sales_order left join `tabSales Order Item` sales_order_item 
                     on sales_order.name=sales_order_item.parent where %s order by 
-                    sales_order.transaction_date desc''' % conditions
+                    sales_order.transaction_date desc''' % (status, conditions)
 
     # print(query_string)
     query_result = frappe.db.sql(query_string, as_dict=1, debug=0)
@@ -146,8 +147,16 @@ def get_conditions(filters):
     status = filters.get('status')
     delivery_date = filters.get('delivery_date')
 
+    status_dict = {
+        "Draft": 0,
+        "Submitted": 1,
+        "Cancelled": 2
+    }
+
     conditions = []
 
+    if status:
+        conditions.append('sales_order.docstatus = %s' % status_dict.get(status))
     if from_date:
         conditions.append('sales_order.transaction_date >= "%s"' % from_date)
     if to_date:
@@ -160,8 +169,7 @@ def get_conditions(filters):
         conditions.append('sales_order.distributor = "%s"' % distributor)
     if company:
         conditions.append('sales_order.company = "%s"' % company)
-    if status:
-        conditions.append('sales_order.status = "%s"' % status)
+
     if delivery_date:
         conditions.append('sales_order.delivery_date = "%s"' % delivery_date)
 

@@ -41,6 +41,8 @@ def get_columns(filters):
 
 def get_data(filters):
     conditions = get_conditions(filters)
+    status = filters.get('status')
+
     if filters.get('group_by') == 'Distributor':
         group_by = 'sales_order.distributor'
     elif filters.get('group_by') == 'Customer':
@@ -50,10 +52,9 @@ def get_data(filters):
 
     query_string = '''select sales_order.transaction_date, sales_order.sales_person, sales_order.customer,
                     sales_order.distributor, count(*) as total_sales_orders, sum(sales_order.total_items) 
-                    as total_items, sales_order.company, sum(sales_order.total_qty) as total_qty, sales_order.status,
+                    as total_items, sales_order.company, sum(sales_order.total_qty) as total_qty, "%s" as status,
                     sum(sales_order.grand_total) as total_amount from `tabSales Order` sales_order 
-                    where %s group by %s
-                    order by total_amount desc''' % (conditions, group_by)
+                    where %s group by %s order by total_amount desc''' % (status, conditions, group_by)
 
     query_result = frappe.db.sql(query_string, as_dict=1, debug=0)
     return query_result
@@ -68,8 +69,14 @@ def get_conditions(filters):
     customer = filters.get('customer')
     status = filters.get('status')
 
+    status_dict = {
+        "Draft": 0,
+        "Submitted": 1,
+        "Cancelled": 2
+    }
+
     conditions = [
-        'sales_order.status = "%s"' % status
+        'sales_order.docstatus = %s' % status_dict.get(status)
     ]
 
     if from_date:
