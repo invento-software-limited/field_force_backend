@@ -75,6 +75,7 @@ var months =[
 
 const d = new Date();
 let month = d.getMonth();
+let year = d.getFullYear();
 
 frappe.query_reports["Sales Target vs Achievement Report"] = {
 	"filters": [
@@ -90,9 +91,9 @@ frappe.query_reports["Sales Target vs Achievement Report"] = {
 		{
 			"fieldname":"year",
 			"label": __("Year"),
-			"fieldtype": "Link",
-			"options": "Fiscal Year",
-			"default": frappe.defaults.get_user_default("fiscal_year"),
+			"fieldtype": "Select",
+			"options": [2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030],
+			"default": year,
 			"width": "60px",
 			"reqd": 1
 		},
@@ -128,4 +129,3 @@ frappe.query_reports["Sales Target vs Achievement Report"] = {
 		}
 	]
 }
-

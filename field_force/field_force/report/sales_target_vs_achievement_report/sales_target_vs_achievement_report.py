@@ -5,7 +5,7 @@ import frappe
 from field_force.field_force.doctype.sales_target.sales_target import get_sales_persons
 from frappe import _
 import datetime, calendar
-import pandas as pd
+# import pandas as pd
 
 
 def get_currency_symbol():
@@ -142,7 +142,7 @@ def get_conditions(filters):
     month = filters.get('month')
     year = filters.get('year')
     from_date, to_date = get_from_date_and_to_date(month, year)
-    # print(from_date, to_date)
+    print(from_date, to_date)
 
     conditions = ["requisition.docstatus=1"]
     # conditions = []
@@ -242,7 +242,8 @@ def get_from_date_and_to_date(month, year):
     months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
               'August', 'September', 'October', 'November', 'December']
 
-    year = get_absolute_year(month, year)
+    # year = get_absolute_year(month, year)
+    year = int(year)
     month = months.index(month) + 1
     from_date = datetime.datetime(year, month, 1).date()
 
@@ -253,15 +254,15 @@ def get_from_date_and_to_date(month, year):
 
     return from_date, to_date
 
-def get_absolute_year(month, year):
-    fiscal_year = frappe.get_doc('Fiscal Year', year)
-    months = pd.date_range(fiscal_year.year_start_date, fiscal_year.year_end_date, freq='MS').strftime("%B-%Y").tolist()
+# def get_absolute_year(month, year):
+#     fiscal_year = frappe.get_doc('Fiscal Year', year)
+#     months = pd.date_range(fiscal_year.year_start_date, fiscal_year.year_end_date, freq='MS').strftime("%B-%Y").tolist()
 
-    for i, month_ in enumerate(months):
-        if month in month_:
-            return int(month_.split('-')[1])
+#     for i, month_ in enumerate(months):
+#         if month in month_:
+#             return int(month_.split('-')[1])
 
-        elif month in months[-i]:
-            return int(month_.split('-')[1])
+#         elif month in months[-i]:
+#             return int(month_.split('-')[1])
 
-    frappe.throw(f"'{month}' doesn't exist on Fiscal year '{fiscal_year.name}'")
+#     frappe.throw(f"'{month}' doesn't exist on Fiscal year '{fiscal_year.name}'")
