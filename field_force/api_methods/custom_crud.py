@@ -22,15 +22,20 @@ def execute(doctype=None, name=None):
                 #     "filters": {"name":name},
                 # }
                 # doc = frappe.call(frappe.client.get_value, **kwargs)
+                frappe.log_error(f"{frappe.session.user}", f"{doctype}-{name} - Retrieve")
                 doc = frappe.get_doc(doctype, name)
 
                 if not doc.has_permission("read"):
                     raise frappe.PermissionError
 
                 frappe.local.response.data = get_doc_permitted_fields(doctype, doc, api_response_fields)
+                frappe.log_error(f"{frappe.session.user} - {doctype} - Retrieved", frappe.local.response.data)
+
 
             if frappe.local.request.method == "PUT":
                 data = get_request_form_data()
+                frappe.log_error(f"{frappe.session.user} - {doctype} - Update", data)
+
                 doc = frappe.get_doc(doctype, name, for_update=True)
 
                 if "flags" in data:
@@ -46,6 +51,8 @@ def execute(doctype=None, name=None):
                 frappe.db.commit()
                 frappe.local.response.data = get_doc_permitted_fields(doctype, doc, api_response_fields)
                 frappe.local.response.message = f"{doctype} Updated"
+                frappe.log_error(f"{frappe.session.user} - {doctype} - Updated", frappe.local.response.data)
+
 
             if frappe.local.request.method == "DELETE":
                 # Not checking permissions here because it's checked in delete_doc
@@ -76,22 +83,27 @@ def execute(doctype=None, name=None):
                 if has_permission(doctype, 'read'):
                     if doctype in custom:
                         data = get_custom_data(doctype)
+                        frappe.log_error(f"{frappe.session.user} - {doctype} - Custom Data", data)
                     else:
                         # data = frappe.get_list(doctype, **frappe.local.form_dict)
                         data = frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
                         frappe.local.response.total_items = len(frappe.get_list(doctype, frappe.local.form_dict.get('filters')))
+                        frappe.log_error(f"{frappe.session.user} - {doctype} - Data", data)
 
                     # set frappe.get_list result to response
                     frappe.local.response.update({
                         "data": data
                     })
                 else:
-                    frappe.throw(_("Not permitted"), frappe.PermissionError)
+                    # frappe.throw(_("Not permitted"), frappe.PermissionError)
+                    frappe.log_error(f"Permission Denied - {frappe.session.user}", frappe.get_traceback())
 
             elif frappe.local.request.method == "POST":
                 # fetch data form dict
                 data = get_request_form_data()
                 data.update({"doctype": doctype})
+                frappe.log_error(f"{frappe.session.user} - {doctype} - Create", data)
+
                 set_custom_data_before_creation(doctype, data)
 
                 # insert document from request data
@@ -105,21 +117,35 @@ def execute(doctype=None, name=None):
 
                 # commit for POST requests
                 frappe.db.commit()
+                frappe.log_error(f"{frappe.session.user} - {doctype} - Created", frappe.local.response.data)
+
         else:
+            frappe.log_error(f"{frappe.session.user}", f"Doctype {doctype} does not exist!")
             raise frappe.DoesNotExistError
 
     except frappe.PermissionError:
         frappe.local.response.http_status_code = 403
         frappe.local.response.message = f"Permission Denied"
+        frappe.log_error(f"{frappe.session.user}", frappe.local.response.message)
+
     except frappe.DoesNotExistError:
         frappe.local.response.http_status_code = 404
         frappe.local.response.message = f"Doctype {doctype} not found!"
+        frappe.log_error(f"{frappe.session.user}", frappe.local.response.message)
+
     except frappe.DuplicateEntryError:
         frappe.local.response.http_status_code = 409
         frappe.local.response.message = f"Duplicate Entry!"
+        frappe.log_error(f"{frappe.session.user}", frappe.local.response.message)
+
     except frappe.InvalidAuthorizationToken:
         frappe.local.response.http_status_code = 401
         frappe.local.response.message = f"Invalid Token!"
+        frappe.log_error(f"{frappe.session.user}", frappe.local.response.message)
+
+    except Execption as e:
+        frappe.log_error(f"{frappe.session.user}", frappe.get_traceback())
+        frappe.log_error(f"{frappe.session.user}", e)
 
     return build_custom_response(response_type='custom')
 
