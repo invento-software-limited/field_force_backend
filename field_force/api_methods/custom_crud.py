@@ -125,33 +125,33 @@ def execute(doctype=None, name=None):
 
 
 def get_doc_permitted_fields(doctype, doc, api_response_fields):
-    doc_ = doc.__dict__
-    data = {}
-    doc_api_response_fields = api_response_fields.get(doctype, ['name']) + api_response_fields.get(f"_{doctype}", [])
+    # doc_ = doc.__dict__
+    # data = {}
+    # doc_api_response_fields = api_response_fields.get(doctype, ['name']) + api_response_fields.get(f"_{doctype}", [])
+    #
+    # for field in doc_api_response_fields:
+    #     value = doc_.get(field)
+    #
+    #     if isinstance(value, list):
+    #         new_list = []
+    #         try:
+    #             for element in value:
+    #                 api_response_fields_ = api_response_fields.get(element.doctype)
+    #
+    #                 if api_response_fields_:
+    #                     new_element = {}
+    #
+    #                     for field_ in api_response_fields_:
+    #                         new_element[field_] = element.get(field_)
+    #
+    #                     new_list.append(new_element)
+    #                 else:
+    #                     new_list.append(element)
+    #
+    #             data[field] = new_list
+    #         except:
+    #             data[field] = value
+    #     else:
+    #         data[field] = value
 
-    for field in doc_api_response_fields:
-        value = doc_.get(field)
-
-        if isinstance(value, list):
-            new_list = []
-            try:
-                for element in value:
-                    api_response_fields_ = api_response_fields.get(element.doctype)
-
-                    if api_response_fields_:
-                        new_element = {}
-
-                        for field_ in api_response_fields_:
-                            new_element[field_] = element.get(field_)
-
-                        new_list.append(new_element)
-                    else:
-                        new_list.append(element)
-
-                data[field] = new_list
-            except:
-                data[field] = value
-        else:
-            data[field] = value
-
-    return data
+    return doc
