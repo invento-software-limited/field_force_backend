@@ -186,5 +186,5 @@ def get_doc_permitted_fields(doctype, doc, api_response_fields):
         else:
             data[field] = value
 
-    return doc
+    return data
 
