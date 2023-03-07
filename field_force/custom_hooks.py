@@ -5,10 +5,10 @@ def execute():
     from field_force.field_force.hook_functions import geo_location
 
     #overriding the validate_auth function
-    frappe.api.validate_auth = field_force.api.validate_auth
+    # frappe.api.validate_auth = field_force.api.validate_auth
 
     # overriding the handle function
-    frappe.api.handle = field_force.api.handle
+    # frappe.api.handle = field_force.api.handle
 
     # Geo location methods
     frappe.geo.utils.get_coords = geo_location.get_coords

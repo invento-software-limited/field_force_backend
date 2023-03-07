@@ -6,7 +6,6 @@ from field_force.response import build_custom_response
 from frappe import _
 from frappe.permissions import has_permission
 from frappe.utils.data import sbool
-from frappe.api import get_request_form_data
 from field_force.api_methods.utils import file_path
 
 
@@ -149,35 +148,43 @@ def execute(doctype=None, name=None):
 
     return build_custom_response(response_type='custom')
 
+def get_request_form_data():
+    if frappe.local.form_dict.data is None:
+        data = frappe.safe_decode(frappe.local.request.get_data())
+    else:
+        data = frappe.local.form_dict.data
+
+    return frappe.parse_json(data)
 
 def get_doc_permitted_fields(doctype, doc, api_response_fields):
-    doc_ = doc.__dict__
-    data = {}
-    doc_api_response_fields = api_response_fields.get(doctype, ['name']) + api_response_fields.get(f"_{doctype}", [])
+    # doc_ = doc.__dict__
+    # data = {}
+    # doc_api_response_fields = api_response_fields.get(doctype, ['name']) + api_response_fields.get(f"_{doctype}", [])
+    #
+    # for field in doc_api_response_fields:
+    #     value = doc_.get(field)
+    #
+    #     if isinstance(value, list):
+    #         new_list = []
+    #         try:
+    #             for element in value:
+    #                 api_response_fields_ = api_response_fields.get(element.doctype)
+    #
+    #                 if api_response_fields_:
+    #                     new_element = {}
+    #
+    #                     for field_ in api_response_fields_:
+    #                         new_element[field_] = element.get(field_)
+    #
+    #                     new_list.append(new_element)
+    #                 else:
+    #                     new_list.append(element)
+    #
+    #             data[field] = new_list
+    #         except:
+    #             data[field] = value
+    #     else:
+    #         data[field] = value
 
-    for field in doc_api_response_fields:
-        value = doc_.get(field)
+    return doc
 
-        if isinstance(value, list):
-            new_list = []
-            try:
-                for element in value:
-                    api_response_fields_ = api_response_fields.get(element.doctype)
-
-                    if api_response_fields_:
-                        new_element = {}
-
-                        for field_ in api_response_fields_:
-                            new_element[field_] = element.get(field_)
-
-                        new_list.append(new_element)
-                    else:
-                        new_list.append(element)
-
-                data[field] = new_list
-            except:
-                data[field] = value
-        else:
-            data[field] = value
-
-    return data
