@@ -6,7 +6,6 @@ from field_force.response import build_custom_response
 from frappe import _
 from frappe.permissions import has_permission
 from frappe.utils.data import sbool
-from frappe.api import get_request_form_data
 from field_force.api_methods.utils import file_path
 
 
@@ -123,6 +122,13 @@ def execute(doctype=None, name=None):
 
     return build_custom_response(response_type='custom')
 
+def get_request_form_data():
+    if frappe.local.form_dict.data is None:
+        data = frappe.safe_decode(frappe.local.request.get_data())
+    else:
+        data = frappe.local.form_dict.data
+
+    return frappe.parse_json(data)
 
 def get_doc_permitted_fields(doctype, doc, api_response_fields):
     # doc_ = doc.__dict__
