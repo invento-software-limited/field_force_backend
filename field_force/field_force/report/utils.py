@@ -13,13 +13,13 @@ def set_link_to_doc(doc, field, doc_url=''):
 
 def set_image_url(doc, site_directory=None):
     site_directory = site_directory or  get_site_directory_path()
+    image_path = '/files/default-image.png'
 
-    if 'private/files/' in doc.image:
-        image_path = f"{site_directory}{doc.image}"
-    elif '/files/' in doc.image:
-        image_path = f"{site_directory}/public{doc.image}"
-    else:
-        image_path = doc.image
+    if doc.image:
+        if 'private/files/' in doc.image:
+            image_path = f"{site_directory}{doc.image}"
+        elif '/files/' in doc.image:
+            image_path = f"{site_directory}/public{doc.image}"
 
     if not os.path.exists(image_path):
         doc.image = '/files/default-image.png'
