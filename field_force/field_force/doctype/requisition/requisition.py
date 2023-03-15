@@ -328,11 +328,13 @@ def get_item_details(item_code, fields=None):
     fields = fields or ['name as item_code', 'product_id', 'item_name', 'brand']
     item = {}
 
-    if frappe.db.exists("Item", {'item_code': item_code}):
-        item = frappe.db.get_value("Item", item_code, fields , as_dict=1)
-
-    elif frappe.db.exists("Item", {'product_id': item_code}):
-        item = frappe.db.get_value("Item", {'product_id': item_code}, fields, as_dict=1)
+    if item_code:
+        if frappe.db.exists("Item", {'item_code': item_code}):
+            item = frappe.db.get_value("Item", item_code, fields , as_dict=1)
+        elif frappe.db.exists("Item", {'product_id': item_code}):
+            item = frappe.db.get_value("Item", {'product_id': item_code}, fields, as_dict=1)
+        else:
+            item = get_item_by_barcode(item_code)
 
     if item:
         try:
@@ -341,8 +343,15 @@ def get_item_details(item_code, fields=None):
         except:
             item.price_list_rate = 0
 
-    print("=====>>", item)
     return item
+
+def get_item_by_barcode(barcode):
+    items = frappe.db.sql('''select barcode.barcode, item.item_code, item.item_name, item.product_id, item.brand
+                            from `tabItem Barcode` barcode join `tabItem` item on barcode.parent=item.item_code
+                            where barcode.barcode="%s"''' % barcode, as_dict=1)
+    if items:
+        return items[0]
+    return {}
 
 
 def get_commissions_in_dict(commissions):

@@ -45,6 +45,7 @@
   "price_list_exchange_rate",
   "ignore_pricing_rule",
   "section_break_34",
+  "scan_barcode",
   "items",
   "section_break_36",
   "total_items",
@@ -618,12 +619,18 @@
    "fieldname": "upload",
    "fieldtype": "Attach",
    "label": "Upload"
+  },
+  {
+   "fieldname": "scan_barcode",
+   "fieldtype": "Data",
+   "label": "Scan Barcode",
+   "options": "Barcode"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-01-18 15:28:35.758221",
+ "modified": "2023-03-15 17:51:49.388433",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",

@@ -32,9 +32,9 @@ function get_brands_commissions(customer, brand=null){
 				// code snippet
 				brand_commissions = r.message;
 			}
-			else{
-				console.log("====>>", r)
-			}
+			// else{
+			// 	console.log("====>>", r)
+			// }
 		}
 	});
 	return response
@@ -51,6 +51,19 @@ frappe.ui.form.on('Requisition', {
 		}
 	},
 	refresh: function (frm){
+		frm.fields_dict['items'].grid.get_field('item_code').get_query = function(doc, cdt, cdn) {
+			let item = locals[cdt][cdn];
+
+		  	return {
+			  	query: "erpnext.controllers.queries.item_query",
+				args: {
+			  		'txt': item.item_code
+				},
+				searchfield: 'product_id',
+				filters: {}
+		  	};
+		};
+
 		frm.add_custom_button(__('New Requisition'), () => {
 			frappe.new_doc("Requisition");
 	    }, "fa fa-plus", "btn-default","new_requisition");
@@ -97,8 +110,6 @@ frappe.ui.form.on('Requisition', {
 		refresh_field("items");
 	},
 	sales_person: function (frm){
-        console.log("Custom js working");
-
 		if (!is_sales_person_exists(frm) && frm.doc.sales_person !==""){
             frm.add_child('sales_team', {
                 sales_person: frm.doc.sales_person,
@@ -108,7 +119,11 @@ frappe.ui.form.on('Requisition', {
             });
             frm.refresh_fields("sales_team");
         }
-    }
+    },
+	scan_barcode: function(frm) {
+		let transaction_controller= new erpnext.TransactionController({frm:frm});
+		transaction_controller.scan_barcode();
+	},
 
 });
 
@@ -117,8 +132,6 @@ function is_sales_person_exists(frm) {
 
 	if (frm.doc.sales_te){
 		frm.doc.sales_team.forEach(function (data) {
-			console.log(data.sales_person);
-
 			if (frm.doc.sales_person === data.sales_person) {
 				exists = true;
 				return 0;
@@ -150,9 +163,12 @@ function set_absolute_values(frm){
 	frm.refresh_fields();
 }
 
+var item_data = {}
+
 frappe.ui.form.on("Requisition Item", {
 	item_code: function(frm,cdt,cdn) {
 		let row = locals[cdt][cdn];
+		let item_str = cdt + cdn
 
 		if (row.item_code && !frm.doc.customer){
 			frappe.model.set_value(cdt, cdn, "item_code");
@@ -167,8 +183,8 @@ frappe.ui.form.on("Requisition Item", {
 			frm.script_manager.copy_from_first_row("items", row, ["delivery_date"]);
 		}
 
-		if (row.item_code !== '' && row.item_code !== null && row.item_code !== undefined){
-			// console.log("===========>>", row.item_code)
+		if (row.item_code !== '' && row.item_code !== null
+			&& row.item_code !== undefined && row.item_code !== item_data[item_str]){
 			get_and_set_item_details(frm, cdt,cdn, row);
 		}
 	},
@@ -247,7 +263,6 @@ function set_amount(frm, cdt, cdn) {
 
 function calculate_discount_and_amount(frm, cdt, cdn) {
 	let row = locals[cdt][cdn];
-	console.log(row.price_list_rate, row.rate);
 
 	if (row.price_list_rate && row.rate){
 		let discount_amount = row.price_list_rate - row.rate;
@@ -278,6 +293,9 @@ function get_and_set_item_details(frm, cdt, cdn, row){
 				// console.log(item, row.item_code, frappe.model.get_value(cdt, cdn, 'item_code'));
 
 				if (row.item_code !== item.name){
+					let item_str = cdt + cdn;
+					item_data[item_str] = item.item_code;
+
 					frappe.model.set_value(cdt, cdn, "item_code", item.item_code);
 					frm.refresh_field(cdt, cdn, "item_code");
 				}
