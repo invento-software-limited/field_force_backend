@@ -208,7 +208,10 @@ frappe.ui.form.on("Requisition Item", {
 
 		if (row.price_list_rate && row.discount_amount){
 			let discount_percentage = 100 * (row.discount_amount / row.price_list_rate)
-			frappe.model.set_value(cdt, cdn, "discount_percentage", discount_percentage);
+
+			if (row.discount_percentage != discount_percentage){
+				frappe.model.set_value(cdt, cdn, "discount_percentage", discount_percentage);
+			}
 		}
 
 		frappe.model.set_value(cdt, cdn, "rate", rate);
@@ -229,16 +232,24 @@ frappe.ui.form.on("Requisition Item", {
 
 function set_rate_and_amount(frm, cdt, cdn){
 	let row = locals[cdt][cdn];
+	// if (row.discount_percentage > 0){
+	// 	console.log(row.discount_percentage);
 
-	if (row.discount_percentage > 0){
-		let discount_amount = (row.price_list_rate * (row.discount_percentage/100));
-		row.rate = row.price_list_rate - discount_amount
+	let discount_amount = (row.price_list_rate * (row.discount_percentage/100));
+	let rate = row.price_list_rate - discount_amount
+
+	if (row.discount_amount != discount_amount) {
 		frappe.model.set_value(cdt, cdn, "discount_amount", discount_amount);
-		frappe.model.set_value(cdt, cdn, "rate", row.rate);
 	}
-	else if (row.rate === 0 || row.rate === null || row.rate === undefined){
-		frappe.model.set_value(cdt, cdn, "rate", row.price_list_rate);
+	if (row.rate != rate) {
+		frappe.model.set_value(cdt, cdn, "rate", rate);
 	}
+	// }
+	// else if (row.rate === 0 || row.rate === null || row.rate === undefined){
+	// 	frappe.model.set_value(cdt, cdn, "rate", row.price_list_rate);
+	// 	frappe.model.set_value(cdt, cdn, "discount_amount", 0);
+	// 	console.log(row.discount_amount)
+	// }
 
 	frappe.model.set_value(cdt, cdn, "amount", row.qty * row.rate);
 	set_absolute_values(frm);
@@ -266,7 +277,7 @@ function calculate_discount_and_amount(frm, cdt, cdn) {
 
 	if (row.price_list_rate && row.rate){
 		let discount_amount = row.price_list_rate - row.rate;
-		let discount_percentage = (row.rate / row.price_list_rate) * 100;
+		let discount_percentage = (discount_amount / row.price_list_rate) * 100;
 		frappe.model.set_value(cdt, cdn, 'discount_amount', discount_amount);
 		frappe.model.set_value(cdt, cdn, 'discount_percentage', discount_percentage);
 		frm.refresh_fields()
