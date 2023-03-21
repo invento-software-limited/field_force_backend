@@ -6,10 +6,10 @@ frappe.pages['merchandising-picture-details-report'].on_page_load = function(wra
         single_column: true
     });
     $('.page-body').css('background', '#FFFFFF');
-    new StoreVisitDetailsReport(page);
+    new MerchandisingPictureDetailsReport(page);
 };
 
-class StoreVisitDetailsReport {
+class MerchandisingPictureDetailsReport {
     constructor(page) {
         this.page = page;
         this.make_form();
