@@ -1,7 +1,7 @@
 import frappe
 import json
 
-from field_force.field_force.page.utils import generate_excel_and_download
+from field_force.field_force.page.utils import generate_excel_and_download, get_time_in_12_hour_format
 from field_force.field_force.report.utils import set_link_to_doc, set_image_url, get_site_directory_path,\
     set_image_download_button
 
@@ -20,10 +20,13 @@ def get_absolute_data(filters, export=False):
         set_image_download_button(merchandising_picture, site_directory)
         set_image_url(merchandising_picture, site_directory)
 
-        server_time = str(merchandising_picture.server_time).split('.')[0] \
-            if '.' in str(merchandising_picture.server_time) else merchandising_picture.server_time
-        device_time = str(merchandising_picture.device_time).split('.')[0] \
-            if '.' in str(merchandising_picture.device_time) else merchandising_picture.device_time
+        server_time = get_time_in_12_hour_format(merchandising_picture.server_time)
+        device_time = get_time_in_12_hour_format(merchandising_picture.device_time)
+
+        # server_time = str(merchandising_picture.server_time).split('.')[0] \
+        #     if '.' in str(merchandising_picture.server_time) else merchandising_picture.server_time
+        # device_time = str(merchandising_picture.device_time).split('.')[0] \
+        #     if '.' in str(merchandising_picture.device_time) else merchandising_picture.device_time
 
         if not export:
             set_link_to_doc(merchandising_picture, 'name', 'merchandising-picture')
@@ -42,7 +45,6 @@ def get_absolute_data(filters, export=False):
         merchandising_picture.cheated = 'Yes' if merchandising_picture.cheated else 'No'
         merchandising_picture['sl'] = index + 1
 
-    print(query_result)
     return query_result
 
 def get_query_data(filters):
@@ -89,17 +91,17 @@ def get_conditions(filters):
 
 def get_columns():
     columns =  [
-        {'fieldname': 'sl', 'label': 'SL', 'expwidth': 5, 'export': False},
-        {'fieldname': 'server_date', 'label': 'Date', 'expwidth': 13},
-        {'fieldname': 'server_time', 'label': 'Time', 'expwidth': 13},
-        {'fieldname': 'name', 'label': 'ID', 'expwidth': 20},
-        {'fieldname': 'brand', 'label': 'Brand', 'expwidth': 15},
-        {'fieldname': 'customer', 'label': 'Customer', 'expwidth': 15},
-        {'fieldname': 'contact_number', 'label': 'Contact', 'expwidth': 15},
-        {'fieldname': 'details', 'label': 'Details', 'expwidth': 13},
-        {'fieldname': 'sales_person', 'label': 'Sales Person', 'expwidth': 20},
-        {'fieldname': 'device_date', 'label': 'Device Date Time', 'expwidth': 15},
-        {'fieldname': 'cheated', 'label': 'Cheated', 'fieldtype': 'Data', 'expwidth': 15},
+        {'fieldname': 'sl', 'label': 'SL', 'expwidth': 5, 'export': False, 'width': 30},
+        {'fieldname': 'server_date', 'label': 'Date', 'expwidth': 13, 'width': 100},
+        {'fieldname': 'server_time', 'label': 'Time', 'expwidth': 13, 'width': 80},
+        {'fieldname': 'name', 'label': 'ID', 'expwidth': 20, 'width': 120},
+        {'fieldname': 'brand', 'label': 'Brand', 'expwidth': 15, 'width': 100},
+        {'fieldname': 'customer', 'label': 'Customer', 'expwidth': 15, 'width': 100},
+        # {'fieldname': 'contact_number', 'label': 'Contact', 'expwidth': 15},
+        {'fieldname': 'details', 'label': 'Details', 'expwidth': 13, 'width': 200},
+        {'fieldname': 'sales_person', 'label': 'Sales Person', 'expwidth': 20, 'width': 100},
+        {'fieldname': 'device_date', 'label': 'Device Date Time', 'expwidth': 15, 'width': 100},
+        {'fieldname': 'cheated', 'label': 'Cheated', 'fieldtype': 'Data', 'expwidth': 15, 'width': 30},
         {'fieldname': 'image', 'label': 'Image', 'fieldtype': 'Image', 'expwidth': 15, 'export': False},
         {'fieldname': 'image_download', 'label': '', 'fieldtype': 'Data', 'expwidth': 15, 'export': False},
     ]

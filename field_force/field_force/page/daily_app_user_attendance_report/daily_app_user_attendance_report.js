@@ -8,10 +8,10 @@ frappe.pages['daily-app-user-attendance-report'].on_page_load = (wrapper) => {
     });
 
     $('.page-body').css('background', '#FFFFFF');
-    new AppUserAttendanceReport(page);
+    new DailyAppUserAttendanceReport(page);
 };
 
-class AppUserAttendanceReport {
+class DailyAppUserAttendanceReport {
     constructor(page) {
         this.page = page;
         this.make_form();

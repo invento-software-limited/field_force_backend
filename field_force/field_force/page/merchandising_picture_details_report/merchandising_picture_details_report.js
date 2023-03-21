@@ -6,10 +6,10 @@ frappe.pages['merchandising-picture-details-report'].on_page_load = function(wra
         single_column: true
     });
     $('.page-body').css('background', '#FFFFFF');
-    new StoreVisitDetailsReport(page);
+    new MerchandisingPictureDetailsReport(page);
 };
 
-class StoreVisitDetailsReport {
+class MerchandisingPictureDetailsReport {
     constructor(page) {
         this.page = page;
         this.make_form();
@@ -136,8 +136,8 @@ class StoreVisitDetailsReport {
     table_header = (headers) => {
         let table_header = `<thead><tr>`;
 
-        headers.forEach(function (data, index){
-            table_header += `<th scope="col">${data.label || ''}</th>`;
+        headers.forEach(function (field, index){
+            table_header += `<th scope="col" width="${field.width}">${field.label || ''}</th>`;
         })
 
         table_header += `</tr>`;
@@ -151,7 +151,7 @@ class StoreVisitDetailsReport {
             html += `<tr>`;
 
             fields.forEach(function (field, index){
-               html += get_absolute_format_and_html(field, data[field.fieldname]);
+               html += get_absolute_format_and_html(field, data[field.fieldname], field.width);
             })
 
             html += `</tr>`;
@@ -169,7 +169,7 @@ class StoreVisitDetailsReport {
     }
 }
 
-function get_absolute_format_and_html(field, value){
+function get_absolute_format_and_html(field, value, width=50){
     if (field.fieldtype === "Image"){
         return get_image_html(value);
     }
@@ -177,10 +177,10 @@ function get_absolute_format_and_html(field, value){
         return get_currency_format(value);
     }
     else if (field.fieldtype ==="Data") {
-        return `<td>${value || ''}</td>`;
+        return `<td width="${width}px">${value || ''}</td>`;
     }
     else {
-        return `<td>${value || ''}</td>`;
+        return `<td width="${width}px">${value || ''}</td>`;
     }
 }
 
