@@ -1,7 +1,7 @@
 import frappe
 import json
 
-from field_force.field_force.page.utils import generate_excel_and_download
+from field_force.field_force.page.utils import generate_excel_and_download, get_time_in_12_hour_format
 from field_force.field_force.report.utils import set_image_url, set_link_to_doc, get_site_directory_path, \
     set_google_map_location_button
 
@@ -13,6 +13,8 @@ def get_user_attendance_data(filters=None):
 
     for index, app_user_attendance in enumerate(query_result):
         set_link_to_doc(app_user_attendance, 'sales_person', 'sales-person')
+        app_user_attendance.server_time = get_time_in_12_hour_format(app_user_attendance.server_time)
+        app_user_attendance.device_time = get_time_in_12_hour_format(app_user_attendance.device_time)
 
         app_user_attendance['name'] = f'<a href="/app/app-user-attendance/{app_user_attendance.name}" ' \
                                       f'target="_blank">{app_user_attendance.name}</a>'
