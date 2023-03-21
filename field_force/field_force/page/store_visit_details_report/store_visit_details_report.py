@@ -1,7 +1,7 @@
 import frappe
 import json
 
-from field_force.field_force.page.utils import generate_excel_and_download
+from field_force.field_force.page.utils import generate_excel_and_download, get_time_in_12_hour_format, get_datetime_with_12_hour_format
 from field_force.field_force.report.utils import set_image_url, get_site_directory_path, set_link_to_doc
 
 
@@ -18,10 +18,12 @@ def get_absolute_data(filters, export=False):
     for index, store_visit in enumerate(query_result):
         set_image_url(store_visit, site_directory)
 
-        server_time = str(store_visit.server_time).split('.')[0] \
-            if '.' in str(store_visit.server_time) else store_visit.server_time
-        device_time = str(store_visit.device_time).split('.')[0] \
-            if '.' in str(store_visit.device_time) else store_visit.device_time
+        server_time = get_time_in_12_hour_format(store_visit.server_time)
+        device_time = get_time_in_12_hour_format(store_visit.device_time)
+        # server_time = str(store_visit.server_time).split('.')[0] \
+        #     if '.' in str(store_visit.server_time) else store_visit.server_time
+        # device_time = str(store_visit.device_time).split('.')[0] \
+        #     if '.' in str(store_visit.device_time) else store_visit.device_time
 
         if not export:
             set_link_to_doc(store_visit, 'name', 'store-visit')
@@ -80,17 +82,17 @@ def get_conditions(filters):
 
 def get_columns():
     columns =  [
-        {'fieldname': 'sl', 'label': 'SL', 'expwidth': 5, 'export': False},
-        {'fieldname': 'server_date', 'label': 'Date', 'expwidth': 13},
-        {'fieldname': 'server_time', 'label': 'Time', 'expwidth': 13},
+        {'fieldname': 'sl', 'label': 'SL', 'expwidth': 5, 'export': False, 'width': 30},
+        {'fieldname': 'server_date', 'label': 'Date', 'expwidth': 13, 'width': 90},
+        {'fieldname': 'server_time', 'label': 'Time', 'expwidth': 13, 'width': 70},
         {'fieldname': 'name', 'label': 'ID', 'expwidth': 20},
-        {'fieldname': 'customer', 'label': 'Customer', 'expwidth': 15},
+        {'fieldname': 'customer', 'label': 'Customer', 'expwidth': 15, 'width':150},
         # {'fieldname': 'customer_address', 'label': 'Address', 'expwidth': 15},
-        {'fieldname': 'contact_number', 'label': 'Contact', 'expwidth': 15},
-        {'fieldname': 'details', 'label': 'Details', 'expwidth': 15},
+        # {'fieldname': 'contact_number', 'label': 'Contact', 'expwidth': 15},
+        {'fieldname': 'details', 'label': 'Details', 'expwidth': 15, 'width':100},
         {'fieldname': 'sales_person', 'label': 'Sales Person', 'expwidth': 20},
-        {'fieldname': 'device_date', 'label': 'Device Date Time', 'expwidth': 15},
-        {'fieldname': 'cheated', 'label': 'Cheated', 'fieldtype': 'Data', 'expwidth': 15},
+        {'fieldname': 'device_date', 'label': 'Device Date Time', 'expwidth': 15, 'width': 80},
+        {'fieldname': 'cheated', 'label': 'Cheated', 'fieldtype': 'Data', 'expwidth': 15, 'width': 20},
         # {'fieldname': 'latitude', 'label': 'Latitude', 'fieldtype': 'Data', 'expwidth': 15},
         # {'fieldname': 'longitude', 'label': 'Longitude', 'fieldtype': 'Data', 'expwidth': 15},
         # {'fieldname': 'device_model', 'label': 'Device Model', 'fieldtype': 'Data', 'expwidth': 15},
