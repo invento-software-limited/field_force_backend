@@ -13,8 +13,9 @@
   "customer_address",
   "server_date",
   "server_time",
-  "details",
+  "type",
   "sales_person",
+  "details",
   "employee",
   "employee_name",
   "user",
@@ -221,12 +222,18 @@
    "label": "Sales Person",
    "options": "Sales Person",
    "reqd": 1
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "\nCheck IN\nCheck OUT"
   }
  ],
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-20 11:09:01.885233",
+ "modified": "2023-03-21 18:10:22.390787",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Store Visit",
