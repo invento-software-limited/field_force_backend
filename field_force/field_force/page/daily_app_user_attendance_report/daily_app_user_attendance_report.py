@@ -3,7 +3,7 @@
 import json
 
 import frappe
-from field_force.field_force.page.utils import generate_excel_and_download
+from field_force.field_force.page.utils import generate_excel_and_download, get_time_in_12_hour_format
 from field_force.field_force.report.utils import set_link_to_doc, set_image_url, get_site_directory_path,\
     set_google_map_location_button
 
@@ -23,8 +23,6 @@ def get_absolute_data(filters, export=False):
     index = 1
 
     for app_user_attendance in data:
-        print("====>>", app_user_attendance.image)
-
         set_image_url(app_user_attendance, site_directory)
         data_key = f"{app_user_attendance.server_date}_{app_user_attendance.user}"
         app_user_attendance.cheated = 'Yes' if app_user_attendance.cheated else 'No'
@@ -32,8 +30,8 @@ def get_absolute_data(filters, export=False):
         if data_key not in data_dict.keys():
             data_dict[data_key] = app_user_attendance
             data_dict[data_key]['sl'] = index
-            data_dict[data_key]['checkin_time'] = app_user_attendance.server_time
-            data_dict[data_key]['checkin_device_time'] = app_user_attendance.device_time
+            data_dict[data_key]['checkin_time'] = get_time_in_12_hour_format(app_user_attendance.server_time)
+            data_dict[data_key]['checkin_device_time'] = get_time_in_12_hour_format(app_user_attendance.device_time)
             data_dict[data_key]['checkin_name'] = app_user_attendance.name
             data_dict[data_key]['checkin_image'] = app_user_attendance.image
             data_dict[data_key]['checkout_image'] = '/files/default-image.png'
@@ -46,8 +44,9 @@ def get_absolute_data(filters, export=False):
 
             index += 1
         else:
-            data_dict[data_key]['checkout_time'] = app_user_attendance.server_time
-            data_dict[data_key]['checkout_device_time'] = app_user_attendance.device_time
+            data_dict[data_key]['checkout_time'] = get_time_in_12_hour_format(app_user_attendance.server_time)
+            
+            data_dict[data_key]['checkout_device_time'] = get_time_in_12_hour_format(app_user_attendance.device_time)
             data_dict[data_key]['checkout_name'] = app_user_attendance.name
             data_dict[data_key]['checkout_image'] = app_user_attendance.image
             data_dict[data_key]['checkout_location'] = set_google_map_location_button(app_user_attendance)
