@@ -10,8 +10,15 @@
 #modal_section{
     outline: 0px;
 }
+#att_modal_section{
+    outline: 0px;
+}
 
 #modal_section:focus{
+    outline: 0px;
+}
+
+#att_modal_section:focus{
     outline: 0px;
 }
 
