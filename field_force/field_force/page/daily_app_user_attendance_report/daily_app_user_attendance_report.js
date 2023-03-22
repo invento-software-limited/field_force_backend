@@ -173,10 +173,16 @@ function get_absolute_format_and_html(field, value){
 }
 
 function get_image_html(image_url) {
+    let rotate = "transform: rotate(-90deg)"
+
+    if (image_url === "/files/default-image.png"){
+        rotate = '';
+    }
+
     return `
         <td style="height:100px; width:120px;">
             <a href="#">
-                <img style="height:100%; width:100%; transform: rotate(-90deg)" src="${image_url}" img-path="${image_url}" onclick="(
+                <img style="height:100%; width:100%; ${rotate}" src="${image_url}" img-path="${image_url}" onclick="(
                     function(e){
                         document.getElementById(\'att_modal_section\').style.display=\'block\';
                         var nAgt = navigator.userAgent;
