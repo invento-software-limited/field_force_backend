@@ -1,6 +1,7 @@
+import datetime
 import os
 import frappe
-import datetime
+import cv2
 
 def set_user_link(doc):
     if doc.user:
@@ -11,17 +12,33 @@ def set_link_to_doc(doc, field, doc_url=''):
     doc[field] = f'<a href="/app/{doc_url}/{doc[field]}" ' \
                                   f'target="_blank">{doc[field]}</a>'
 
-def set_image_url(doc, site_directory=None):
+def rotate_image(image_path):
+    # read an image as input using OpenCV
+    image = cv2.imread(image_path)
+
+    rotated_image = cv2.rotate(image, cv2.ROTATE_90_COUNTERCLOCKWISE)
+
+    cv2.imwrite(image_path, rotated_image)
+
+    # image_path = image_path + f'?t={datetime.datetime.now().timestamp()}'
+    # return image_path
+
+def set_image_url(doc, site_directory=None, rotate=False):
     site_directory = site_directory or  get_site_directory_path()
     image_path = '/files/default-image.png'
 
     if doc.image:
         if 'private/files/' in doc.image:
             image_path = f"{site_directory}{doc.image}"
+            # rotate_image(image_path)
+
         elif '/files/' in doc.image:
             image_path = f"{site_directory}/public{doc.image}"
+            # rotate_image(image_path)
 
-    if not os.path.exists(image_path):
+    if os.path.exists(image_path):
+        doc.image = doc.image + f'?t={datetime.datetime.now().timestamp()}'
+    else:
         doc.image = '/files/default-image.png'
 
 download_button = '''<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" style="margin-top:20px;"
