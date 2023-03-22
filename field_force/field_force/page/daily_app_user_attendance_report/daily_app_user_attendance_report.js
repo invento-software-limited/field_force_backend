@@ -85,7 +85,7 @@ class DailyAppUserAttendanceReport {
         let html = '<div id="att_modal_section" class="modal_">\n' +
             '  <div class="modal-image">\n' +
             '  <img class="modal-content_" id="att_img" alt="img" style="transform: rotate(-90deg)">\n' +
-            '  <span class="close" style="right: -26em; top: -55px;" onclick="document.getElementById(\'att_modal_section\').style.display=\'none\'">&times;</span>\n' +
+            '  <span class="close" style="right: -27em; top: -55px;" onclick="document.getElementById(\'att_modal_section\').style.display=\'none\'">&times;</span>\n' +
             '  </div>\n' +
             '</div>'
         // this.form.body.append(html);
