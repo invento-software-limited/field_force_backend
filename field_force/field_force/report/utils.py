@@ -1,7 +1,7 @@
 import datetime
 import os
 import frappe
-import cv2
+# import cv2
 
 def set_user_link(doc):
     if doc.user:
@@ -12,13 +12,13 @@ def set_link_to_doc(doc, field, doc_url=''):
     doc[field] = f'<a href="/app/{doc_url}/{doc[field]}" ' \
                                   f'target="_blank">{doc[field]}</a>'
 
-def rotate_image(image_path):
-    # read an image as input using OpenCV
-    image = cv2.imread(image_path)
-
-    rotated_image = cv2.rotate(image, cv2.ROTATE_90_COUNTERCLOCKWISE)
-
-    cv2.imwrite(image_path, rotated_image)
+# def rotate_image(image_path):
+#     # read an image as input using OpenCV
+#     image = cv2.imread(image_path)
+#
+#     rotated_image = cv2.rotate(image, cv2.ROTATE_90_COUNTERCLOCKWISE)
+#
+#     cv2.imwrite(image_path, rotated_image)
 
     # image_path = image_path + f'?t={datetime.datetime.now().timestamp()}'
     # return image_path
