@@ -215,6 +215,7 @@
    "label": "Location"
   },
   {
+   "fetch_from": "customer.sales_person",
    "fieldname": "sales_person",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -233,7 +234,7 @@
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-21 18:10:22.390787",
+ "modified": "2023-03-23 12:24:43.903338",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Store Visit",

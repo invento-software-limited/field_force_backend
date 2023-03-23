@@ -34,14 +34,24 @@ class StoreVisit(Document):
 		filters = {
 			"customer": self.customer,
 			"user": self.user,
-			"date": self.server_date
+			"date": self.server_date,
 		}
 
 		if frappe.db.exists('Store Visit Destination', filters):
 			store_visit_destination = frappe.get_last_doc("Store Visit Destination", filters=filters)
-			store_visit_destination.store_visit = self.name
 			store_visit_destination.status = 'Visited'
-			store_visit_destination.visited_time = self.server_time
+
+			if self.type != "Check OUT" and not store_visit_destination.checkin_store_visit:
+				store_visit_destination.store_visit = self.name
+				store_visit_destination.visited_time = self.server_time
+
+				store_visit_destination.checkin_store_visit = self.name
+				store_visit_destination.checkin_time = self.server_time
+
+			elif self.type == "Check OUT":
+				store_visit_destination.checkout_store_visit = self.name
+				store_visit_destination.checkout_time = self.server_time
+
 			store_visit_destination.save()
 
 	def before_save(self):
