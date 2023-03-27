@@ -1,28 +1,28 @@
 {
  "cards": [
   {
-   "card": "Total Requisition"
+   "card": "Today's Requisition"
   },
   {
-   "card": "Total Sales"
+   "card": "Monthly Requisition"
   },
   {
-   "card": "Total Active Items"
+   "card": "Today's Sales"
   },
   {
-   "card": "Active Customers"
+   "card": "Monthly Sales"
   },
   {
-   "card": "Total Sales Persons"
+   "card": "Today's Visited Store"
   },
   {
-   "card": "Store Visits"
+   "card": "Today's Merchandising Picture"
   },
   {
-   "card": "Merchandising Pictures"
+   "card": "Today's Attendance"
   },
   {
-   "card": "Attendance"
+   "card": "Current Announcement"
   }
  ],
  "charts": [
@@ -58,8 +58,8 @@
  "idx": 0,
  "is_default": 1,
  "is_standard": 1,
- "modified": "2023-01-16 10:25:28.668080",
- "modified_by": "munim@invento.com.bd",
+ "modified": "2023-03-27 15:23:29.015041",
+ "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Field Force Dashboard",
  "owner": "munim@invento.com.bd"
