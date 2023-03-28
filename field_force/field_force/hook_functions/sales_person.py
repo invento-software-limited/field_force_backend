@@ -1,8 +1,11 @@
 import frappe
 import datetime
 
-@frappe.whitelist()
-def create_employee_and_set_role_profile(self, method):
+def before_save(self, method):
+    create_employee_and_set_role_profile(self)
+    update_customers(self)
+
+def create_employee_and_set_role_profile(self):
     sales_person = frappe.get_doc("Sales Person", self.parent_sales_person)
 
     if self.create_employee and self.employee_number and not self.employee:
@@ -116,3 +119,33 @@ def get_or_create_field_force_module_profile():
         return module_profile.name
 
     return 'Field Force'
+
+def update_customers(self):
+    if self.customers:
+        for customer in self.customers:
+            customer_obj = frappe.get_doc("Customer", customer.customer)
+
+            if customer_obj.sales_person != self.name:
+                filters = {
+                    "name":["!=", customer.name],
+                    "customer": customer.customer
+                }
+
+                if frappe.db.exists("Sales Person Customer", filters):
+                    child_table_object = frappe.get_doc("Sales Person Customer", filters)
+                    child_table_object.delete()
+
+                customer_obj.sales_person = self.name
+                customer_obj.save()
+
+    delete_sales_person(self.name, self.customers)
+
+def delete_sales_person(sales_person_name, current_customers):
+    sales_person = frappe.get_doc("Sales Person", sales_person_name)
+    customers = [customer.customer for customer in current_customers]
+
+    for customer in sales_person.customers:
+        if customer.customer not in customers:
+            customer_obj = frappe.get_doc("Customer", customer.customer)
+            customer_obj.sales_person = None
+            customer_obj.save()
