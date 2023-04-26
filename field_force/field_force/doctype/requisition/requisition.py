@@ -290,11 +290,11 @@ def generate_row(ws, row_count, column_values, font=None, font_size=None, color=
 def get_directory_path(directory_name):
     site_name = frappe.local.site
     cur_dir = os.getcwd()
-    file_path = os.path.join(cur_dir, site_name, f'private/files/{directory_name}')
+    file_path = os.path.join(cur_dir, site_name, f'public/files/{directory_name}')
     os.makedirs(file_path, exist_ok=True)
     return file_path
 
-default_font = Font(name='Calibri(Body)', size=11, bold=False, italic=False,  strike=False, underline='none')
+default_font = Font(name='Calibri(Body)', size=11, bold=False, italic   =False,  strike=False, underline='none')
 
 def set_column_width(worksheet, column=None, width=None):
     if column and width:
@@ -383,7 +383,8 @@ def generate_csv_and_attach_file(requisition):
             writer.writerow(item_row_data)
 
 
-    file = attach_file(requisition, absolute_path, file_name)
-    requisition.requisition_excel = file.file_url
-    requisition.requisition_excel_file = f'<a class="attached-file-link" href="{file.file_url}"' \
+    attach_file(requisition, absolute_path, file_name)
+    file_url = absolute_path.split('public')[-1]
+    requisition.requisition_excel = file_url
+    requisition.requisition_excel_file = f'<a class="attached-file-link" href="{file_url}"' \
                                          f' target="_blank">{file_name}</a>'
