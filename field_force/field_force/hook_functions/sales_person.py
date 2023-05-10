@@ -8,7 +8,15 @@ def before_save(self, method):
 def create_employee_and_set_role_profile(self):
     sales_person = frappe.get_doc("Sales Person", self.parent_sales_person)
 
-    if self.create_employee and self.employee_number and not self.employee:
+    if not self.create_employee and self.employee:
+        if frappe.db.exists("Sales Person", {"employee": self.employee, "name": ["!=", self.name]}):
+            frappe.throw(f"The employee <b>{self.employee}</b> already assigned to another sales person")
+        elif frappe.db.exists("Employee", {"employee": self.employee, "user_id": None}):
+            frappe.throw(f"The employee <b>{self.employee}</b> has no User ID", )
+        else:
+            self.user = frappe.db.get_value("Employee", self.employee, 'user_id')
+
+    if self.create_employee and self.employee_number and not self.employee and not self.employee_created:
         if self.user:
             if frappe.db.exists("Employee", {"user_id": self.user}):
                 frappe.throw(f"Employee already exists with user id '<b>{self.user}</b>'")
@@ -19,7 +27,6 @@ def create_employee_and_set_role_profile(self):
                 "gender": "N/A"
             })
             gender.insert()
-
 
         employee = frappe.get_doc({
             "doctype": "Employee",
@@ -138,7 +145,8 @@ def update_customers(self):
                 customer_obj.sales_person = self.name
                 customer_obj.save()
 
-    delete_sales_person(self.name, self.customers)
+    if frappe.db.exists("Sales Person", self.name):
+        delete_sales_person(self.name, self.customers)
 
 def delete_sales_person(sales_person_name, current_customers):
     sales_person = frappe.get_doc("Sales Person", sales_person_name)
