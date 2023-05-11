@@ -103,7 +103,7 @@ frappe.ui.form.on('Requisition', {
 		}
 	},
 
-    delivery_date: function(frm) {
+  delivery_date: function(frm) {
 		$.each(frm.doc.items || [], function(i, d) {
 			if(!d.delivery_date) d.delivery_date = frm.doc.delivery_date;
 		});
@@ -120,6 +120,7 @@ frappe.ui.form.on('Requisition', {
             frm.refresh_fields("sales_team");
         }
     },
+
 	scan_barcode: function(frm) {
 		let transaction_controller= new erpnext.TransactionController({frm:frm});
 		transaction_controller.scan_barcode();
@@ -322,6 +323,7 @@ function get_and_set_item_details(frm, cdt, cdn, row){
 function set_item_values(frm, cdt, cdn, row, item){
 	frappe.model.set_value(cdt, cdn, "product_id", item.product_id);
 	frappe.model.set_value(cdt, cdn, "item_name", item.item_name);
+  frappe.model.set_value(cdt, cdn, "qty", 1);
 	frappe.model.set_value(cdt, cdn, "brand", item.brand);
 	frappe.model.set_value(cdt, cdn, "price_list_rate", item.price_list_rate);
 	frm.refresh_fields(cdt, cdn);
