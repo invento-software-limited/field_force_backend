@@ -34,7 +34,6 @@ class Requisition(Document):
         generate_csv_and_attach_file(self)
         # generate_requisition_excel_and_attach(self)
 
-
     def on_submit(self):
         if self.docstatus == 1:
             frappe.db.set_value(self.doctype, self.name, 'status', 'Submitted')
@@ -182,7 +181,8 @@ def set_amount_to_sales_target(sales_person, achievement_amount, month, year):
     filters = {
         "sales_person": sales_person,
         "month": calendar.month_name[month],
-        "year": year
+        "year": year,
+        "docstatus": 1
     }
 
     if frappe.db.exists("Sales Person Target", filters):
