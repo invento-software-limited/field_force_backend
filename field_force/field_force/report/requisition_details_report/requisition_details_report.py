@@ -19,6 +19,7 @@ def get_columns():
         {"label": _("Distributor"), "fieldname": "distributor", "width": 120, "fieldtype": "Link",
          "options": "Distributor"},
 		{"label": _("Customer"), "fieldname": "customer", "width": 200, "fieldtype": "Link", "options": "Customer"},
+		{"label": _("Territory"), "fieldname": "territory", "width": 120, "fieldtype": "Link", "options": "Territory"},
         {"label": _("PO Number"), "fieldname": "po_no", "width": 120},
         {"label": _("Delivery Date"), "fieldname": "delivery_date", "width": 110},
         # {"label": _("Total Items"), "fieldname": "total_items", "width": 100},
@@ -33,7 +34,7 @@ def get_columns():
 def get_data(filters):
     conditions = get_conditions(filters)
 
-    query_string = '''select 
+    query_string = '''select
                         requisition.name,
                         requisition.transaction_date,
                         requisition.delivery_date,
@@ -41,6 +42,7 @@ def get_data(filters):
                         requisition.customer,
                         requisition.po_no,
                         requisition.distributor,
+                        requisition.territory,
                         requisition.total_items,
                         requisition.total_qty,
                         requisition.grand_total as total_amount,
@@ -57,6 +59,7 @@ def get_conditions(filters):
     sales_person = filters.get('sales_person')
     customer = filters.get('customer')
     distributor = filters.get('distributor')
+    territory = filters.get('territory')
     company = filters.get('company')
     status = filters.get('status')
 
@@ -74,6 +77,8 @@ def get_conditions(filters):
         conditions.append('requisition.customer = "%s"' % customer)
     if distributor:
         conditions.append('requisition.distributor = "%s"' % distributor)
+    if territory:
+        conditions.append('requisition.territory = "%s"' % territory)
     if company:
         conditions.append('requisition.company = "%s"' % company)
 

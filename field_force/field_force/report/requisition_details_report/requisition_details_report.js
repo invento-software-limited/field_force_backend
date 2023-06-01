@@ -20,7 +20,7 @@ frappe.query_reports["Requisition Details Report"] = {
 			"reqd": 1,
 			"width": "60px"
 		},
-		{
+    {
 			"fieldname": "distributor",
 			"label": __("Distributor"),
 			"fieldtype": "Link",
@@ -41,6 +41,13 @@ frappe.query_reports["Requisition Details Report"] = {
 					]
 				}
 			}
+		},
+    {
+			"fieldname": "territory",
+			"label": __("Territory"),
+			"fieldtype": "Link",
+			"width": "100",
+			"options": "Territory",
 		},
 		{
 			"fieldname": "sales_person",
