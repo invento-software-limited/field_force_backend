@@ -2,21 +2,25 @@ import json
 
 import frappe
 from field_force.response import build_custom_response
+from field_force.api_methods.utils import file_path
+
 
 @frappe.whitelist()
 def get_distributors(**kwargs):
-    filters = {
-        # 'customer_group': 'Distributor',
-    }
+    doctype = 'Distributor'
+    api_response_fields = json.loads(open(file_path, "r").read())
+    fields = api_response_fields.get(doctype, ['name'])
 
-    if kwargs.get('search'):
-        filters['name'] = ["like", f"%{kwargs.pop('search')}%"]
+    frappe.local.form_dict.setdefault(
+        "limit_page_length",
+        frappe.local.form_dict.limit or frappe.local.form_dict.limit_page_length or 500,
+    )
 
-    if 'cmd' in kwargs.keys():
-        del kwargs['cmd']
+    if 'cmd' in frappe.local.form_dict.keys():
+        del frappe.local.form_dict['cmd']
 
-    if frappe.has_permission('Distributor', 'read'):
-        distributors = frappe.db.get_list('Distributor', filters, **kwargs)
+    if frappe.has_permission(doctype, 'read'):
+        distributors = frappe.db.get_list(doctype, fields=fields, **frappe.local.form_dict)
         frappe.local.response.total_items = len(distributors)
         frappe.local.response.data = distributors
     else:
