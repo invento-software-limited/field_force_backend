@@ -42,6 +42,13 @@ frappe.query_reports["Daily Requisition Report"] = {
 			// 	}
 			// }
 		},
+    {
+			"fieldname": "territory",
+			"label": __("Territory"),
+			"fieldtype": "Link",
+			"width": "100",
+			"options": "Territory",
+		},
 		{
 			"fieldname": "sales_person",
 			"label": __("Sales Person"),

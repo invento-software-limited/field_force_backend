@@ -18,7 +18,8 @@ def get_columns():
         {"label": _(" Requisition Date"), "fieldname": "transaction_date", "width": 110},
         {"label": _("Partner"), "fieldname": "partner_group", "width": 120, "fieldtype": "Link", "options": "Requisition"},
 		{"label": _("Outlet Name"), "fieldname": "customer", "width": 200, "fieldtype": "Link", "options": "Customer"},
-		{"label": _("PO Number"), "fieldname": "po_no", "width": 100},
+        {"label": _("Territory"), "fieldname": "territory", "width": 120, "fieldtype": "Link", "options": "Territory"},
+        {"label": _("PO Number"), "fieldname": "po_no", "width": 100},
         {"label": _("Sales Person"), "fieldname": "sales_person", "fieldtype": "Link", "options": "Sales Person",
          "width": 140},
         {"label": _("Delivered Date"), "fieldname": "delivered_date", "fieldtype": "Date", "width": 110},
@@ -32,7 +33,7 @@ def get_columns():
 def get_data(filters):
     conditions = get_conditions(filters)
 
-    query_string = '''select 
+    query_string = '''select
                         requisition.name,
                         requisition.transaction_date,
                         requisition.partner_group,
@@ -40,9 +41,10 @@ def get_data(filters):
                         requisition.delivered_date,
                         requisition.delivered_amount,
                         requisition.sales_person,
-                        requisition.customer, 
+                        requisition.customer,
+                        requisition.territory,
                         requisition.grand_total as total_amount,
-                        IF(requisition.delivered_date is not null, 
+                        IF(requisition.delivered_date is not null,
                             ABS(DATEDIFF(requisition.delivered_date, requisition.transaction_date)),
                              DATEDIFF(CURDATE(), requisition.transaction_date)) as lead_time,
                         (requisition.grand_total - requisition.delivered_amount) as gap
@@ -58,6 +60,7 @@ def get_conditions(filters):
     to_date = filters.get('to_date')
     sales_person = filters.get('sales_person')
     customer = filters.get('customer')
+    territory = filters.get('territory')
     partner_group = filters.get('partner_group')
     status = filters.get('status')
 
@@ -73,6 +76,8 @@ def get_conditions(filters):
         conditions.append('requisition.sales_person = "%s"' % sales_person)
     if customer:
         conditions.append('requisition.customer = "%s"' % customer)
+    if territory:
+        conditions.append('requisition.territory = "%s"' % territory)
     if partner_group:
         conditions.append('requisition.partner_group = "%s"' % partner_group)
 
