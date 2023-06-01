@@ -147,18 +147,20 @@
   {
    "fetch_from": "sales_person.employee",
    "fieldname": "employee",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "hidden": 1,
-   "label": "Employee"
+   "label": "Employee",
+   "options": "Employee"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-28 16:59:10.478230",
+ "modified": "2023-06-01 13:08:13.748300",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Distributor",
  "name_case": "Title Case",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -214,5 +216,6 @@
   }
  ],
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": []
 }

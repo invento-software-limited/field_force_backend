@@ -41,7 +41,9 @@
         "total_qty",
         "grand_total",
         "status",
-        "transaction_date"
+        "transaction_date",
+        "sales_person",
+        "file"
     ],
     "Sales Order Item": [
         "name",
@@ -73,7 +75,8 @@
         "longitude",
         "device_model",
         "mac_address",
-        "imei"
+        "imei",
+        "sales_person"
     ],
     "Video": [
         "name",
@@ -86,7 +89,8 @@
         "name",
         "customer",
         "date",
-        "item_details"
+        "item_details",
+        "sales_person"
     ],
     "App User Route": [
         "name",
@@ -103,6 +107,7 @@
     "Store Visit": [
         "name",
         "user",
+        "type",
         "customer",
         "customer_address",
         "device_date",
@@ -183,16 +188,19 @@
         "name",
         "user",
         "customer",
+        "brand",
         "customer_address",
         "device_date",
         "device_time",
         "details",
         "image",
         "latitude",
-        "longitude",
-        "device_model",
-        "mac_address",
         "ip_address",
-        "imei"
+        "imei",
+        "sales_person"
+    ],
+    "Distributor": [
+        "name",
+        "sales_person"
     ]
 }
