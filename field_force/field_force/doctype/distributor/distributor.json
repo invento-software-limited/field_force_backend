@@ -1,6 +1,5 @@
 {
  "actions": [],
- "allow_rename": 1,
  "autoname": "field:distributor_name",
  "creation": "2022-08-21 09:38:46.172589",
  "doctype": "DocType",
@@ -155,7 +154,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-06-01 13:08:13.748300",
+ "modified": "2023-06-08 16:25:33.060132",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Distributor",
@@ -217,5 +216,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }
