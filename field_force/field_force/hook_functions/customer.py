@@ -1,11 +1,38 @@
 import frappe
 
-@frappe.whitelist()
+def validate(self, method):
+    self._original = self.get_doc_before_save()
+    set_customer_group(self, method)
+    set_sales_person_and_employee(self, method)
+
+def after_insert(self, method):
+    create_distributor(self, method)
+
+def before_save(self, method):
+    if self.customer_group == "Distributor":
+        customer_info = {
+            'contact_person': self.contact_person,
+            'contact_number': self.contact_number,
+            'address': self.address,
+            'email_address': self.email_address,
+            'thana': self.thana,
+            'zip_code': self.zip_code,
+            'latitude': self.latitude,
+            'longitude': self.longitude
+        }
+
+        distributor = frappe.get_doc('Distributor', self.name)
+        distributor.update(customer_info)
+
+        if self.sales_person != distributor.sales_person:
+            distributor.sales_person = self.sales_person
+
+        distributor.save()
+
 def set_customer_group(self, method):
     if not self.customer_group:
         self.customer_group = 'Retail Shop'
 
-@frappe.whitelist()
 def set_sales_person_and_employee(self, method):
     if not self.sales_person:
         if frappe.db.exists("Sales Person", {"user": frappe.session.user}):
@@ -25,8 +52,6 @@ def set_sales_person_and_employee(self, method):
     #         }).insert()
     #         self.partner_group = partner_group
 
-
-@frappe.whitelist()
 def create_distributor(self, method):
     if self.customer_group == 'Distributor':
         if not self.created_from_distributor and (not self.distributor and not frappe.db.exists('Distributor', self.name)):
@@ -47,7 +72,6 @@ def create_distributor(self, method):
             distributor = frappe.get_doc(distributor_info)
             distributor.save()
 
-# @frappe.whitelist()
 # def set_employee(self, method):
 #     if self.owner and not self.employee:
 #         if frappe.db.exists("Employee", {"user_id": self.owner}):

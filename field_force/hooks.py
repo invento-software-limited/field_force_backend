@@ -113,25 +113,17 @@ doctype_tree_js = {
 # Hook on document methods and events
 
 doc_events = {
-	# "*": {
-	# 	"on_update": "method",
-	# 	"on_cancel": "method",
-	# 	"on_trash": "method"
-	# },
 	# "Item":{
 	# 	"before_save": "field_force.field_force.hook_functions.item.set_item_name_to_description"
 	# },
 	"Customer": {
-		"validate": [
-			"field_force.field_force.hook_functions.customer.set_customer_group",
-			"field_force.field_force.hook_functions.customer.set_sales_person_and_employee"
-		],
-		"after_insert": [
-			"field_force.field_force.hook_functions.customer.create_distributor",
-		],
-		# "before_save": "field_force.field_force.hook_functions.customer.set_employee",
-		# "on_update": "field_force.field_force.hook_functions.customer.set_image",
-	},
+		"validate": "field_force.field_force.hook_functions.customer.validate",
+		"after_insert": "field_force.field_force.hook_functions.customer.after_insert",
+        "before_save": "field_force.field_force.hook_functions.customer.before_save",
+        # "on_update": [
+            # "field_force.field_force.hook_functions.customer.set_image",
+        # ]
+    },
 	"Sales Order": {
 		"validate": [
 			"field_force.field_force.hook_functions.sales_order.set_extra_values",
@@ -140,7 +132,6 @@ doc_events = {
 		"after_insert": "field_force.field_force.hook_functions.sales_order.after_insert",
 		# "before_save": "field_force.field_force.hook_functions.sales_order.add_sales_person",
 		# "on_update": "field_force.field_force.hook_functions.sales_order.add_amount_to_achievement"
-		# "on_cancel": "field_force.field_force.hook_functions.sales_order.subtract_achievement_amount"
 	},
 	"Sales Person": {
 		"before_save": "field_force.field_force.hook_functions.sales_person.before_save",
