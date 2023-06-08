@@ -14,16 +14,21 @@
   "customer_address",
   "server_date",
   "server_time",
-  "details",
   "sales_person",
   "employee",
   "employee_name",
   "user",
   "user_fullname",
   "email",
+  "details",
+  "feedback",
+  "feedback_from",
+  "feedback_by_user",
   "column_break_5",
   "image",
   "img",
+  "feedback_section",
+  "column_break_pmoev",
   "additional_information_section",
   "device_date",
   "device_time",
@@ -123,7 +128,8 @@
   {
    "fieldname": "details",
    "fieldtype": "Small Text",
-   "label": "Details"
+   "label": "Details",
+   "max_height": "60rem"
   },
   {
    "default": "0",
@@ -151,6 +157,7 @@
    "read_only": 1
   },
   {
+   "collapsible": 1,
    "depends_on": "eval: doc.image != '';",
    "fieldname": "additional_information_section",
    "fieldtype": "Section Break",
@@ -213,6 +220,7 @@
    "options": "Brand"
   },
   {
+   "collapsible": 1,
    "fieldname": "section_break_27",
    "fieldtype": "Section Break"
   },
@@ -230,16 +238,48 @@
    "label": "Sales Person",
    "options": "Sales Person",
    "reqd": 1
+  },
+  {
+   "fieldname": "feedback_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "feedback",
+   "fieldtype": "Small Text",
+   "label": "Feedback",
+   "max_height": "100rem"
+  },
+  {
+   "fieldname": "feedback_by_user",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "ignore_user_permissions": 1,
+   "label": "Feedback by User",
+   "options": "User"
+  },
+  {
+   "fieldname": "column_break_pmoev",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval: doc.feedback;",
+   "fieldname": "feedback_from",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Feedback From",
+   "options": "Sales Person",
+   "read_only": 1
   }
  ],
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-20 11:10:36.545356",
+ "modified": "2023-06-08 18:51:34.649307",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Merchandising Picture",
  "name_case": "Title Case",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -316,5 +356,6 @@
   }
  ],
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": []
 }
