@@ -3,7 +3,18 @@ import datetime
 
 def before_save(self, method):
     create_employee_and_set_role_profile(self)
+    update_sales_person(self)
     update_customers(self)
+
+def update_sales_person(self):
+    if self.type == "Sales Representative":
+        customer = frappe.get_doc('Customer', self.distributor)
+
+        if self.name != customer.sales_person:
+            customer.sales_person = self.name
+            customer.save()
+    else:
+        self.distributor = None
 
 def create_employee_and_set_role_profile(self):
     sales_person = frappe.get_doc("Sales Person", self.parent_sales_person)
