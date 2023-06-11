@@ -4,11 +4,14 @@ import frappe
 from field_force.api_methods.utils import file_path, get_api_fields
 
 
+CUSTOM_API_DOCTYPES = ['Customer', 'Item', 'Store Visit Assign', 'Territory']
+
 def get_custom_data(doctype):
     method = {
         'Customer': get_customer_list,
         'Item': get_items_list,
-        'Store Visit Assign': get_store_visit_assigns_list
+        'Store Visit Assign': get_store_visit_assigns_list,
+        'Territory': get_territories
     }
 
     return method[doctype](doctype)
@@ -19,8 +22,9 @@ def set_custom_data_before_creation(doctype, data):
 
 def get_customer_list(doctype):
     frappe.local.form_dict['filters'] = [['customer_group', 'in', ['Retail Shop', 'MT']]]
-    frappe.local.response.total_items = len(frappe.get_list(doctype, frappe.local.form_dict.get('filters')))
-    return frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
+    customers = frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
+    frappe.local.response.total_items = len(customers)
+    return customers
 
 def get_items_list(doctype):
     _, child_table_fields = get_api_fields(doctype, with_child_fields=True)
@@ -28,7 +32,7 @@ def get_items_list(doctype):
     # retrieving items
     frappe.local.form_dict['filters'] = [['disabled', '=', 0]]
     items = frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
-    frappe.local.response.total_items = len(frappe.get_list(doctype, frappe.local.form_dict.get('filters')))
+    frappe.local.response.total_items = len(items)
 
     items_dict = {}
     item_names = ''
@@ -43,7 +47,7 @@ def get_items_list(doctype):
 
     if 'barcodes' in child_table_fields:
         # if 'barcodes' in API doc config field list
-        barcodes = frappe.db.sql(f"""select barcode.parent, barcode.barcode from `tabItem Barcode` barcode 
+        barcodes = frappe.db.sql(f"""select barcode.parent, barcode.barcode from `tabItem Barcode` barcode
                                     where barcode.parent in ({item_names})""", as_dict=1)
 
         for barcode in barcodes:
@@ -53,7 +57,7 @@ def get_items_list(doctype):
     batch_fields = get_api_fields('Batch')
     batch_fields_str = ",".join([f'batch.{field}' for field in batch_fields])
 
-    batches = frappe.db.sql(f"""select {batch_fields_str} from `tabBatch` batch 
+    batches = frappe.db.sql(f"""select {batch_fields_str} from `tabBatch` batch
                             where batch.item in ({item_names})""", as_dict=True)
 
     for batch in batches:
@@ -66,7 +70,7 @@ def get_store_visit_assigns_list(doctype):
 
     frappe.local.form_dict['filters'] = {'user': frappe.session.user}
     store_visit_assigns = frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
-    frappe.local.response.total_items = len(frappe.get_list(doctype, frappe.local.form_dict.get('filters')))
+    frappe.local.response.total_items = len(store_visit_assigns)
 
     store_visit_assigns_dict = {}
     store_visit_assign_names = ''
@@ -83,7 +87,7 @@ def get_store_visit_assigns_list(doctype):
         store_visit_assign_fields_str = ",".join([f'store_visit_destination.{field}' for field in store_visit_assign_fields])
 
         destinations = frappe.db.sql(f"""select store_visit_destination.parent, {store_visit_assign_fields_str}
-                                        from `tab{child_table_doctype}` store_visit_destination where 
+                                        from `tab{child_table_doctype}` store_visit_destination where
                                         store_visit_destination.parent in ({store_visit_assign_names})
                                         order by store_visit_destination.expected_time asc,
                                          store_visit_destination.idx asc""", as_dict=True)
@@ -92,3 +96,20 @@ def get_store_visit_assigns_list(doctype):
             store_visit_assigns_dict[destination.parent]['destinations'].append(destination)
 
     return store_visit_assigns_dict.values()
+
+def get_territories(doctype):
+    sales_person_filters = {
+        "user": frappe.session.user,
+        "territory": ["!=", None]
+    }
+
+    if frappe.db.exists("Sales Person", sales_person_filters):
+        territory = frappe.db.get_value("Sales Person", sales_person_filters, 'territory')
+        frappe.local.form_dict['or_filters'] = [['name', '=', territory], ['parent_territory', '=', territory]]
+        # frappe.local.form_dict['order_by'] = 'name DESC'
+
+        territories = frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
+        frappe.local.response.total_items = len(territories)
+        return territories
+
+    return []

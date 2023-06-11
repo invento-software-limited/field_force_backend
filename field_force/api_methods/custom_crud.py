@@ -1,7 +1,7 @@
 import frappe
 import json
 
-from field_force.api_methods.custom_methods import get_custom_data, set_custom_data_before_creation
+from field_force.api_methods.custom_methods import CUSTOM_API_DOCTYPES ,get_custom_data, set_custom_data_before_creation
 from field_force.response import build_custom_response
 from frappe import _
 from frappe.permissions import has_permission
@@ -55,8 +55,6 @@ def execute(doctype=None, name=None):
 
         elif doctype:
             if frappe.local.request.method == "GET":
-                custom = ['Customer', 'Item', 'Store Visit Assign']
-
                 frappe.local.form_dict["fields"] = api_response_fields.get(doctype, ['name'])
                 frappe.local.form_dict['order_by'] = "modified desc"
 
@@ -73,12 +71,12 @@ def execute(doctype=None, name=None):
                         frappe.local.form_dict[param] = sbool(param_val)
 
                 if has_permission(doctype, 'read'):
-                    if doctype in custom:
+                    if doctype in CUSTOM_API_DOCTYPES:
                         data = get_custom_data(doctype)
                     else:
                         # data = frappe.get_list(doctype, **frappe.local.form_dict)
                         data = frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
-                        frappe.local.response.total_items = len(frappe.get_list(doctype, frappe.local.form_dict.get('filters')))
+                        frappe.local.response.total_items = len(data)
 
                     # set frappe.get_list result to response
                     frappe.local.response.update({
