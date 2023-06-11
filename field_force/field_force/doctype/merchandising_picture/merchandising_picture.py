@@ -6,7 +6,6 @@ from field_force.field_force.doctype.utils import set_cheat_status, set_location
 
 class MerchandisingPicture(Document):
     def validate(self):
-        self._original = self.get_doc_before_save()
         # if frappe.session.user != 'administrator':
         # 	self.user = frappe.session.user
 
@@ -29,14 +28,22 @@ class MerchandisingPicture(Document):
         set_sales_person(self)
         set_employee(self)
         set_cheat_status(self)
-        self.add_feedback_by()
 
     def before_save(self):
+        self.add_feedback_from()
         set_location_to_map(self)
 
-    def add_feedback_by(self):
-        if self._original.get('feedback') != self.feedback \
-            and frappe.db.exists("Sales Person", {"user": frappe.session.user}):
-            self.feedback_from = frappe.db.get_value("Sales Person", {"user": frappe.session.user}, 'name')
+    def add_feedback_from(self):
+        if self.feedback:
+            previous_doc = self.get_doc_before_save()
+
+            if previous_doc:
+                previous_feedback = previous_doc.get('feedback')
+
+                if previous_feedback != self.feedback \
+                    and frappe.db.exists("Sales Person", {"user": frappe.session.user}):
+                    self.feedback_from = frappe.db.get_value("Sales Person", {"user": frappe.session.user}, 'name')
+                else:
+                    self.feedback_from = None
         else:
             self.feedback_from = None
