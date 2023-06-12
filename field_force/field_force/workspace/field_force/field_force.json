@@ -1,110 +1,15 @@
 {
  "charts": [],
- "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Requisition\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Announcement\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Store Visit Assign\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"App User Attendance\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Item Request\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Store Visit\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Merchandising Picture\",\"col\":3}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span style=\\\"font-size: 18px;\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Requsition\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Sales\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Brand and Item\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Store Visit\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Attendance\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Customer\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Merchandising\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Others\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
+ "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Requisition\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Order\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Announcement\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Store Visit Assign\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"App User Attendance\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Item Request\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Store Visit\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Merchandising Picture\",\"col\":3}},{\"type\":\"spacer\",\"data\":{\"col\":12}},{\"type\":\"header\",\"data\":{\"text\":\"<span style=\\\"font-size: 18px;\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Requisition\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Sales\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Brand and Item\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Store Visit\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Attendance\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Customer\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Merchandising\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Sales Force\",\"col\":4}},{\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
  "creation": "2023-01-01 12:06:44.098340",
  "docstatus": 0,
  "doctype": "Workspace",
  "for_user": "",
  "hide_custom": 0,
  "idx": 0,
+ "is_hidden": 0,
  "label": "Field Force",
  "links": [
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Requsition",
-   "link_count": 4,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Requsition",
-   "link_count": 0,
-   "link_to": "Requisition",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Requisition Item Details",
-   "link_count": 0,
-   "link_to": "Requisition Item Details",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Requisition Details Report",
-   "link_count": 0,
-   "link_to": "Requisition Details Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Requisition Summary Report",
-   "link_count": 0,
-   "link_to": "Requisition Summary Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Sales",
-   "link_count": 4,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Sales Target",
-   "link_count": 0,
-   "link_to": "Sales Target",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Sales Order",
-   "link_count": 0,
-   "link_to": "Sales Order",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Sales Order Analysis",
-   "link_count": 0,
-   "link_to": "Sales Order Analysis",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 1,
-   "label": "Sales Target/Achievement Report",
-   "link_count": 0,
-   "link_to": "Sales Target vs Achievement Report",
-   "link_type": "Report",
-   "onboard": 0,
-   "type": "Link"
-  },
   {
    "hidden": 0,
    "is_query_report": 0,
@@ -270,6 +175,16 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Store Visit Report",
+   "link_count": 0,
+   "link_to": "store-visit-report",
+   "link_type": "Page",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Store Visit Details Report",
    "link_count": 0,
    "link_to": "store-visit-details-report",
@@ -302,44 +217,6 @@
    "link_count": 0,
    "link_to": "merchandising-picture-details-report",
    "link_type": "Page",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Others",
-   "link_count": 3,
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "User",
-   "link_count": 0,
-   "link_to": "User",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Employee",
-   "link_count": 0,
-   "link_to": "Employee",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Sales Person",
-   "link_count": 0,
-   "link_to": "Sales Person",
-   "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
   },
@@ -440,12 +317,157 @@
    "link_type": "Page",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales",
+   "link_count": 5,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Target",
+   "link_count": 0,
+   "link_to": "Sales Target",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Order",
+   "link_count": 0,
+   "link_to": "Sales Order",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Sales Order Item Details",
+   "link_count": 0,
+   "link_to": "Sales Order Item Details",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Sales Order Analysis",
+   "link_count": 0,
+   "link_to": "Sales Order Analysis",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Sales Order Summary Report",
+   "link_count": 0,
+   "link_to": "Sales Order Summary Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Requisition",
+   "link_count": 5,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Requisition",
+   "link_count": 0,
+   "link_to": "Requisition",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Requisition Item Details",
+   "link_count": 0,
+   "link_to": "Requisition Item Details",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Requisition Details Report",
+   "link_count": 0,
+   "link_to": "Requisition Details Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Requisition Summary Report",
+   "link_count": 0,
+   "link_to": "Requisition Summary Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Daily Requisition Report",
+   "link_count": 0,
+   "link_to": "Daily Requisition Report",
+   "link_type": "Report",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Force",
+   "link_count": 2,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "User",
+   "link_count": 0,
+   "link_to": "User",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Person",
+   "link_count": 0,
+   "link_to": "Sales Person",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2023-01-01 13:43:12.498031",
+ "modified": "2023-06-12 18:32:11.070310",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Field Force",
+ "number_cards": [],
  "owner": "munim@invento.com.bd",
  "parent_page": "",
  "public": 1,
@@ -453,6 +475,13 @@
  "roles": [],
  "sequence_id": 1.0,
  "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Dashboard",
+   "link_to": "Field Force Dashboard",
+   "type": "Dashboard"
+  },
   {
    "color": "Grey",
    "doc_view": "List",

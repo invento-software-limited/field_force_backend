@@ -80,3 +80,25 @@ def get_datetime_with_12_hour_format(datetime_):
         return datetime_.strftime('%Y-%m-%d %l:%M %p')
 
     return datetime_
+
+def get_doc_url(doc_url, name, label=None):
+    return f'<a href="/app/{doc_url}/{name}" ' \
+                                  f'target="_blank">{label}</a>'
+
+def get_spent_time(in_time, out_time, in_word=True):
+    spent_time = out_time - in_time
+
+    if in_word:
+        time_elements = str(spent_time).split(':')
+        hour, minutes = int(time_elements[0]), int(time_elements[1])
+        spent_time = ''
+
+        if hour:
+            spent_time = f"{hour} hours" if hour > 1 else f"{hour} hour"
+        if minutes:
+            if spent_time:
+                spent_time += " and"
+
+            spent_time += f" {minutes} minutes" if minutes > 1 else f"{minutes} minute"
+
+    return spent_time
