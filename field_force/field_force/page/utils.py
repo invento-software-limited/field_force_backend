@@ -82,8 +82,8 @@ def get_datetime_with_12_hour_format(datetime_):
     return datetime_
 
 def get_doc_url(doc_url, name, label=None):
-    return f'<a href="/app/{doc_url}/{name}" ' \
-                                  f'target="_blank">{label}</a>'
+    return f'<a href="/app/{doc_url}/{name}"' f'target="_blank">' \
+           f'<span style="color: blue;">{label}<span></a>'
 
 def get_spent_time(in_time, out_time, in_word=True):
     spent_time = out_time - in_time

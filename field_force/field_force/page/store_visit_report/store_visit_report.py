@@ -27,6 +27,7 @@ def get_absolute_data(filters, export=False):
         store_visit.cheated = 'Yes' if store_visit.cheated else 'No'
 
         if data_key not in data_dict.keys():
+            store_visit.date = frappe.format_value(store_visit.server_date, 'Date')
             data_dict[data_key] = store_visit
 
             # data_dict[data_key]['checkin_time_'] = store_visit.server_time
@@ -41,7 +42,7 @@ def get_absolute_data(filters, export=False):
                 data_dict[data_key]['checkin_time'] = checkin_time
             else:
                 set_link_to_doc(store_visit, 'sales_person', 'sales-person')
-                set_link_to_doc(store_visit, 'customer', 'store-visit')
+                set_link_to_doc(store_visit, 'customer', 'customer')
                 data_dict[data_key]['checkin_time'] = get_doc_url('store-visit', store_visit.name, checkin_time)
 
             index += 1
@@ -98,7 +99,7 @@ def get_conditions(filters):
 def get_columns():
     columns =  [
         {'fieldname': 'sl', 'label': 'SL', 'width':30, 'expwidth': 5, 'export': False},
-        {'fieldname': 'server_date', 'label': 'Date', 'width': 120, 'expwidth': 13},
+        {'fieldname': 'date', 'label': 'Date', 'width': 120, 'expwidth': 13},
         {'fieldname': 'sales_person', 'label': 'Sales Person', 'width': 220, 'expwidth': 25},
         {'fieldname': 'customer', 'label': 'Customer', 'width': 270, 'expwidth': 35},
         {'fieldname': 'checkin_time', 'label': 'IN Time', 'width': 120, 'expwidth': 15},
