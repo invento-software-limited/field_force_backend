@@ -11,7 +11,7 @@ def after_insert(self, method):
 def before_save(self, method):
     doctype = "Distributor"
 
-    if self.customer_group == "Distributor" and frappe.db.exists(doctype, self.name):
+    if self.customer_group == "Distributor" and frappe.db.exists(doctype, {'customer':self.name}):
         customer_info = {
             'contact_person': self.contact_person,
             'contact_number': self.contact_number,
@@ -23,7 +23,7 @@ def before_save(self, method):
             'longitude': self.longitude
         }
 
-        distributor = frappe.get_doc(doctype, self.name)
+        distributor = frappe.get_doc(doctype, {'customer': self.name})
         distributor.update(customer_info)
 
         if self.sales_person != distributor.sales_person:
