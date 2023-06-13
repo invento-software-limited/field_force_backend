@@ -134,15 +134,22 @@ class DailyAppUserAttendanceReport {
 
     table_body = (diff, fields) => {
         var html = `<tbody>`;
+        var serial_number = 1;
 
         diff.forEach(function (data, index) {
             html += `<tr>`;
 
             fields.forEach(function (field, index){
-               html += get_absolute_format_and_html(field, data[field.fieldname]);
+              if (field.fieldname === 'sl'){
+                html += get_absolute_format_and_html(field, serial_number);
+              }
+              else {
+                html += get_absolute_format_and_html(field, data[field.fieldname]);
+              }
             })
 
             html += `</tr>`;
+            serial_number = serial_number + 1;
         })
 
         html += `</tbody>`;

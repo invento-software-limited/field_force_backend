@@ -13,14 +13,13 @@ def get_user_attendance_data(filters=None):
     columns = get_columns()
     filters = json.loads(filters)
     data = get_absolute_data(filters)
-    print(data)
     return data, columns
 
 def get_absolute_data(filters, export=False):
     data = get_query_data(filters)
     site_directory = get_site_directory_path()
     data_dict = {}
-    index = 1
+    # index = 1
 
     for app_user_attendance in data:
         set_image_url(app_user_attendance, site_directory)
@@ -28,8 +27,9 @@ def get_absolute_data(filters, export=False):
         app_user_attendance.cheated = 'Yes' if app_user_attendance.cheated else 'No'
 
         if data_key not in data_dict.keys():
+            app_user_attendance.date = frappe.format_value(app_user_attendance.server_date, 'Date')
             data_dict[data_key] = app_user_attendance
-            data_dict[data_key]['sl'] = index
+            # data_dict[data_key]['sl'] = index
             data_dict[data_key]['checkin_time'] = get_time_in_12_hour_format(app_user_attendance.server_time)
             data_dict[data_key]['checkin_device_time'] = get_time_in_12_hour_format(app_user_attendance.device_time)
             data_dict[data_key]['checkin_name'] = app_user_attendance.name
@@ -42,10 +42,10 @@ def get_absolute_data(filters, export=False):
             else:
                 set_link_to_doc(app_user_attendance, 'sales_person', 'sales-person')
 
-            index += 1
+            # index += 1
         else:
             data_dict[data_key]['checkout_time'] = get_time_in_12_hour_format(app_user_attendance.server_time)
-            
+
             data_dict[data_key]['checkout_device_time'] = get_time_in_12_hour_format(app_user_attendance.device_time)
             data_dict[data_key]['checkout_name'] = app_user_attendance.name
             data_dict[data_key]['checkout_image'] = app_user_attendance.image
@@ -55,15 +55,15 @@ def get_absolute_data(filters, export=False):
         return list(data_dict.values())[::-1]
 
     return []
-    
+
 def get_query_data(filters):
     conditions = get_conditions(filters)
 
-    base_query = '''select app_user_attendance.name, app_user_attendance.user, app_user_attendance.user_fullname, 
+    base_query = '''select app_user_attendance.name, app_user_attendance.user, app_user_attendance.user_fullname,
                     app_user_attendance.server_date, app_user_attendance.server_time, app_user_attendance.device_time,
-                    app_user_attendance.type, app_user_attendance.image, app_user_attendance.cheated, 
-                    app_user_attendance.sales_person, app_user_attendance.latitude, app_user_attendance.longitude 
-                    from `tabApp User Attendance` app_user_attendance where %s order by app_user_attendance.server_date, 
+                    app_user_attendance.type, app_user_attendance.image, app_user_attendance.cheated,
+                    app_user_attendance.sales_person, app_user_attendance.latitude, app_user_attendance.longitude
+                    from `tabApp User Attendance` app_user_attendance where %s order by app_user_attendance.server_date,
                     app_user_attendance.server_time''' % conditions
 
     query_result = frappe.db.sql(base_query, as_dict=1, debug=0)
@@ -87,9 +87,9 @@ def get_conditions(filters):
     return " and ".join(conditions)
 
 def get_columns():
-    columns =  [                                                                                                                                                                                                                                                        
+    columns =  [
         {'fieldname': 'sl', 'label': 'SL', 'expwidth': 5, 'export': False},
-        {'fieldname': 'server_date', 'label': 'Date', 'expwidth': 13},
+        {'fieldname': 'date', 'label': 'Date', 'expwidth': 13},
         # {'fieldname': 'name', 'label': 'ID', 'expwidth': 20},
         {'fieldname': 'sales_person', 'label': 'Sales Person', 'expwidth': 20},
         {'fieldname': 'checkin_time', 'label': 'IN Time', 'expwidth': 15},
