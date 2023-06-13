@@ -7,7 +7,7 @@ def before_save(self, method):
     update_customers(self)
 
 def update_sales_person(self):
-    if self.type == "Sales Representative":
+    if self.type == "Sales Representative" and self.distributor:
         customer = frappe.get_doc('Customer', self.distributor)
 
         if self.name != customer.sales_person:

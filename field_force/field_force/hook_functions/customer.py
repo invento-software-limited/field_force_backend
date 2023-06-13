@@ -1,14 +1,25 @@
 import frappe
 
 def validate(self, method):
-    self._original = self.get_doc_before_save()
+    # self._original = self.get_doc_before_save()
     set_customer_group(self, method)
     set_sales_person_and_employee(self, method)
 
 def after_insert(self, method):
     create_distributor(self, method)
+    add_customer_to_sales_person(self)
 
 def before_save(self, method):
+    self.previous_doc = self.get_doc_before_save()
+    create_or_update_distributor(self, method)
+
+def on_update(self, method):
+    if self.previous_doc:
+        if self.previous_doc.sales_person != self.sales_person:
+            delete_customer_from_previous_sales_person(self)
+            add_customer_to_sales_person(self)
+
+def create_or_update_distributor(self, method):
     doctype = "Distributor"
 
     if self.customer_group == "Distributor" and frappe.db.exists(doctype, {'customer':self.name}):
@@ -28,10 +39,37 @@ def before_save(self, method):
 
         if self.sales_person != distributor.sales_person:
             distributor.sales_person = self.sales_person
-
-        distributor.save()
+            distributor.save()
     else:
         create_distributor(self, method)
+
+def add_customer_to_sales_person(self):
+    if self.sales_person and self.sales_person != 'Sales Team':
+        filters = {
+            "customer": self.name,
+            "parent": self.sales_person
+        }
+
+        if not frappe.db.exists("Sales Person Customer", filters):
+            sales_person = frappe.get_doc("Sales Person", self.sales_person)
+            sales_person.append('customers', {
+                "doctype": "Sales Person Customer",
+                "parenttype": "Sales Person",
+                "parent": self.sales_person,
+                "customer": self.name
+            })
+            sales_person.save()
+
+def delete_customer_from_previous_sales_person(self):
+    if self.previous_doc:
+        filters = {
+            "customer": self.name,
+            "parent": self.previous_doc.sales_person
+        }
+
+        if frappe.db.exists("Sales Person Customer", filters):
+            sales_person_customer = frappe.get_doc("Sales Person Customer", filters)
+            sales_person_customer.delete()
 
 
 def set_customer_group(self, method):

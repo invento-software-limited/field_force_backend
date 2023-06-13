@@ -120,6 +120,7 @@ doc_events = {
 		"validate": "field_force.field_force.hook_functions.customer.validate",
 		"after_insert": "field_force.field_force.hook_functions.customer.after_insert",
         "before_save": "field_force.field_force.hook_functions.customer.before_save",
+        "on_update": "field_force.field_force.hook_functions.customer.on_update",
         # "on_update": [
             # "field_force.field_force.hook_functions.customer.set_image",
         # ]
