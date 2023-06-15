@@ -16,7 +16,7 @@ def before_save(self, method):
 def on_update(self, method):
     if self.previous_doc:
         if self.previous_doc.sales_person != self.sales_person:
-            # delete_customer_from_previous_sales_person(self)
+            delete_customer_from_previous_sales_person(self)
             add_customer_to_sales_person(self)
             frappe.db.commit()
 
@@ -40,7 +40,7 @@ def create_or_update_distributor(self, method):
 
         if self.sales_person != distributor.sales_person:
             distributor.sales_person = self.sales_person
-            distributor.save()
+            distributor.save(ignore_permissions=True)
     else:
         create_distributor(self, method)
 
@@ -119,7 +119,7 @@ def create_distributor(self, method):
                 'longitude': self.longitude
             }
             distributor = frappe.get_doc(distributor_info)
-            distributor.save()
+            distributor.save(ignore_permissions=True)
 
 # def set_employee(self, method):
 #     if self.owner and not self.employee:
@@ -147,11 +147,11 @@ def refresh_sales_person_customers():
             }
 
             # deleting from previous sales persons
-            deletable_customers = frappe.get_list(doctype, filters, 'name')
+            deletable_customers = frappe.get_list(doctype, filters, 'name', ignore_permissions=True)
 
             for sales_person_customer in deletable_customers:
                 sales_person_customer = frappe.get_doc(doctype, sales_person_customer.name)
-                sales_person_customer.delete()
+                sales_person_customer.delete(ignore_permissions=True)
 
             # adding customers to sales person
             if customer.sales_person and customer.sales_person != 'Sales Team':
