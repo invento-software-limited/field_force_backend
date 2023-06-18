@@ -1,7 +1,6 @@
 import frappe
 
 def validate(self, method):
-    # self._original = self.get_doc_before_save()
     set_customer_group(self, method)
     set_sales_person_and_employee(self, method)
 
@@ -11,38 +10,35 @@ def after_insert(self, method):
 
 def before_save(self, method):
     self.previous_doc = self.get_doc_before_save()
-    create_or_update_distributor(self, method)
 
 def on_update(self, method):
     if self.previous_doc:
+        create_or_update_distributor(self, method)
+
         if self.previous_doc.sales_person != self.sales_person:
             delete_customer_from_previous_sales_person(self)
             add_customer_to_sales_person(self)
             frappe.db.commit()
 
 def create_or_update_distributor(self, method):
-    doctype = "Distributor"
-
-    if self.customer_group == "Distributor" and frappe.db.exists(doctype, {'customer':self.name}):
-        customer_info = {
-            'contact_person': self.contact_person,
-            'contact_number': self.contact_number,
-            'address': self.address,
-            'email_address': self.email_address,
-            'thana': self.thana,
-            'zip_code': self.zip_code,
-            'latitude': self.latitude,
-            'longitude': self.longitude
-        }
-
-        distributor = frappe.get_doc(doctype, {'customer': self.name})
-        distributor.update(customer_info)
-
-        if self.sales_person != distributor.sales_person:
-            distributor.sales_person = self.sales_person
-            distributor.save(ignore_permissions=True)
+    if self.customer_group == "Distributor" and frappe.db.exists("Distributor", {'customer':self.name}):
+        update_distributor(self)
     else:
         create_distributor(self, method)
+
+def update_distributor(self):
+    updatable_fields = ['sales_person', 'contact_person', 'contact_number', 'address',
+                        'email_address', 'thana', 'zip_code', 'latitude',  'longitude']
+    data = {}
+
+    for field in updatable_fields:
+        if self.get(field) != self.previous_doc.get(field):
+            data[field] = self.get(field)
+
+    if data:
+        distributor = frappe.get_doc('Distributor', {'customer': self.name})
+        distributor.update(data)
+        distributor.save(ignore_permissions=True)
 
 def add_customer_to_sales_person(self):
     if self.sales_person and self.sales_person != 'Sales Team':
