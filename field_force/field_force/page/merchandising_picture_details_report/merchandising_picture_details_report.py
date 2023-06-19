@@ -17,12 +17,16 @@ def get_absolute_data(filters, export=False):
     site_directory = get_site_directory_path()
 
     for index, merchandising_picture in enumerate(query_result):
+        merchandising_picture['doc_name'] = merchandising_picture.name
+        merchandising_picture.brand = merchandising_picture.brand or ''
+
         set_image_download_button(merchandising_picture, site_directory)
         set_image_url(merchandising_picture, site_directory)
 
         server_time = get_time_in_12_hour_format(merchandising_picture.server_time)
         device_time = get_time_in_12_hour_format(merchandising_picture.device_time)
-
+        merchandising_picture.server_date = frappe.format(merchandising_picture.server_date, 'Date')
+        merchandising_picture.device_date = frappe.format(merchandising_picture.device_date, 'Date')
         # server_time = str(merchandising_picture.server_time).split('.')[0] \
         #     if '.' in str(merchandising_picture.server_time) else merchandising_picture.server_time
         # device_time = str(merchandising_picture.device_time).split('.')[0] \
@@ -43,7 +47,6 @@ def get_absolute_data(filters, export=False):
             merchandising_picture.device_date = f"{merchandising_picture.device_date}\n{device_time}"
 
         merchandising_picture.cheated = 'Yes' if merchandising_picture.cheated else 'No'
-        merchandising_picture['sl'] = index + 1
 
     return query_result
 
@@ -59,7 +62,7 @@ def get_query_data(filters):
                     merchandising_picture.server_date, time(merchandising_picture.server_time) as server_time,
                     merchandising_picture.device_date, time(merchandising_picture.device_time) as device_time,
                     merchandising_picture.latitude, merchandising_picture.longitude, merchandising_picture.brand,
-                    merchandising_picture.device_model, merchandising_picture.customer_address,
+                    merchandising_picture.device_model, merchandising_picture.customer_address, merchandising_picture.feedback,
                     merchandising_picture.cheated from `tabMerchandising Picture` merchandising_picture where %s
                     order by merchandising_picture.server_date desc, merchandising_picture.server_time desc''' % conditions
 
@@ -93,12 +96,13 @@ def get_columns():
     columns =  [
         {'fieldname': 'sl', 'label': 'SL', 'expwidth': 5, 'export': False, 'width': 30},
         {'fieldname': 'server_date', 'label': 'Date', 'expwidth': 13, 'width': 100},
-        {'fieldname': 'server_time', 'label': 'Time', 'expwidth': 13, 'width': 80},
+        {'fieldname': 'server_time', 'label': 'Time', 'expwidth': 13, 'width': 100},
         {'fieldname': 'name', 'label': 'ID', 'expwidth': 20, 'width': 120},
-        {'fieldname': 'brand', 'label': 'Brand', 'expwidth': 15, 'width': 100},
-        {'fieldname': 'customer', 'label': 'Customer', 'expwidth': 15, 'width': 100},
+        {'fieldname': 'brand', 'label': 'Brand', 'expwidth': 15, 'width': 120},
+        {'fieldname': 'customer', 'label': 'Customer', 'expwidth': 15, 'width': 120},
         # {'fieldname': 'contact_number', 'label': 'Contact', 'expwidth': 15},
-        {'fieldname': 'details', 'label': 'Details', 'expwidth': 13, 'width': 200},
+        {'fieldname': 'details', 'label': 'Details', 'expwidth': 13, 'width': 250},
+        {'fieldname': 'feedback', 'label': 'Feedback', 'expwidth': 13, 'width': 250},
         {'fieldname': 'sales_person', 'label': 'Sales Person', 'expwidth': 20, 'width': 100},
         {'fieldname': 'device_date', 'label': 'Device Date Time', 'expwidth': 15, 'width': 100},
         {'fieldname': 'cheated', 'label': 'Cheated', 'fieldtype': 'Data', 'expwidth': 15, 'width': 30},
@@ -117,3 +121,16 @@ def export_file(**filters):
 def get_export_data(filters):
     query_result = get_absolute_data(filters, export=True)
     return query_result
+
+@frappe.whitelist()
+def update_field(**kwargs):
+    docname = kwargs.get('docname')
+    fieldname = kwargs.get('fieldname')
+    value = kwargs.get('value')
+    merchandising_picture = frappe.get_doc("Merchandising Picture", docname)
+
+    if merchandising_picture.get(fieldname) != value:
+        merchandising_picture.update({fieldname:value})
+        merchandising_picture.save()
+
+    return True
