@@ -44,8 +44,8 @@ function applyEditableFieldsEvent(){
 }
 
 function updateValue(field, input, docname, fieldname){
-  console.log("value updating");
   var updatedValue = input.val();
+  field.text(updatedValue);
 
   // Make an AJAX request to update the field value
   frappe.call({
@@ -59,11 +59,9 @@ function updateValue(field, input, docname, fieldname){
       if (response.message) {
         // Refresh the report after successful update
         console.log("feedback updated");
-        field.text(updatedValue);
-
       } else {
         // Handle update failure
-        frappe.msgprint('Failed to update feeback');
+        frappe.msgprint('Failed to update feedback');
       }
     }
   });
