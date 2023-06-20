@@ -8,6 +8,11 @@ frappe.pages['merchandising-picture-details-report'].on_page_load = function (wr
 
   $('.page-body').css('background', '#FFFFFF');
 
+  new MerchandisingPictureDetailsReport(page)
+  applyEditableFieldsEvent();
+}
+
+function applyEditableFieldsEvent(){
   $(document).on('click', '.editable-field', function (e) {
     var $field = $(this);
     var value = $field.text();
@@ -26,35 +31,44 @@ frappe.pages['merchandising-picture-details-report'].on_page_load = function (wr
 
     // Save the updated value on input blur
     $input.on('blur', function () {
-      // if (e.key === 'Enter'){
-        var updatedValue = $input.val();
-        $field.text(updatedValue);
+      updateValue($field, $input, docname, fieldname);
+    });
 
-        // Make an AJAX request to update the field value
-        frappe.call({
-          method: 'field_force.field_force.page.merchandising_picture_details_report.merchandising_picture_details_report.update_field',
-          args: {
-            docname: docname,
-            fieldname: fieldname,
-            value: updatedValue
-          },
-          callback: function (response) {
-            if (response.message) {
-              // Refresh the report after successful update
-              console.log("feedback updated");
-            } else {
-              // Handle update failure
-              frappe.msgprint('Failed to update feeback');
-            }
-          }
-        });
-      // }
-
+    // Save the updated value on input Enter
+    $input.on('keypress', function (e) {
+      if (e.key === 'Enter'){
+        updateValue($field, $input, docname, fieldname);
+      }
     });
   })
-
-  new MerchandisingPictureDetailsReport(page)
 }
+
+function updateValue(field, input, docname, fieldname){
+  console.log("value updating");
+  var updatedValue = input.val();
+
+  // Make an AJAX request to update the field value
+  frappe.call({
+    method: 'field_force.field_force.page.merchandising_picture_details_report.merchandising_picture_details_report.update_field',
+    args: {
+      docname: docname,
+      fieldname: fieldname,
+      value: updatedValue
+    },
+    callback: function (response) {
+      if (response.message) {
+        // Refresh the report after successful update
+        console.log("feedback updated");
+        field.text(updatedValue);
+
+      } else {
+        // Handle update failure
+        frappe.msgprint('Failed to update feeback');
+      }
+    }
+  });
+}
+
 
 class MerchandisingPictureDetailsReport {
   constructor(page) {
@@ -184,7 +198,7 @@ class MerchandisingPictureDetailsReport {
     let table_header = this.table_header(fields);
     let table_body = this.table_body(diff, fields);
     this.form.get_field('preview').html(
-      `<div style="">
+      `<div>
             <table class="table table-bordered" id="export_excel">
                   ${table_header}${table_body}
             </table>
@@ -212,9 +226,9 @@ class MerchandisingPictureDetailsReport {
       fields.forEach(function (field, index) {
         if (field.fieldname === 'sl') {
           html += get_absolute_format_and_html(field, serial_number);
-        } else if (field.fieldname === 'feedback') {
+        } else if (field.editable) {
           html += `<td class="editable-field parent-container" data-fieldname="${field.fieldname}"
-                   data-name="${data['doc_name']}">${data[field.fieldname] || ''}</td>`
+                   data-name="${data.docname}">${data[field.fieldname] || ''}</td>`
         } else {
           html += get_absolute_format_and_html(field, data[field.fieldname]);
         }

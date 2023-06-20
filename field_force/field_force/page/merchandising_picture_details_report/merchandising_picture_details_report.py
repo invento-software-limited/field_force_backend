@@ -17,7 +17,7 @@ def get_absolute_data(filters, export=False):
     site_directory = get_site_directory_path()
 
     for index, merchandising_picture in enumerate(query_result):
-        merchandising_picture['doc_name'] = merchandising_picture.name
+        merchandising_picture['docname'] = merchandising_picture.name
         merchandising_picture.brand = merchandising_picture.brand or ''
 
         set_image_download_button(merchandising_picture, site_directory)
@@ -101,8 +101,8 @@ def get_columns():
         {'fieldname': 'brand', 'label': 'Brand', 'expwidth': 15, 'width': 120},
         {'fieldname': 'customer', 'label': 'Customer', 'expwidth': 15, 'width': 120},
         # {'fieldname': 'contact_number', 'label': 'Contact', 'expwidth': 15},
-        {'fieldname': 'details', 'label': 'Details', 'expwidth': 13, 'width': 250},
-        {'fieldname': 'feedback', 'label': 'Feedback', 'expwidth': 13, 'width': 250},
+        {'fieldname': 'details', 'label': 'Details', 'expwidth': 13, 'width': 250, 'editable': False},
+        {'fieldname': 'feedback', 'label': 'Feedback', 'expwidth': 13, 'width': 250, 'editable': True},
         {'fieldname': 'sales_person', 'label': 'Sales Person', 'expwidth': 20, 'width': 100},
         {'fieldname': 'device_date', 'label': 'Device Date Time', 'expwidth': 15, 'width': 100},
         {'fieldname': 'cheated', 'label': 'Cheated', 'fieldtype': 'Data', 'expwidth': 15, 'width': 30},
