@@ -8,7 +8,7 @@ frappe.query_reports["Sales  Analytics"] = {
 			fieldname: "tree_type",
 			label: __("Tree Type"),
 			fieldtype: "Select",
-			options: ["Customer Group", "Customer", "Item Group", "Item", "Territory"],
+			options: ["Brand", "Customer Group", "Customer", "Item Group", "Item", "Territory"],
 			default: "Customer",
 			reqd: 1
 		},
@@ -72,7 +72,6 @@ frappe.query_reports["Sales  Analytics"] = {
 			checkboxColumn: true,
 			events: {
 				onCheckRow: function (data) {
-          console.log("==============>>", data);
 					if (!data) return;
 
 					const data_doctype = $(

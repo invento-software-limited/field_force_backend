@@ -103,6 +103,10 @@ class Analytics(object):
             self.get_sales_transactions_based_on_customer_or_territory_group()
             self.get_rows_by_group()
 
+        elif self.filters.tree_type == "Brand":
+            self.get_sales_transactions_based_on_brand()
+            self.get_rows()
+
         elif self.filters.tree_type == "Item Group":
             self.get_sales_transactions_based_on_item_group()
             self.get_rows_by_group()
@@ -233,6 +237,26 @@ class Analytics(object):
         )
 
         self.get_groups()
+    def get_sales_transactions_based_on_brand(self):
+        if self.filters["value_quantity"] == "Value":
+            value_field = "amount"
+        else:
+            value_field = "qty"
+
+        self.entries = frappe.db.sql(
+            """
+            select i.brand as entity, i.{value_field} as value_field, s.{date_field}
+            from `tab{doctype} Item` i , `tab{doctype}` s
+            where s.name = i.parent and i.docstatus = 1 and s.company = %s
+            and s.{date_field} between %s and %s
+        """.format(
+                date_field=self.date_field, value_field=value_field, doctype=self.filters.doc_type
+            ),
+            (self.filters.company, self.filters.from_date, self.filters.to_date),
+            as_dict=1,
+        )
+
+        # self.get_groups()
 
     def get_sales_transactions_based_on_project(self):
         if self.filters["value_quantity"] == "Value":
@@ -416,18 +440,7 @@ class Analytics(object):
         else:
             labels = [d.get("label") for d in self.columns[1 : length - 1]]
 
-        # datasets = [
-        #     {
-        #         'name': 'Jan 2023',
-        #         'values': [234, 23423, 23423]
-        #     },
-        #     {
-        #         'name': 'Feb 2023',
-        #         'values': [32, 234, 234]
-        #     }
-        # ]
-
-        self.chart = {"data": {"labels": labels, "datasets": []}, "type": "bar"}
+        self.chart = {"data": {"labels": labels, "datasets": []}, "type": "line"}
 
 
         if self.filters["value_quantity"] == "Value":
