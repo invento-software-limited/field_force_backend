@@ -3,6 +3,9 @@
 
 # import frappe
 from frappe.model.document import Document
+from field_force.field_force.page.utils import get_spent_time
 
 class StoreVisitDestination(Document):
-	pass
+    def validate(self):
+        if self.checkin_time and self.checkout_time:
+            self.spent_time = get_spent_time(self.checkin_time, self.checkout_time, in_word=False)
