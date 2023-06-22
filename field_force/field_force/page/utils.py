@@ -86,6 +86,14 @@ def get_doc_url(doc_url, name, label=None):
            f'<span style="color: blue;">{label}<span></a>'
 
 def get_spent_time(in_time, out_time, in_word=True):
+    if not in_time and not out_time:
+        return ''
+
+    if isinstance(in_time, str):
+        in_time = get_timedelta_time_obj(in_time)
+    if isinstance(out_time, str):
+        out_time = get_timedelta_time_obj(out_time)
+
     spent_time = out_time - in_time
 
     if in_word:
@@ -102,3 +110,8 @@ def get_spent_time(in_time, out_time, in_word=True):
             spent_time += f" {minutes} minutes" if minutes > 1 else f"{minutes} minute"
 
     return spent_time
+
+def get_timedelta_time_obj(time_str):
+    out_time = datetime.datetime.strptime(str(time_str), '%H:%M:%S')
+    return datetime.timedelta(hours=out_time.hour, minutes=out_time.minute,
+                              seconds=out_time.second, microseconds=out_time.microsecond)
