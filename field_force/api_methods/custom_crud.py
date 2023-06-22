@@ -38,7 +38,7 @@ def execute(doctype=None, name=None):
                 # Not checking permissions here because it's checked in doc.save
                 doc.update(data)
 
-                if doc.parenttype and doc.parent:
+                if doc.get('parenttype') and doc.get('parent'):
                     frappe.get_doc(doc.parenttype, doc.parent).save()
 
                 doc.save()
