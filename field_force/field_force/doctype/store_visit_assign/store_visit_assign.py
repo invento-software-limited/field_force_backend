@@ -16,7 +16,7 @@ class StoreVisitAssign(Document):
         ]
 
         if frappe.db.get_list('Store Visit Assign', filters):
-            frappe.throw(f"Store Visit is already assigned for user '{self.sales_person}' at '{self.date}'")
+            frappe.throw(f"Store Visit already assigned for '{self.sales_person}' at '{self.date}'")
 
         if self.destinations:
             for destination in self.destinations:
@@ -24,6 +24,11 @@ class StoreVisitAssign(Document):
                 destination.employee = self.employee
                 destination.user = self.user
                 destination.date = self.date
+
+                if not destination.checkin_store_visit:
+                    destination.checkin_time = None
+                if not destination.checkout_store_visit:
+                    destination.checkout_time = None
 
         set_sales_person(self)
         set_employee(self)
