@@ -21,7 +21,13 @@ def set_custom_data_before_creation(doctype, data):
         data['created_from_app'] = 1
 
 def get_customer_list(doctype):
-    frappe.local.form_dict['filters'] = [['customer_group', 'in', ['Retail Shop', 'MT']]]
+    if frappe.local.form_dict.get('filters'):
+        filters = json.loads(frappe.local.form_dict.get('filters'))
+        filters.append(['customer_group', 'in', ['Retail Shop', 'MT']])
+    else:
+        filters = [['customer_group', 'in', ['Retail Shop', 'MT']]]
+
+    frappe.local.form_dict['filters'] = filters
     customers = frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
     frappe.local.response.total_items = len(customers)
     return customers
