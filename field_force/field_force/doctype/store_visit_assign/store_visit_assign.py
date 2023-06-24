@@ -36,14 +36,20 @@ class StoreVisitAssign(Document):
 
     def validate_time(self):
         for destination in self.destinations:
-            if isinstance(destination.expected_time, str):
-                expected_time = str(datetime.strptime(destination.expected_time, "%H:%M:%S").strftime("%I:%M %p"))
+            if destination.expected_time and isinstance(destination.expected_time, str):
+                expected_time = destination.expected_time
+                expected_time = expected_time.split('.')[0] if '.' in expected_time else expected_time
+
+                expected_time = datetime.strptime(expected_time, "%H:%M:%S").strftime("%I:%M %p")
                 destination.exp_hour = expected_time[:2]
                 destination.exp_minute = expected_time[3:5] if expected_time[3:5] in ['00', '15', '30', '45'] else '00'
                 destination.exp_format = expected_time[-2:]
 
-            if isinstance(destination.expected_time_till, str):
-                expected_time_till = datetime.strptime(destination.expected_time_till, "%H:%M:%S").strftime("%I:%M %p")
+            if destination.expected_time and isinstance(destination.expected_time_till, str):
+                expected_time_till = destination.expected_time_till
+                expected_time_till = expected_time_till.split('.')[0] if '.' in expected_time_till else expected_time_till
+
+                expected_time_till = datetime.strptime(expected_time_till, "%H:%M:%S").strftime("%I:%M %p")
                 destination.time_till_hour = expected_time_till[:2]
                 destination.time_till_minute = expected_time_till[3:5] if expected_time_till[3:5] in ['00', '15', '30', '45'] else '00'
                 destination.time_till_format = expected_time_till[-2:]

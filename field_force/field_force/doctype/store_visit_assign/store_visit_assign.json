@@ -17,7 +17,11 @@
   "date",
   "email",
   "section_break_5",
-  "destinations"
+  "destinations",
+  "section_break_dpwbm",
+  "note",
+  "column_break_mpypt",
+  "status"
  ],
  "fields": [
   {
@@ -92,14 +96,36 @@
    "label": "Sales Person",
    "options": "Sales Person",
    "reqd": 1
+  },
+  {
+   "default": "Incomplete",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nIncomplete\nPartially\nCompleted",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_dpwbm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
+  },
+  {
+   "fieldname": "column_break_mpypt",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-23 10:22:15.058354",
+ "modified": "2023-06-24 08:42:32.023339",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Store Visit Assign",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -182,5 +208,6 @@
   }
  ],
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": []
 }
