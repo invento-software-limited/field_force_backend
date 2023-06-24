@@ -55,7 +55,9 @@ def execute(doctype=None, name=None):
 
         elif doctype:
             if frappe.local.request.method == "GET":
-                frappe.local.form_dict["fields"] = api_response_fields.get(doctype, ['name'])
+                if not frappe.local.form_dict.get('fields'):
+                    frappe.local.form_dict["fields"] = api_response_fields.get(doctype, ['name'])
+
                 frappe.local.form_dict['order_by'] = "modified desc"
 
                 # set limit of records for frappe.get_list
