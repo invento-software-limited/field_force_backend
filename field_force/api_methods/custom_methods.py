@@ -74,7 +74,7 @@ def get_items_list(doctype):
 def get_store_visit_assigns_list(doctype):
     _, child_table_fields = get_api_fields(doctype, with_child_fields=True)
 
-    frappe.local.form_dict['filters'] = {'user': frappe.session.user}
+    # frappe.local.form_dict['filters'] = {'user': frappe.session.user}
     store_visit_assigns = frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
     frappe.local.response.total_items = len(store_visit_assigns)
 
