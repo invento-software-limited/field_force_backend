@@ -15,6 +15,9 @@ class Distributor(Document):
                 "partner_group_name": self.distributor_name
             }).insert()
             partner_group_name = partner_group.name
+        #
+        # if self.name != self.customer:
+        #     frappe.rename_doc("Distributor", self.name, self.customer)
 
         if not self.customer and frappe.db.exists('Customer', self.distributor_name):
             self.customer = self.distributor_name
@@ -58,3 +61,10 @@ class Distributor(Document):
     #     customer = frappe.get_doc('Customer', self.name)
     #     customer.update(customer_info)
     #     customer.save()
+
+def after_rename(new_doc, method, old_name, merge=False, ignore_permissions=False):
+    related_doctype = "Customer"
+
+    if frappe.db.exists(related_doctype, {'name': old_name}):
+        if old_name != new_doc.name:
+            frappe.rename_doc(related_doctype, old_name, new_doc.name)

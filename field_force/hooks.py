@@ -118,13 +118,15 @@ doc_events = {
 	# 	"before_save": "field_force.field_force.hook_functions.item.set_item_name_to_description"
 	# },
 	"Customer": {
+        "after_rename": "field_force.field_force.hook_functions.customer.after_rename",
 		"validate": "field_force.field_force.hook_functions.customer.validate",
 		"after_insert": "field_force.field_force.hook_functions.customer.after_insert",
         "before_save": "field_force.field_force.hook_functions.customer.before_save",
         "on_update": "field_force.field_force.hook_functions.customer.on_update",
-        # "on_update": [
-            # "field_force.field_force.hook_functions.customer.set_image",
-        # ]
+        # "on_update": "field_force.field_force.hook_functions.customer.set_image",
+    },
+    "Distributor": {
+        "after_rename": "field_force.field_force.doctype.distributor.distributor.after_rename"
     },
 	"Sales Order": {
 		"validate": [

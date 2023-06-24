@@ -172,3 +172,13 @@ def refresh_sales_person_customers():
             frappe.db.commit()
         except:
             frappe.log_error(frappe.get_traceback(), f"{customer.name}-{customer.sales_person}")
+
+
+def after_rename(new_doc, method, old_name, merge=False, ignore_permissions=False):
+    doctype = "Distributor"
+
+    if new_doc.customer_group == 'Distributor' and frappe.db.exists(doctype, {'customer': new_doc.name}):
+        distributor_name = frappe.db.get_value(doctype, {'customer': new_doc.name}, 'name')
+
+        if distributor_name != new_doc.name:
+            frappe.rename_doc(doctype, distributor_name, new_doc.name)
