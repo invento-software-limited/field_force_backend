@@ -7,6 +7,12 @@ frappe.pages['store-visit-report'].on_page_load = function(wrapper) {
         single_column: true
     });
 
+    window.addEventListener("click", function(event) {
+      if (event.target.id !== "image") {
+        document.getElementById('modal_section').style.display = 'none';
+      }
+    });
+
     $('.page-body').css('background', '#FFFFFF');
     new DailyAppUserAttendanceReport(page);
 };
@@ -89,12 +95,11 @@ class DailyAppUserAttendanceReport {
         this.form.make();
     }
     initialize_modal = () => {
-        let html = '<div id="att_modal_section" class="modal_">\n' +
-            '  <div class="modal-image">\n' +
-            '  <img class="modal-content_" id="att_img" alt="img">\n' +
-            '  <span class="close" style="right: -27em; top: -55px;" onclick="document.getElementById(\'att_modal_section\').style.display=\'none\'">&times;</span>\n' +
-            '  </div>\n' +
-            '</div>'
+      let html = `<div id="modal_section" class="modal_">
+          <div class="modal-image">
+          <img class="modal-content_" id="img" alt="img">
+          </div>
+        </div>`
         // this.form.body.append(html);
         $('.main-section').append(html)
     }
@@ -197,14 +202,14 @@ function get_image_html(image_url) {
     return `
         <td style="height:100px; width:120px;">
             <a href="#">
-                <img style="height:100%; width:100%;" src="${image_url}" img-path="${image_url}" onclick="(
+                <img style="height:100%; width:100%;" src="${image_url}" id="image" img-path="${image_url}" onclick="(
                     function(e){
-                        document.getElementById(\'att_modal_section\').style.display=\'block\';
+                        document.getElementById(\'modal_section\').style.display=\'block\';
                         var nAgt = navigator.userAgent;
                         if (nAgt.indexOf('Safari') !== -1) {
-                            document.getElementById(\'att_img\').src=e.target.currentSrc;
+                            document.getElementById(\'img\').src=e.target.currentSrc;
                         }else{
-                            document.getElementById(\'att_img\').src=e.path[0].currentSrc;
+                            document.getElementById(\'img\').src=e.path[0].currentSrc;
                         }
                         return false;
                     }

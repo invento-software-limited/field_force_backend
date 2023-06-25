@@ -52,9 +52,9 @@
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
+    padding-top: 80px; /* Location of the box */
     left: 0;
-    top: 80px;
+    top: 50px;
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
@@ -67,7 +67,8 @@
     margin: auto;
     display: block;
     width: 70%;
-    max-width: 500px;
+    max-width: 450px;
+    max-height: 750px;
 }
 
 /* Caption of Modal Image */

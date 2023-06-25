@@ -9,7 +9,6 @@ frappe.pages['merchandising-picture-details-report'].on_page_load = function (wr
   $('.page-body').css('background', '#FFFFFF');
 
   window.addEventListener("click", function(event) {
-      console.log(event);
       if (event.target.id !== "image") {
         document.getElementById('modal_section').style.display = 'none';
       }
@@ -96,7 +95,6 @@ class MerchandisingPictureDetailsReport {
     this.page.add_menu_item("Export", () => {
       this.export_excel()
     })
-
   }
   make_form = () => {
     this.form = new frappe.ui.FieldGroup({
@@ -165,7 +163,7 @@ class MerchandisingPictureDetailsReport {
   initialize_modal = () => {
     let html = `<div id="modal_section" class="modal_">
         <div class="modal-image">
-        <img class="modal-content_" id="img01" alt="img">
+        <img class="modal-content_" id="img" alt="img">
         </div>
       </div>`
     // this.form.body.append(html);
@@ -275,9 +273,9 @@ function get_image_html(image_url) {
                         document.getElementById(\'modal_section\').style.display=\'block\';
                         var nAgt = navigator.userAgent;
                         if (nAgt.indexOf('Safari') !== -1) {
-                            document.getElementById(\'img01\').src=e.target.currentSrc;
+                            document.getElementById(\'img\').src=e.target.currentSrc;
                         }else{
-                            document.getElementById(\'img01\').src=e.path[0].currentSrc;
+                            document.getElementById(\'img\').src=e.path[0].currentSrc;
                         }
                         return false;
                     }
