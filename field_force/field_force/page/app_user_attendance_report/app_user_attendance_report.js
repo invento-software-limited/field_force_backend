@@ -97,9 +97,9 @@ class AppUserAttendanceReport {
         this.form.make();
     }
     initialize_modal = () => {
-      let html = `<div id="modal_section" class="modal_">
+      let html = `<div id="modal_section" class="modal-2">
           <div class="modal-image">
-          <img class="modal-content_" id="img" alt="img">
+          <img style="transform: rotate(-90deg) " class="modal-content-2" id="img" alt="img">
           </div>
         </div>`
         // this.form.body.append(html);
