@@ -84,7 +84,10 @@ def set_sales_person_and_employee(self, method):
             self.sales_person, self.employee = frappe.db.get_value("Sales Person", {"user": frappe.session.user},
                                                                    ['name', 'employee'])
         else:
-            self.sales_person, self.employee = 'Sales Team', None
+            self.sales_person, self.employee = frappe.db.get_value("Sales Person", "Sales Team", ['name', 'employee'])
+
+        if self.employee:
+            self.employee_name = frappe.db.get_value("Employee", self.employee, 'employee_name')
 
 # def set_partner_group(self, method):
     # if not self.partner_group:
@@ -172,13 +175,3 @@ def refresh_sales_person_customers():
             frappe.db.commit()
         except:
             frappe.log_error(frappe.get_traceback(), f"{customer.name}-{customer.sales_person}")
-
-
-def after_rename(new_doc, method, old_name, merge=False, ignore_permissions=False):
-    doctype = "Distributor"
-
-    if new_doc.customer_group == 'Distributor' and frappe.db.exists(doctype, {'customer': new_doc.name}):
-        distributor_name = frappe.db.get_value(doctype, {'customer': new_doc.name}, 'name')
-
-        if distributor_name != new_doc.name:
-            frappe.rename_doc(doctype, distributor_name, new_doc.name)
