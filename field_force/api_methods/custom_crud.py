@@ -13,14 +13,26 @@ def execute(doctype=None, name=None):
     api_response_fields = json.loads(open(file_path, "r").read())
 
     try:
-        if name:
+        if "run_method" in frappe.local.form_dict:
+            method = frappe.local.form_dict.pop("run_method")
+            doc = frappe.get_doc(doctype, name)
+            doc.is_whitelisted(method)
+
             if frappe.local.request.method == "GET":
-                # kwargs = {
-                #     "doctype": doctype,
-                #     "fieldname": api_response_fields.get(doctype, ['name']),
-                #     "filters": {"name":name},
-                # }
-                # doc = frappe.call(frappe.client.get_value, **kwargs)
+                if not doc.has_permission("read"):
+                    frappe.throw(_("Not permitted"), frappe.PermissionError)
+                frappe.local.response.update({"data": doc.run_method(method, **frappe.local.form_dict)})
+
+            if frappe.local.request.method == "POST":
+                if not doc.has_permission("write"):
+                    frappe.throw(_("Not permitted"), frappe.PermissionError)
+
+                doc = doc.run_method(method, **frappe.local.form_dict)
+                frappe.db.commit()
+                frappe.local.response.data = get_doc_permitted_fields(doctype, doc, api_response_fields)
+
+        elif name:
+            if frappe.local.request.method == "GET":
                 doc = frappe.get_doc(doctype, name)
 
                 if not doc.has_permission("read"):
