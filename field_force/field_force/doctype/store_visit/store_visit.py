@@ -43,7 +43,8 @@ class StoreVisit(Document):
         filters = {
             "customer": self.customer,
             "sales_person": self.sales_person,
-            "date": self.server_date
+            "date": self.server_date,
+            "docstatus": 1
         }
 
         if frappe.db.exists('Store Visit Destination', filters):
@@ -61,8 +62,6 @@ class StoreVisit(Document):
                                               store_visit_destination.checkin_store_visit != self.name):
                 store_visit_destination.checkout_store_visit = self.name
                 store_visit_destination.checkout_time = self.server_time
-                # store_visit_destination.spent_time = get_spent_time(store_visit_destination.checkin_time,
-                #                                                     store_visit_destination.checkout_time)
 
-            store_visit_destination.save()
+            store_visit_destination.save(ignore_permissions=True)
             frappe.db.commit()

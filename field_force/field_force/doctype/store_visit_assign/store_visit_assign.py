@@ -12,7 +12,8 @@ class StoreVisitAssign(Document):
         filters = [
             ['name', '!=', self.name],
             ['sales_person', '=', self.sales_person],
-            ['date', '=', self.date]
+            ['date', '=', self.date],
+            ['docstatus', '=', 1]
         ]
 
         if frappe.db.get_list('Store Visit Assign', filters):
@@ -30,9 +31,10 @@ class StoreVisitAssign(Document):
                 if not destination.checkout_store_visit:
                     destination.checkout_time = None
 
+        self.validate_time()
+        self.set_status()
         set_sales_person(self)
         set_employee(self)
-        self.validate_time()
 
     def validate_time(self):
         for destination in self.destinations:
@@ -57,6 +59,18 @@ class StoreVisitAssign(Document):
             destination.expected_time = get_time_obj(destination.exp_hour, destination.exp_minute, destination.exp_format)
             destination.expected_time_till = get_time_obj(destination.time_till_hour, destination.time_till_minute,
 														  destination.time_till_format)
+    def set_status(self):
+        visited_stores = frappe.db.exists("Store Visit Destination", {"parent": self.name, "status": "Visited"})
+        not_visited_stores = frappe.db.exists("Store Visit Destination", {"parent": self.name, "status": "Not Visited"})
+
+        if visited_stores and not not_visited_stores:
+            self.status = "Completed"
+
+        elif visited_stores and not_visited_stores:
+            self.status = "Partially"
+
+        elif not visited_stores and not_visited_stores:
+            self.status = "Incomplete"
 
 def get_time_obj(hour, minute, format):
     time = f"{hour}:{minute} {format}"
