@@ -31,7 +31,8 @@ frappe.ui.form.on('Sales Person', {
           filters: {
             distributor: frm.doc.distributor
           },
-          fields: ['name as customer', 'partner_group', 'customer_group']
+          fields: ['name as customer', 'partner_group', 'customer_group'],
+          limit_page_length: 10000
         },
         callback: function (response) {
           // Process the retrieved documents
