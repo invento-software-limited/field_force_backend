@@ -100,7 +100,9 @@ def get_store_visit_assigns_list(doctype):
         for destination in destinations:
             store_visit_assigns_dict[destination.parent]['destinations'].append(destination)
 
-    return store_visit_assigns_dict.values()
+        return store_visit_assigns_dict.values()
+
+    return store_visit_assigns
 
 def get_territories(doctype):
     sales_person_filters = {
