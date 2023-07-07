@@ -191,7 +191,7 @@ def update_brand_commissions(self):
     distributor = frappe.get_doc('Distributor', {'customer': self.name})
     doctype = "Distributor Brand Commission"
     filters = {'parent': distributor.name}
-    updated = False
+    new_brands = []
 
     if self.commissions:
         for customer_brand_commission in self.commissions:
@@ -204,16 +204,23 @@ def update_brand_commissions(self):
                     distributor_brand_commission.commission_rate = customer_brand_commission.commission_rate
                     distributor_brand_commission.save(ignore_permissions=True)
             else:
+                new_brands.append(frappe._dict({
+                    'brand': customer_brand_commission.brand,
+                    'commission_rate': customer_brand_commission.commission_rate
+                }))
+
+        if new_brands:
+            distributor = frappe.get_doc('Distributor', {'customer': self.name})
+
+            for brand in new_brands:
                 distributor.append("commissions", {
                     "doctype": doctype,
                     "parenttype": distributor.doctype,
                     "parent": distributor.name,
-                    "brand": customer_brand_commission.brand,
-                    "commission_rate": customer_brand_commission.commission_rate
+                    "brand": brand.brand,
+                    "commission_rate": brand.commission_rate
                 })
-                updated = True
 
-        if updated:
             distributor.save(ignore_permissions=True)
 
     delete_brand_commissions_from_distributor(self, distributor)
