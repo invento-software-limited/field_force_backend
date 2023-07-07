@@ -20,6 +20,15 @@ def on_update(self, method):
             add_customer_to_sales_person(self)
             frappe.db.commit()
 
+def after_rename(new_doc, method, old_name, merge=False, ignore_permissions=False):
+    doctype = "Distributor"
+
+    if new_doc.customer_group == 'Distributor' and frappe.db.exists(doctype, {'customer': new_doc.name}):
+        distributor_name = frappe.db.get_value(doctype, {'customer': new_doc.name}, 'name')
+
+        if distributor_name != new_doc.name:
+            frappe.rename_doc(doctype, distributor_name, new_doc.name)
+
 def create_or_update_distributor(self, method):
     if self.customer_group == "Distributor" and frappe.db.exists("Distributor", {'customer':self.name}):
         update_distributor(self)
