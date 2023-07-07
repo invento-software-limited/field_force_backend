@@ -7,6 +7,7 @@ def validate(self, method):
 def after_insert(self, method):
     create_distributor(self, method)
     add_customer_to_sales_person(self)
+    update_brand_commissions(self)
 
 def before_save(self, method):
     self.previous_doc = self.get_doc_before_save()
@@ -14,6 +15,7 @@ def before_save(self, method):
 def on_update(self, method):
     if self.previous_doc:
         create_or_update_distributor(self, method)
+        update_brand_commissions(self)
 
         if self.previous_doc.sales_person != self.sales_person:
             delete_customer_from_previous_sales_person(self)
@@ -82,7 +84,6 @@ def delete_customer_from_previous_sales_person(self):
             sales_person_customer = frappe.get_doc("Sales Person Customer", filters)
             sales_person_customer.delete()
 
-
 def set_customer_group(self, method):
     if not self.customer_group:
         self.customer_group = 'Retail Shop'
@@ -127,6 +128,7 @@ def create_distributor(self, method):
                 'longitude': self.longitude
             }
             distributor = frappe.get_doc(distributor_info)
+            update_brand_commissions(self, distributor)
             distributor.save(ignore_permissions=True)
 
 # def set_employee(self, method):
@@ -184,3 +186,47 @@ def refresh_sales_person_customers():
             frappe.db.commit()
         except:
             frappe.log_error(frappe.get_traceback(), f"{customer.name}-{customer.sales_person}")
+
+def update_brand_commissions(self):
+    distributor = frappe.get_doc('Distributor', {'customer': self.name})
+    doctype = "Distributor Brand Commission"
+    filters = {'parent': distributor.name}
+    updated = False
+
+    if self.commissions:
+        for customer_brand_commission in self.commissions:
+            filters['brand'] = customer_brand_commission.brand
+
+            if frappe.db.exists(doctype, filters):
+                distributor_brand_commission = frappe.get_last_doc(doctype, filters)
+
+                if customer_brand_commission.commission_rate != distributor_brand_commission.commission_rate:
+                    distributor_brand_commission.commission_rate = customer_brand_commission.commission_rate
+                    distributor_brand_commission.save(ignore_permissions=True)
+            else:
+                distributor.append("commissions", {
+                    "doctype": doctype,
+                    "parenttype": distributor.doctype,
+                    "parent": distributor.name,
+                    "brand": customer_brand_commission.brand,
+                    "commission_rate": customer_brand_commission.commission_rate
+                })
+                updated = True
+
+        if updated:
+            distributor.save(ignore_permissions=True)
+
+    delete_brand_commissions_from_distributor(self, distributor)
+
+def delete_brand_commissions_from_distributor(self, distributor):
+    doctype = "Distributor Brand Commission"
+    filters = {'parent': distributor.name}
+
+    distributor_brands = set(frappe.db.get_all(doctype, {"parent": distributor.name}, pluck='brand'))
+    customer_brands = set(frappe.db.get_all("Customer Brand Commission", {"parent": self.name}, pluck='brand'))
+    deleted_brands = list(distributor_brands - customer_brands)
+
+    for brand in deleted_brands:
+        filters['brand'] = brand
+        deletable_brand = frappe.get_last_doc(doctype, filters)
+        deletable_brand.delete(ignore_permissions=True)
