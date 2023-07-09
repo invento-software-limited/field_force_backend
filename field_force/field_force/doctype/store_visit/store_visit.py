@@ -63,5 +63,5 @@ class StoreVisit(Document):
                 store_visit_destination.checkout_store_visit = self.name
                 store_visit_destination.checkout_time = self.server_time
 
+            store_visit_destination.validate()
             store_visit_destination.save(ignore_permissions=True)
-            frappe.db.commit()
