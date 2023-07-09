@@ -25,17 +25,19 @@ def on_update(self, method):
 def after_rename(new_doc, method, old_name, merge=False, ignore_permissions=False):
     doctype = "Distributor"
 
-    if new_doc.customer_group == 'Distributor' and frappe.db.exists(doctype, {'customer': new_doc.name}):
-        distributor_name = frappe.db.get_value(doctype, {'customer': new_doc.name}, 'name')
+    if new_doc.customer_group == 'Distributor':
+        if frappe.db.exists(doctype, {'customer': new_doc.name}):
+            distributor_name = frappe.db.get_value(doctype, {'customer': new_doc.name}, 'name')
 
-        if distributor_name != new_doc.name:
-            frappe.rename_doc(doctype, distributor_name, new_doc.name)
+            if distributor_name != new_doc.name:
+                frappe.rename_doc(doctype, distributor_name, new_doc.name)
 
 def create_or_update_distributor(self, method):
-    if self.customer_group == "Distributor" and frappe.db.exists("Distributor", {'customer':self.name}):
-        update_distributor(self)
-    else:
-        create_distributor(self, method)
+    if self.customer_group == "Distributor":
+        if frappe.db.exists("Distributor", {'customer':self.name}):
+            update_distributor(self)
+        else:
+            create_distributor(self, method)
 
 def update_distributor(self):
     updatable_fields = ['sales_person', 'contact_person', 'contact_number', 'address',
@@ -71,7 +73,7 @@ def add_customer_to_sales_person(self):
                     "customer": self.name
                 })
 
-            sales_person.save()
+            sales_person.save(ignore_permissions=True)
 
 def delete_customer_from_previous_sales_person(self):
     if self.previous_doc:
@@ -82,7 +84,7 @@ def delete_customer_from_previous_sales_person(self):
 
         if frappe.db.exists("Sales Person Customer", filters):
             sales_person_customer = frappe.get_doc("Sales Person Customer", filters)
-            sales_person_customer.delete()
+            sales_person_customer.delete(ignore_permissions=True)
 
 def set_customer_group(self, method):
     if not self.customer_group:
@@ -128,7 +130,7 @@ def create_distributor(self, method):
                 'longitude': self.longitude
             }
             distributor = frappe.get_doc(distributor_info)
-            update_brand_commissions(self, distributor)
+            update_brand_commissions(self)
             distributor.save(ignore_permissions=True)
 
 # def set_employee(self, method):
@@ -150,7 +152,6 @@ def refresh_sales_person_customers():
 
     for customer in customers:
         try:
-            # print("=====>>", customer)
             filters = {
                 "customer": customer.name,
                 "parent": ["!=", customer.sales_person]
@@ -180,7 +181,7 @@ def refresh_sales_person_customers():
                             "customer": customer.name
                         })
 
-                    sales_person.save()
+                    sales_person.save(ignore_permissions=True)
                     # print(customer.name, "=====added to====>>", customer.sales_person)
 
             frappe.db.commit()
@@ -188,12 +189,12 @@ def refresh_sales_person_customers():
             frappe.log_error(frappe.get_traceback(), f"{customer.name}-{customer.sales_person}")
 
 def update_brand_commissions(self):
-    distributor = frappe.get_doc('Distributor', {'customer': self.name})
-    doctype = "Distributor Brand Commission"
-    filters = {'parent': distributor.name}
-    new_brands = []
+    if self.customer_group == 'Distributor' and self.commissions:
+        distributor = frappe.get_doc('Distributor', {'customer': self.name})
+        doctype = "Distributor Brand Commission"
+        filters = {'parent': distributor.name}
+        new_brands = []
 
-    if self.commissions:
         for customer_brand_commission in self.commissions:
             filters['brand'] = customer_brand_commission.brand
 
@@ -223,7 +224,7 @@ def update_brand_commissions(self):
 
             distributor.save(ignore_permissions=True)
 
-    delete_brand_commissions_from_distributor(self, distributor)
+        delete_brand_commissions_from_distributor(self, distributor)
 
 def delete_brand_commissions_from_distributor(self, distributor):
     doctype = "Distributor Brand Commission"
