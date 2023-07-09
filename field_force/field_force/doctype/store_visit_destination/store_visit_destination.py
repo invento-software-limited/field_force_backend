@@ -28,9 +28,6 @@ class StoreVisitDestination(Document):
         elif visited_stores and not_visited_stores:
             status = "Partially"
 
-        elif not visited_stores and not_visited_stores:
-            status = "Incomplete"
-
         if status:
             frappe.db.set_value(self.parenttype, self.parent, 'status', status)
             frappe.db.commit()

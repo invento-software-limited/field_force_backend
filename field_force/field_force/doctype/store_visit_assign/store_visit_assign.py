@@ -69,9 +69,6 @@ class StoreVisitAssign(Document):
         elif visited_stores and not_visited_stores:
             self.status = "Partially"
 
-        elif not visited_stores and not_visited_stores:
-            self.status = "Incomplete"
-
 def get_time_obj(hour, minute, format):
     time = f"{hour}:{minute} {format}"
     time_obj = datetime.strptime(time, "%I:%M %p")
