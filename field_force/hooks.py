@@ -139,6 +139,8 @@ doc_events = {
 	},
 	"Sales Person": {
 		"before_save": "field_force.field_force.hook_functions.sales_person.before_save",
+		"after_insert": "field_force.field_force.hook_functions.sales_person.after_insert",
+		"on_update": "field_force.field_force.hook_functions.sales_person.on_update",
 	}
 
 }

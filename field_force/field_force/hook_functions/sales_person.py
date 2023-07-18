@@ -2,9 +2,17 @@ import frappe
 import datetime
 
 def before_save(self, method):
+    pass
+
+def after_insert(self, method):
     create_employee_and_set_role_profile(self)
     update_sales_person(self)
     update_customers(self)
+
+def on_update(self, method):
+    create_employee_and_set_role_profile(self)
+    update_customers(self)
+    update_sales_person(self)
 
 def update_sales_person(self):
     if self.type == "Sales Representative" and self.distributor:
