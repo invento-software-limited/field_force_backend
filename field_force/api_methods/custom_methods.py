@@ -112,12 +112,14 @@ def get_territories(doctype):
 
     if frappe.db.exists("Sales Person", sales_person_filters):
         territory = frappe.db.get_value("Sales Person", sales_person_filters, 'territory')
-        territories = frappe.db.get_descendants("Territory", territory)
-        territories.append(territory)
 
-        frappe.local.form_dict['filters'] = [['name', 'in', territories]]
-        territories = frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
-        frappe.local.response.total_items = len(territories)
-        return territories
+        if territory:
+            fields = get_api_fields(doctype)
+            lft, rgt = frappe.db.get_value("Territory", territory, ['lft', 'rgt'])
+            territories = frappe.get_list("Territory", filters={'lft': ['>=', lft], 'rgt': ['<=', rgt]},
+                                          fields=fields, order_by='lft')
+
+            frappe.local.response.total_items = len(territories)
+            return territories
 
     return []
