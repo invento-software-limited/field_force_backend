@@ -152,7 +152,12 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
+scheduler_events = {
+    "cron": {
+        "35 10 * * *": [
+            "field_force.field_force.doctype.app_user_attendance.app_user_attendance.send_daily_attendance_mail"
+        ]
+    },
 # 	"all": [
 # 		"field_force.tasks.all"
 # 	],
@@ -168,7 +173,7 @@ doc_events = {
 # 	"monthly": [
 # 		"field_force.tasks.monthly"
 # 	]
-# }
+}
 
 # Testing
 # -------
