@@ -46,8 +46,10 @@ class StoreVisitAssign(Document):
                 destination.exp_hour = expected_time[:2]
                 destination.exp_minute = expected_time[3:5] if expected_time[3:5] in ['00', '15', '30', '45'] else '00'
                 destination.exp_format = expected_time[-2:]
+                destination.expected_time = get_time_obj(destination.exp_hour, destination.exp_minute,
+                                                         destination.exp_format)
 
-            if destination.expected_time and isinstance(destination.expected_time_till, str):
+            if destination.expected_time_till and isinstance(destination.expected_time_till, str):
                 expected_time_till = destination.expected_time_till
                 expected_time_till = expected_time_till.split('.')[0] if '.' in expected_time_till else expected_time_till
 
@@ -56,9 +58,9 @@ class StoreVisitAssign(Document):
                 destination.time_till_minute = expected_time_till[3:5] if expected_time_till[3:5] in ['00', '15', '30', '45'] else '00'
                 destination.time_till_format = expected_time_till[-2:]
 
-            destination.expected_time = get_time_obj(destination.exp_hour, destination.exp_minute, destination.exp_format)
-            destination.expected_time_till = get_time_obj(destination.time_till_hour, destination.time_till_minute,
+                destination.expected_time_till = get_time_obj(destination.time_till_hour, destination.time_till_minute,
 														  destination.time_till_format)
+
     def set_status(self):
         visited_stores = frappe.db.exists("Store Visit Destination", {"parent": self.name, "status": "Visited"})
         not_visited_stores = frappe.db.exists("Store Visit Destination", {"parent": self.name, "status": "Not Visited"})
