@@ -36,7 +36,8 @@
   "ip_address",
   "imei",
   "section_break_26",
-  "location"
+  "location",
+  "store_visit_destination"
  ],
  "fields": [
   {
@@ -229,16 +230,22 @@
    "fieldtype": "Select",
    "label": "Type",
    "options": "\nCheck IN\nCheck OUT"
+  },
+  {
+   "fieldname": "store_visit_destination",
+   "fieldtype": "Data",
+   "label": "Store Visit Destination"
   }
  ],
  "image_field": "image",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-03-23 12:24:43.903338",
+ "modified": "2023-08-03 15:07:43.317823",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Store Visit",
  "name_case": "Title Case",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -315,5 +322,6 @@
   }
  ],
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": []
 }
