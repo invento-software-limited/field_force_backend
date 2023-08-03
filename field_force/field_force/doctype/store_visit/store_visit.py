@@ -20,12 +20,15 @@ class StoreVisit(Document):
                 self.user_fullname = user_fullname
 
         if not self.contact_number or not self.customer_address:
-            contact_number, customer_address = frappe.db.get_value('Customer', self.customer, ['contact_number', 'address'])
+            try:
+                contact_number, customer_address = frappe.db.get_value('Customer', self.customer, ['contact_number', 'address'])
 
-            if not self.contact_number and contact_number:
-                self.contact_number = contact_number
-            if not self.customer_address and customer_address:
-                self.customer_address = customer_address
+                if not self.contact_number and contact_number:
+                    self.contact_number = contact_number
+                if not self.customer_address and customer_address:
+                    self.customer_address = customer_address
+            except:
+                pass
 
         set_sales_person(self)
         set_employee(self)
@@ -47,21 +50,28 @@ class StoreVisit(Document):
             "docstatus": 1
         }
 
-        if frappe.db.exists('Store Visit Destination', filters):
+        if self.store_visit_destination:
+            store_visit_destination = frappe.get_doc("Store Visit Destination", self.store_visit_destination)
+            self.set_store_visit_to_store_visit_destination(store_visit_destination)
+
+        elif frappe.db.exists('Store Visit Destination', filters):
             store_visit_destination = frappe.get_last_doc("Store Visit Destination", filters=filters)
-            store_visit_destination.status = 'Visited'
+            self.set_store_visit_to_store_visit_destination(store_visit_destination)
 
-            if self.type != "Check OUT" and not store_visit_destination.checkin_store_visit:
-                store_visit_destination.store_visit = self.name
-                store_visit_destination.visited_time = self.server_time
+    def set_store_visit_to_store_visit_destination(self, store_visit_destination):
+        store_visit_destination.status = 'Visited'
 
-                store_visit_destination.checkin_store_visit = self.name
-                store_visit_destination.checkin_time = self.server_time
+        if self.type != "Check OUT" and not store_visit_destination.checkin_store_visit:
+            store_visit_destination.store_visit = self.name
+            store_visit_destination.visited_time = self.server_time
 
-            elif self.type == "Check OUT" or (store_visit_destination.checkin_store_visit and
-                                              store_visit_destination.checkin_store_visit != self.name):
-                store_visit_destination.checkout_store_visit = self.name
-                store_visit_destination.checkout_time = self.server_time
+            store_visit_destination.checkin_store_visit = self.name
+            store_visit_destination.checkin_time = self.server_time
 
-            store_visit_destination.validate()
-            store_visit_destination.save(ignore_permissions=True)
+        elif self.type == "Check OUT" or (store_visit_destination.checkin_store_visit and
+                                          store_visit_destination.checkin_store_visit != self.name):
+            store_visit_destination.checkout_store_visit = self.name
+            store_visit_destination.checkout_time = self.server_time
+
+        store_visit_destination.validate()
+        store_visit_destination.save(ignore_permissions=True)
