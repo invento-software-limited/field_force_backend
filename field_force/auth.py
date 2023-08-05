@@ -2,6 +2,7 @@ import frappe
 from field_force.response import build_custom_response
 from frappe.auth import LoginManager
 import frappe.core.doctype.user
+from field_force.api_methods.utils import file_path, get_api_fields_from_json
 
 @frappe.whitelist(allow_guest=True)
 def login(username, password):
@@ -29,6 +30,7 @@ def login(username, password):
             "allowed_doctypes": get_allowed_doctypes(user)
         }
 
+        frappe.cache().set_value('api_fields', get_api_fields_from_json())
         frappe.local.response['http_status_code'] = 200
     else:
         frappe.local.response['http_status_code'] = 401

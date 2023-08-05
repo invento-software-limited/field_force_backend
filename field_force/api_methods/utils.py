@@ -6,7 +6,6 @@ import json
 
 file_path = str(Path(__file__).resolve().parent) + '/api_response_fields.json'
 
-
 class JsonFile():
     def __init__(self):
         self.file_path = file_path
@@ -41,10 +40,20 @@ def set_doctype_fields_to_json(doctype, value):
     api_response_fields = JsonFile()
     api_response_fields.set(doctype, value)
 
-def get_api_fields(doctype, with_child_fields=False):
+def get_api_fields(doctype=None, with_child_fields=False):
+    api_response_fields = frappe.cache().get_value('api_fields')
+
+    if not api_response_fields:
+        api_response_fields = json.loads(open(file_path, "r").read())
+
+    if doctype:
+        if with_child_fields:
+            return api_response_fields.get(doctype, ['name']), api_response_fields.get(f'_{doctype}', ['name'])
+
+        return api_response_fields.get(doctype, ['name'])
+
+    return api_response_fields
+
+def get_api_fields_from_json():
     api_response_fields = json.loads(open(file_path, "r").read())
-
-    if with_child_fields:
-        return api_response_fields.get(doctype, ['name']), api_response_fields.get(f'_{doctype}', ['name'])
-
-    return api_response_fields.get(doctype, ['name'])
+    return api_response_fields

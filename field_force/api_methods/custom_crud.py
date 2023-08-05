@@ -1,5 +1,6 @@
 import frappe
 import json
+import time
 
 from field_force.api_methods.custom_methods import CUSTOM_API_DOCTYPES ,get_custom_data, set_custom_data_before_creation
 from field_force.response import build_custom_response
@@ -10,7 +11,7 @@ from field_force.api_methods.utils import file_path
 
 
 def execute(doctype=None, name=None):
-    api_response_fields = json.loads(open(file_path, "r").read())
+    api_response_fields = frappe.cache().get_value('api_fields')
 
     try:
         if "run_method" in frappe.local.form_dict:
