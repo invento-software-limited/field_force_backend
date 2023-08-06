@@ -7,11 +7,11 @@ from field_force.response import build_custom_response
 from frappe import _
 from frappe.permissions import has_permission
 from frappe.utils.data import sbool
-from field_force.api_methods.utils import file_path
+from field_force.api_methods.utils import file_path, get_api_fields
 
 
 def execute(doctype=None, name=None):
-    api_response_fields = frappe.cache().get_value('api_fields')
+    api_response_fields = get_api_fields()
 
     try:
         if "run_method" in frappe.local.form_dict:

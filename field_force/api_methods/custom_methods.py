@@ -1,7 +1,7 @@
 import json
 
 import frappe
-from field_force.api_methods.utils import file_path, get_api_fields
+from field_force.api_methods.utils import get_api_fields
 
 
 CUSTOM_API_DOCTYPES = ['Customer', 'Item', 'Store Visit Assign', 'Territory']
