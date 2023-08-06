@@ -1,8 +1,11 @@
+import random
+
 import frappe
 
 def validate(self, method):
     set_customer_group(self, method)
     set_sales_person_and_employee(self, method)
+    generate_customer_id(self, method)
 
 def after_insert(self, method):
     create_distributor(self, method)
@@ -21,6 +24,20 @@ def on_update(self, method):
             delete_customer_from_previous_sales_person(self)
             add_customer_to_sales_person(self)
             frappe.db.commit()
+
+def generate_customer_id(self, method):
+    if not self.customer_id and self.customer_group == "Retail Shop" and self.distributor:
+        customer = frappe.db.get_value("Distributor", self.distributor, 'customer')
+        customer_id = frappe.db.get_value("Customer", customer, 'customer_id')
+
+        if customer_id:
+            filters = {'name': ['!=', self.name], 'customer_id_unique_code': ['!=', 0]}
+            customers = frappe.get_all("Customer", filters, pluck='customer_id_unique_code',
+                                       order_by='customer_id_unique_code')
+            unique_code = customers[-1] + 1 if customers else 1
+            self.customer_id = f"{customer_id}/{str(unique_code)}"
+            self.customer_id_unique_code = unique_code
+
 
 def after_rename(new_doc, method, old_name, merge=False, ignore_permissions=False):
     doctype = "Distributor"
