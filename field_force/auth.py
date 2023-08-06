@@ -30,7 +30,7 @@ def login(username, password):
             "allowed_doctypes": get_allowed_doctypes(user)
         }
 
-        frappe.cache().set_value('api_fields', get_api_fields_from_json())
+        # frappe.cache().set_value('api_fields', get_api_fields_from_json())
         frappe.local.response['http_status_code'] = 200
     else:
         frappe.local.response['http_status_code'] = 401

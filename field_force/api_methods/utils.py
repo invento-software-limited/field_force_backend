@@ -57,3 +57,6 @@ def get_api_fields(doctype=None, with_child_fields=False):
 def get_api_fields_from_json():
     api_response_fields = json.loads(open(file_path, "r").read())
     return api_response_fields
+
+# storing the fields to frappe cache from json file
+frappe.cache().set_value('api_fields', get_api_fields_from_json())
