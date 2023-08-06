@@ -21,6 +21,7 @@ class Requisition(Document):
         self.set_partner_group()
         self.set_brand_and_image_to_requisition_items()
         self.validate_delivery_date()
+        self.validate_po_number()
         self.validate_items()
 
     def before_save(self):
@@ -54,6 +55,10 @@ class Requisition(Document):
         for item in self.items:
             if not item.delivery_date:
                 item.delivery_date = self.delivery_date
+
+    def validate_po_number(self):
+        if frappe.db.exists("Requisition", {"po_no": self.po_no}):
+            frappe.msgprint(f"Requisition already exists with the PO number(<b>{self.po_no}</b>)", title="Already Exist")
 
     def set_user(self):
         if not self.user:
