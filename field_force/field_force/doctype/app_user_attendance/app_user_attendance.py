@@ -90,7 +90,7 @@ def get_attendance_data(date, time):
         'enabled': 1
     }
 
-    sales_persons = frappe.get_list("Sales Person", sales_persons_filters, sales_persons_fields)
+    sales_persons = frappe.get_list("Sales Person", sales_persons_filters, sales_persons_fields, order_by='sales_person_group')
     sales_persons_attendance = frappe.get_list("App User Attendance", filters, fields,
                                                order_by='server_time', limit_page_length=1000)
 
