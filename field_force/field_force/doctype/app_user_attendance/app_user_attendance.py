@@ -52,8 +52,7 @@ def send_daily_attendance_mail():
     if not hr_settings.send_daily_attendance_report:
         return
 
-    # date = frappe.utils.today()
-    date = "2023-05-01"
+    date = frappe.utils.today()
     time = "10:30:00"
 
     sales_person_groups, sales_persons_attendance = get_attendance_data(date, time)
@@ -92,7 +91,6 @@ def get_attendance_data(date, time):
     }
 
     sales_persons = frappe.get_list("Sales Person", sales_persons_filters, sales_persons_fields)
-    print(sales_persons)
     sales_persons_attendance = frappe.get_list("App User Attendance", filters, fields,
                                                order_by='server_time', limit_page_length=1000)
 
@@ -124,8 +122,6 @@ def get_attendance_data(date, time):
             attendance.server_time = get_time_in_12_hour_format(attendance.server_time)
             attendance['status'] = 'Yes'
             attendance_dict[attendance.sales_person] = attendance
-
-    print(attendance_dict)
 
     for sales_person in sales_persons:
         sales_person_groups['Grand Total']['total_sales_person'] += 1
