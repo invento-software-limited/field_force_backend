@@ -52,7 +52,8 @@ def send_daily_attendance_mail():
     if not hr_settings.send_daily_attendance_report:
         return
 
-    date = frappe.utils.today()
+    # date = frappe.utils.today()
+    date = "2023-05-01"
     time = "10:30:00"
 
     sales_person_groups, sales_persons_attendance = get_attendance_data(date, time)
@@ -91,10 +92,12 @@ def get_attendance_data(date, time):
     }
 
     sales_persons = frappe.get_list("Sales Person", sales_persons_filters, sales_persons_fields)
+    print(sales_persons)
     sales_persons_attendance = frappe.get_list("App User Attendance", filters, fields,
                                                order_by='server_time', limit_page_length=1000)
 
     attendance_dict = {}
+
     sales_person_groups = {
         "GT": {
             "sales_person_group": "GT",
@@ -122,20 +125,22 @@ def get_attendance_data(date, time):
             attendance['status'] = 'Yes'
             attendance_dict[attendance.sales_person] = attendance
 
+    print(attendance_dict)
+
     for sales_person in sales_persons:
         sales_person_groups['Grand Total']['total_sales_person'] += 1
         sales_person_groups[sales_person.sales_person_group]['total_sales_person'] += 1
 
         if sales_person.name in attendance_dict.keys():
-            attendance_dict[sales_person.name].update(sales_person)
+            sales_person.update(attendance_dict[sales_person.name])
             sales_person_groups[sales_person.sales_person_group]['total_present'] += 1
             sales_person_groups['Grand Total']['total_present'] += 1
         else:
             sales_person['server_time'] = 'No'
             sales_person['status'] = 'No'
             sales_person['sales_person'] = sales_person.name
-            attendance_dict[sales_person.name] = sales_person
+            # attendance_dict[sales_person.name] = sales_person
             sales_person_groups[sales_person.sales_person_group]['total_absent'] += 1
             sales_person_groups['Grand Total']['total_absent'] += 1
 
-    return sales_person_groups.values(), attendance_dict.values()
+    return sales_person_groups.values(), sales_persons
