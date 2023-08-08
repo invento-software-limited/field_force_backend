@@ -17,7 +17,9 @@ def get_custom_data(doctype):
     return method[doctype](doctype)
 
 def set_custom_data_before_creation(doctype, data):
-    if doctype == "Sales Order":
+    submit_on_creation_doctypes = ["Sales Order", "Store Visit Assign"]
+
+    if doctype in submit_on_creation_doctypes:
         data['created_from_app'] = 1
 
 def get_customer_list(doctype):

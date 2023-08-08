@@ -36,6 +36,10 @@ class StoreVisitAssign(Document):
         set_sales_person(self)
         set_employee(self)
 
+    def after_insert(self):
+        if self.created_from_app:
+            self.submit()
+
     def validate_time(self):
         for destination in self.destinations:
             if destination.expected_time and isinstance(destination.expected_time, str):
