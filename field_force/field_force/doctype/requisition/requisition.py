@@ -57,8 +57,13 @@ class Requisition(Document):
                 item.delivery_date = self.delivery_date
 
     def validate_po_number(self):
-        if frappe.db.exists("Requisition", {"po_no": self.po_no}):
-            frappe.msgprint(f"Requisition already exists with the PO number(<b>{self.po_no}</b>)", title="Already Exist")
+        filters =  {
+            "po_no": self.po_no,
+            "docstatus": ["!=", 2]
+        }
+
+        if frappe.db.exists("Requisition", filters):
+            frappe.throw(f"Requisition already exists with the PO number(<b>{self.po_no}</b>)", title="Already Exist")
 
     def set_user(self):
         if not self.user:
