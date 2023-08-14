@@ -59,6 +59,7 @@ class Requisition(Document):
     def validate_po_number(self):
         filters =  {
             "po_no": self.po_no,
+            "name": ["!=", self.name],
             "docstatus": ["!=", 2]
         }
 
