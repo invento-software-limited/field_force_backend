@@ -1,0 +1,30 @@
+{
+ "cards": [
+  {
+   "card": "Total Sales Person"
+  },
+  {
+   "card": "Active Sales Person"
+  },
+  {
+   "card": "Total Present"
+  }
+ ],
+ "charts": [
+  {
+   "width": "Half"
+  }
+ ],
+ "creation": "2023-08-31 16:27:10.435210",
+ "dashboard_name": "Channel Manager's Dashboard",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "modified": "2023-08-31 17:07:40.923168",
+ "modified_by": "munim@invento.com.bd",
+ "module": "Field Force",
+ "name": "Channel Manager's Dashboard",
+ "owner": "munim@invento.com.bd"
+}
