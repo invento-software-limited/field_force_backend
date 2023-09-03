@@ -1,0 +1,42 @@
+{
+ "aggregate_function_based_on": "grand_total",
+ "based_on": "",
+ "chart_name": "Top 10 Customers (Sales)",
+ "chart_type": "Group By",
+ "color": "#449CF0",
+ "creation": "2023-09-03 10:57:58.813985",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "document_type": "Sales Order",
+ "dynamic_filters_json": "[]",
+ "filters_json": "[[\"Sales Order\",\"transaction_date\",\"Timespan\",\"this month\",false],[\"Sales Order\",\"docstatus\",\"=\",\"1\",false]]",
+ "group_by_based_on": "customer",
+ "group_by_type": "Sum",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "last_synced_on": "2023-09-03 13:41:23.871977",
+ "modified": "2023-09-03 14:36:30.158580",
+ "modified_by": "munim@invento.com.bd",
+ "module": "Field Force",
+ "name": "Top 10 Customers (Sales)",
+ "number_of_groups": 5,
+ "owner": "munim@invento.com.bd",
+ "parent_document_type": "",
+ "roles": [
+  {
+   "role": "Channel Manager"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "source": "",
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "value_based_on": "",
+ "y_axis": []
+}

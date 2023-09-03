@@ -1,0 +1,40 @@
+{
+ "aggregate_function_based_on": "amount",
+ "based_on": "",
+ "chart_name": "Top Categories (Requisition)",
+ "chart_type": "Group By",
+ "creation": "2023-09-03 12:14:10.491885",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "document_type": "Requisition Item",
+ "dynamic_filters_json": "[]",
+ "filters_json": "[[\"Requisition Item\",\"creation\",\"Timespan\",null,false]]",
+ "group_by_based_on": "item_group",
+ "group_by_type": "Sum",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "modified": "2023-09-03 13:01:48.192880",
+ "modified_by": "munim@invento.com.bd",
+ "module": "Field Force",
+ "name": "Top Categories (Requisition)",
+ "number_of_groups": 10,
+ "owner": "munim@invento.com.bd",
+ "parent_document_type": "Requisition",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Channel Manager"
+  }
+ ],
+ "source": "",
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "value_based_on": "",
+ "y_axis": []
+}
