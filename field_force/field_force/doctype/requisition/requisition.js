@@ -125,6 +125,40 @@ frappe.ui.form.on('Requisition', {
 		let transaction_controller= new erpnext.TransactionController({frm:frm});
 		transaction_controller.scan_barcode();
 	},
+  po_file: function (frm){
+      if (!frm.doc.po_file){
+        return
+      }
+
+      frappe.call({
+            method:"field_force.field_force.doctype.utils.get_data_from_pdf",
+            args: {
+                url: frm.doc.po_file
+              },
+
+            callback: function(r) {
+                if(r.message) {
+                    frm.doc.items = [];
+                    r.message.forEach((item, i) => {
+                      if (i >= 0){
+                        let row = frm.add_child("items", item);
+                        // frappe.model.set_value(row.doctype, row.name, 'item_code', item.item_code);
+                        // frappe.model.set_value(row.doctype, row.name, 'qty', item.qty);
+                        // frappe.model.set_value(row.doctype, row.name, 'rate', item.rate);
+                      }
+                    });
+                    refresh_field("items");
+                }
+
+                // if(r.message){
+                //     console.log((r.message));
+                //
+                //     // frm.set_value('items', r.message);
+                //     // frm.refresh_field("items");
+                // }
+            }
+        });
+    },
 
 });
 

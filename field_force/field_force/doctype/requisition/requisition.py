@@ -11,6 +11,7 @@ import frappe
 import time
 import datetime
 from frappe.model.document import Document
+from field_force.field_force.doctype.utils import get_data_from_pdf
 
 import openpyxl
 
@@ -91,7 +92,10 @@ class Requisition(Document):
     def set_brand_and_image_to_requisition_items(self):
         for item in self.items:
             if not item.brand or not item.image:
-                item.brand, item.image = frappe.db.get_value('Item', item.item_code, ['brand', 'image'])
+                try:
+                    item.brand, item.image = frappe.db.get_value('Item', item.item_code, ['brand', 'image'])
+                except:
+                    pass
 
     def validate_items(self):
         commission_brand_dict = get_brands_commission(self.customer)
@@ -149,7 +153,10 @@ def set_extra_values(self):
 
     for item in self.items:
         if not item.brand or not item.image:
-            item.brand, item.image = frappe.db.get_value('Item', item.item_code, ['brand', 'image'])
+            try:
+                item.brand, item.image = frappe.db.get_value('Item', item.item_code, ['brand', 'image'])
+            except:
+                pass
 
 def set_allocated_amount(self):
     if self.sales_team:
