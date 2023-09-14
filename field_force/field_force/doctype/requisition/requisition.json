@@ -25,6 +25,7 @@
   "po_no",
   "po_date",
   "tax_id",
+  "create_sales_order_on_submit",
   "customer_address_and_contact_section",
   "customer_group",
   "contact_person",
@@ -641,13 +642,19 @@
   {
    "fieldname": "section_break_p9q6w",
    "fieldtype": "Section Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "create_sales_order_on_submit",
+   "fieldtype": "Check",
+   "label": "Create Sales Order on Submit"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2023-09-13 11:15:11.412099",
+ "modified": "2023-09-14 11:44:25.553414",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",

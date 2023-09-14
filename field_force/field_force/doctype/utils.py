@@ -138,7 +138,7 @@ def get_item_details_data(item_list):
 
     try:
         item_data = scan_barcode(data_dict['item_code'])
-        values = frappe.db.get_value("Item", item_data.item_code, ['item_name', 'brand', 'image'])
+        values = frappe.db.get_value("Item", item_data.item_code, fields)
     except:
         pass
 
@@ -146,13 +146,13 @@ def get_item_details_data(item_list):
         try:
             values = frappe.get_value("Item", data_dict['item_code'], fields)
         except:
-            values_ = frappe.db.sql("""select item_code, item_name, brand, image
-                                    from `tabItem` where product_id='%s'""" % '6332166')
+            values_ = frappe.db.sql('''select item_code, item_name, brand, image
+                                    from `tabItem` where product_id="%s"''' % data_dict["item_code"])
             if values_:
                 values = values_[0]
 
     if values:
-        data_dict['item_name'], data_dict['brand'], data_dict['image'] = values
+        data_dict['item_code'], data_dict['item_name'], data_dict['brand'], data_dict['image'] = values
 
 
     for item in item_list:

@@ -1,6 +1,7 @@
 # Copyright (c) 2022, Invento Software Limited and contributors
 # For license information, please see license.txt
 import calendar
+import copy
 import os
 import random
 
@@ -42,6 +43,7 @@ class Requisition(Document):
 
         month, year = get_month_and_year(self)
         set_amount_to_sales_target(self.sales_person, self.achievement_amount, month, year)
+        create_sales_order_on_submit(self)
 
     def on_cancel(self):
         subtract_achievement_amount(self)
@@ -406,3 +408,25 @@ def generate_csv_and_attach_file(requisition):
     requisition.requisition_excel = file_url
     requisition.requisition_excel_file = f'<a class="attached-file-link" href="{file_url}"' \
                                          f' target="_blank">{file_name}</a>'
+
+def create_sales_order_on_submit(requisition):
+    if requisition.create_sales_order_on_submit:
+        sales_order = frappe.get_doc(frappe._dict({
+            "doctype": "Sales Order",
+            "customer": requisition.customer,
+            "transaction_date": requisition.transaction_date,
+            "delivery_date": requisition.delivery_date,
+            "order_type": "Sales",
+        }))
+
+        for item in requisition.items:
+            sales_order.append("items", {
+                "item_code": item.item_code,
+                "item_name": item.item_name,
+                "brand": item.brand,
+                "qty": item.qty,
+                "rate": item.rate,
+                "amount": item.amount
+            })
+
+        sales_order.insert()
