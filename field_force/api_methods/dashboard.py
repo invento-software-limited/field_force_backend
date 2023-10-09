@@ -45,12 +45,12 @@ def get_sales_person_names(user):
 
         if sales_person.type == "Supervisor":
             sales_persons = frappe.db.get_list("Sales Person", {"parent_sales_person": sales_person.name}, 'name')
-            
-            if sales_persons:
-            	sales_person_names = (f"'{sales_person.name}'" for sales_person in sales_persons)
-            	return "(" + ", ".join(sales_person_names) + ")"
 
-	return f"('{sales_person.name}')"
+            if sales_persons:
+                sales_person_names = (f"'{sales_person.name}'" for sales_person in sales_persons)
+                return "(" + ", ".join(sales_person_names) + ")"
+
+        return f"('{sales_person.name}')"
 
     return None
 
@@ -67,7 +67,7 @@ def get_sales_target(sales_person_names, month, year, month_start_date, today_da
     return 0
 
 def get_daily_sales(sales_person_names, date):
-    daily_sales = frappe.db.sql("""select sum(IFNULL(grand_total, 0)) as total from `tabRequisition` where docstatus=1 
+    daily_sales = frappe.db.sql("""select sum(IFNULL(grand_total, 0)) as total from `tabRequisition` where docstatus=1
                             and sales_person in %s and transaction_date='%s'""" % (sales_person_names, date), as_dict=1)
     if daily_sales:
         return daily_sales[0].total
@@ -89,7 +89,7 @@ def get_daily_customers(sales_person_names, date):
     return 0
 
 def get_monthly_customers(sales_person_names, month_start_date, today_date):
-    monthly_customers = frappe.db.sql("""select distinct count(IFNULL(customer, 0)) as total_customer from `tabRequisition` where 
+    monthly_customers = frappe.db.sql("""select distinct count(IFNULL(customer, 0)) as total_customer from `tabRequisition` where
                                 sales_person in %s and docstatus=1 and transaction_date between '%s' and '%s'"""
                                 % (sales_person_names, month_start_date, today_date), as_dict=1)
     if monthly_customers:
@@ -105,7 +105,7 @@ def get_daily_sold_items(sales_person_names, date):
 
 def get_announcements(date):
     announcements = frappe.db.sql("""select name, announcement_date, announcement_message from `tabAnnouncement` where
-                                    disabled=0 and from_date <= '%s' and to_date >= '%s' order by 
+                                    disabled=0 and from_date <= '%s' and to_date >= '%s' order by
                                     announcement_date desc, creation desc """ % (date, date), as_dict=1)
     return announcements
 
