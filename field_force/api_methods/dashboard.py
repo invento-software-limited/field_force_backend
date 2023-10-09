@@ -45,10 +45,12 @@ def get_sales_person_names(user):
 
         if sales_person.type == "Supervisor":
             sales_persons = frappe.db.get_list("Sales Person", {"parent_sales_person": sales_person.name}, 'name')
-            sales_person_names = (f"'{sales_person.name}'" for sales_person in sales_persons)
-            return "(" + ", ".join(sales_person_names) + ")"
-        else:
-            return f"('{sales_person.name}')"
+            
+            if sales_persons:
+            	sales_person_names = (f"'{sales_person.name}'" for sales_person in sales_persons)
+            	return "(" + ", ".join(sales_person_names) + ")"
+
+	return f"('{sales_person.name}')"
 
     return None
 
