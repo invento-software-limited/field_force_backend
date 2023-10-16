@@ -40,6 +40,13 @@ function get_brands_commissions(customer, brand=null){
 	return response
 }
 
+function check_role(frm){
+  if (frappe.user.has_role("Customer") && !frappe.user.has_role("System Manager")
+      && !window.location.href.includes('/customer-requisition/')) {
+      let url = window.location.href;
+	    window.location.href = url.replace("/requisition/", "/customer-requisition/");
+  }
+}
 
 frappe.ui.form.on('Requisition', {
 	on_load: function (){
@@ -51,6 +58,8 @@ frappe.ui.form.on('Requisition', {
 		}
 	},
 	refresh: function (frm){
+    check_role(frm);
+
 		frm.fields_dict['items'].grid.get_field('item_code').get_query = function(doc, cdt, cdn) {
 			let item = locals[cdt][cdn];
 
