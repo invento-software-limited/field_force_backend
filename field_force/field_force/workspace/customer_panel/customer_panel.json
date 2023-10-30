@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"9ASY5O7ov-\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h3\\\"><b>Customer Panel</b></span>\",\"col\":12}},{\"id\":\"C08KLEA_SY\",\"type\":\"paragraph\",\"data\":{\"text\":\"<span class=\\\"h4\\\" style=\\\"\\\"><a href=\\\"http://fieldforce.inv-pos.com/app/customer-requisition/new-customer-requisition\\\" draggable=\\\"false\\\">New Requisition</a></span>\",\"col\":4}},{\"id\":\"c8nX_6NDta\",\"type\":\"paragraph\",\"data\":{\"text\":\"<span class=\\\"h4\\\" style=\\\"\\\"><a href=\\\"http://fieldforce.inv-pos.com/app/customer-requisition\\\">&nbsp;Past&nbsp;Requisition</a></span>\",\"col\":7}},{\"id\":\"yrai2udsc-\",\"type\":\"paragraph\",\"data\":{\"text\":\"&nbsp;\",\"col\":12}},{\"id\":\"p4vKOsnNqE\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Today's Requisition\",\"col\":4}},{\"id\":\"XqLojviquW\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Pending Requisition\",\"col\":4}},{\"id\":\"zNE0A1F7WR\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Approved Requisition\",\"col\":4}},{\"id\":\"d3QwFKRvhA\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b></b></span>\",\"col\":12}},{\"id\":\"HatP36KtiS\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Monthly Total Requisition\",\"col\":4}},{\"id\":\"e3oC125Zw2\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Monthly Pending Requisition\",\"col\":4}},{\"id\":\"CuulbGGs4K\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Monthly Approved Requisition\",\"col\":4}}]",
+ "content": "[{\"id\":\"9ASY5O7ov-\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h3\\\"><b>Customer Panel</b></span>\",\"col\":12}},{\"id\":\"C08KLEA_SY\",\"type\":\"paragraph\",\"data\":{\"text\":\"<span class=\\\"h4\\\" style=\\\"\\\"><a href=\\\"http://fieldforce.inv-pos.com/app/customer-requisition/new-customer-requisition\\\" draggable=\\\"false\\\">New Requisition</a></span>\",\"col\":4}},{\"id\":\"c8nX_6NDta\",\"type\":\"paragraph\",\"data\":{\"text\":\"<span class=\\\"h4\\\" style=\\\"\\\"><a href=\\\"http://fieldforce.inv-pos.com/app/customer-requisition\\\">&nbsp;Past&nbsp;Requisition</a></span>\",\"col\":4}},{\"id\":\"6Hdg_9afVc\",\"type\":\"paragraph\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><a href=\\\"http://fieldforce.inv-pos.com/app/dashboard-view/Customer%20Dashboard\\\">Dashboard</a></span>\",\"col\":4}}]",
  "creation": "2023-10-16 14:55:23.039794",
  "docstatus": 0,
  "doctype": "Workspace",
@@ -11,36 +11,11 @@
  "is_hidden": 0,
  "label": "Customer Panel",
  "links": [],
- "modified": "2023-10-26 13:42:32.091100",
+ "modified": "2023-10-30 06:05:37.995820",
  "modified_by": "munim@invento.com.bd",
  "module": "Field Force",
  "name": "Customer Panel",
- "number_cards": [
-  {
-   "label": "Pending Requisition",
-   "number_card_name": "Pending Requisition"
-  },
-  {
-   "label": "Monthly Total Requisition",
-   "number_card_name": "Monthly Total Requisition"
-  },
-  {
-   "label": "Today's Requisition",
-   "number_card_name": "Today's Requisition"
-  },
-  {
-   "label": "Monthly Pending Requisition",
-   "number_card_name": "Monthly Pending Requisition"
-  },
-  {
-   "label": "Approved Requisition",
-   "number_card_name": "Approved Requisition"
-  },
-  {
-   "label": "Monthly Approved Requisition",
-   "number_card_name": "Monthly Approved Requisition"
-  }
- ],
+ "number_cards": [],
  "owner": "munim@invento.com.bd",
  "parent_page": "",
  "public": 1,
