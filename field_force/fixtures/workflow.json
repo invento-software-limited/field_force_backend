@@ -1,0 +1,79 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Workflow",
+  "document_type": "Requisition",
+  "is_active": 1,
+  "modified": "2023-10-26 17:57:09.235238",
+  "name": "Requisition Workflow",
+  "override_status": 0,
+  "send_email_alert": 1,
+  "states": [
+   {
+    "allow_edit": "Customer",
+    "doc_status": "0",
+    "is_optional_state": 0,
+    "message": null,
+    "next_action_email_template": null,
+    "parent": "Requisition Workflow",
+    "parentfield": "states",
+    "parenttype": "Workflow",
+    "state": "Pending",
+    "update_field": "",
+    "update_value": null
+   },
+   {
+    "allow_edit": "Operation",
+    "doc_status": "1",
+    "is_optional_state": 0,
+    "message": null,
+    "next_action_email_template": null,
+    "parent": "Requisition Workflow",
+    "parentfield": "states",
+    "parenttype": "Workflow",
+    "state": "Approved by Ops Team",
+    "update_field": "status",
+    "update_value": "Submitted"
+   },
+   {
+    "allow_edit": "Operation",
+    "doc_status": "0",
+    "is_optional_state": 0,
+    "message": null,
+    "next_action_email_template": null,
+    "parent": "Requisition Workflow",
+    "parentfield": "states",
+    "parenttype": "Workflow",
+    "state": "Rejected by Ops Team",
+    "update_field": "status",
+    "update_value": null
+   }
+  ],
+  "transitions": [
+   {
+    "action": "Approve",
+    "allow_self_approval": 1,
+    "allowed": "Operation",
+    "condition": null,
+    "next_state": "Approved by Ops Team",
+    "parent": "Requisition Workflow",
+    "parentfield": "transitions",
+    "parenttype": "Workflow",
+    "state": "Pending"
+   },
+   {
+    "action": "Reject",
+    "allow_self_approval": 1,
+    "allowed": "Operation",
+    "condition": null,
+    "next_state": "Rejected by Ops Team",
+    "parent": "Requisition Workflow",
+    "parentfield": "transitions",
+    "parenttype": "Workflow",
+    "state": "Pending"
+   }
+  ],
+  "workflow_name": "Requisition Workflow",
+  "workflow_state_field": "workflow_state"
+ }
+]

@@ -1,0 +1,39 @@
+{
+ "charts": [],
+ "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Channel Manager</span>\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Channel Manager's Dashboard\",\"col\":3}}]",
+ "creation": "2023-10-15 11:29:18.616970",
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "project-1",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Channel Manager",
+ "links": [],
+ "modified": "2023-10-30 08:05:24.606605",
+ "modified_by": "munim@invento.com.bd",
+ "module": "Field Force",
+ "name": "Channel Manager",
+ "number_cards": [],
+ "owner": "munim@invento.com.bd",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "System Manager"
+  }
+ ],
+ "sequence_id": 3.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Channel Manager's Dashboard",
+   "link_to": "Channel Manager's Dashboard",
+   "type": "Dashboard"
+  }
+ ],
+ "title": "Channel Manager"
+}
