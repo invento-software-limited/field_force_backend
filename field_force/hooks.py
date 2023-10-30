@@ -175,6 +175,13 @@ scheduler_events = {
 # 	]
 }
 
+fixtures = [
+    "Workflow State",
+    "Workflow",
+    "Workflow Action Master",
+    "Notification"
+]
+
 # Testing
 # -------
 

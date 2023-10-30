@@ -424,9 +424,9 @@ def create_sales_order_on_submit(requisition):
                 "item_code": item.item_code,
                 "item_name": item.item_name,
                 "brand": item.brand,
-                "qty": item.qty,
+                "qty": item.accepted_qty if item.accepted_qty else item.qty,
                 "rate": item.rate,
-                "amount": item.amount
+                "amount": (item.rate * item.accepted_qty) if item.accepted_qty else (item.rate * item.qty)
             })
 
         sales_order.insert()
