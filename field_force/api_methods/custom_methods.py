@@ -29,6 +29,7 @@ def get_customer_list(doctype):
     else:
         filters = [['customer_group', 'in', ['Retail Shop', 'MT']]]
 
+    filters.append(['disabled', '=', 0])
     frappe.local.form_dict['filters'] = filters
     customers = frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
     frappe.local.response.total_items = len(customers)
