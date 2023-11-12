@@ -1,0 +1,41 @@
+{
+ "content": null,
+ "creation": "2023-11-12 09:50:06.368023",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2023-11-12 12:26:13.038369",
+ "modified_by": "Administrator",
+ "module": "Field Force",
+ "name": "requisition-report",
+ "owner": "Administrator",
+ "page_name": "requisition-report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Channel Manager"
+  },
+  {
+   "role": "Manager"
+  },
+  {
+   "role": "Supervisor"
+  },
+  {
+   "role": "Sales Representative"
+  },
+  {
+   "role": "Merchandiser"
+  },
+  {
+   "role": "App User"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Requisition Report"
+}
