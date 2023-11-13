@@ -43,7 +43,7 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 				fieldname: 'from_date',
 				label: __('From Date'),
 				fieldtype: 'Date',
-				default: frappe.datetime.get_today(),
+				default: frappe.datetime.add_days(frappe.datetime.get_today(), -30),
 				change: () => this.fetch_and_render()
 			},
 			{
@@ -204,9 +204,6 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 		let statusFieldID = response.docname + '_status';
 		document.getElementById(response.docname).innerHTML = response.action;
 		document.getElementById(statusFieldID).innerHTML = response.status;
-
-		const OOj = new RequisitionReport();
-		return OOj
 	  });
   }
   
