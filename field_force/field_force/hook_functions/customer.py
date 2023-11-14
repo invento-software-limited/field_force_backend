@@ -6,6 +6,7 @@ def validate(self, method):
     set_customer_group(self, method)
     set_sales_person_and_employee(self, method)
     generate_customer_id(self, method)
+    set_department(self, method)
 
 def after_insert(self, method):
     create_distributor(self, method)
@@ -38,6 +39,14 @@ def generate_customer_id(self, method):
             self.customer_id = f"{customer_id}/{str(unique_code)}"
             self.customer_id_unique_code = unique_code
 
+def set_department(self, method):
+    try:
+        department = frappe.db.get_value("User", self.owner, 'department')
+
+        if department:
+            self.department = department
+    except:
+        pass
 
 def after_rename(new_doc, method, old_name, merge=False, ignore_permissions=False):
     doctype = "Distributor"
