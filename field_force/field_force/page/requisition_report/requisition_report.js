@@ -1,4 +1,5 @@
 frappe.pages['requisition-report'].on_page_load = function (wrapper) {
+
 	var page = frappe.ui.make_app_page({
 	  parent: wrapper,
 	  title: 'Requisition Report',
@@ -6,6 +7,8 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 	})
   
 	set_background_color();
+
+	
   
 	new RequisitionReport(page)
   }
@@ -99,16 +102,38 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 		body: this.page.body
 	  });
 	  this.form.make();
+	  this.fetch_and_render()
 	}
 	fetch_and_render = (refresh=false) => {
-	  let filters= this.form.get_values();
-  
+	  	let filters= this.form.get_values();
+
+
+    let data = window.location.search;
+    if (data && !filters.status){
+		function getParameterValue(url, parameterName) {
+			const urlParams = new URLSearchParams(url);
+			return urlParams.get(parameterName);
+		}
+		let workflowStateValue = getParameterValue(data, 'workflow_state');
+		let decodedValue = decodeURIComponent(workflowStateValue);
+		filters['status'] = decodedValue
+		// filters.status.setInput = decodedValue
+		// this.form.fields[9]['default'] = decodedValue
+		// console.log(this.form.fields_list[5]);
+		// this.form.fields_list[5].value = decodedValue;
+
+		// console.log(this.form.fields[9].set_input(decodedValue))
+		
+    }
+
+
+
 	  // to prevent the duplicate call
 	  if (refresh === false && JSON.stringify(this.filters) === JSON.stringify(filters)){
 		return;
 	  }
 	  this.filters = this.form.get_values();
-  
+
 	  if (!filters.from_date) {
 		this.form.get_field('preview').html('');
 		return;
@@ -197,6 +222,7 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 	}
   }
   
+//   amjad kalir bazar life general hospital
   function play_action(action) {
 	frappe.xcall("field_force.field_force.page.requisition_report.requisition_report.play_action",
 		{action: action}
