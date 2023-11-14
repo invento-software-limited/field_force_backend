@@ -56,6 +56,10 @@ frappe.ui.form.on('Requisition', {
 		else {
 			frm.set_df_property("requisition_excel", "hidden", false);
 		}
+
+    // if (frappe.user.has_role("Operation")){
+    frm.set_df_property("expected_delivery_date", "read_only", false);
+    // }
 	},
 	refresh: function (frm){
     check_role(frm);

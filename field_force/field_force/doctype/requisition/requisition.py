@@ -23,7 +23,7 @@ class Requisition(Document):
         self.set_partner_group()
         self.set_brand_and_image_to_requisition_items()
         self.validate_delivery_date()
-        self.validate_po_number()
+        # self.validate_po_number()
         self.validate_items()
 
     def before_save(self):
