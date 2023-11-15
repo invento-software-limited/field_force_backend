@@ -87,8 +87,15 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 
 				fieldname: 'status',
 				label: __('Status'),
-				fieldtype: 'Select',
-				options: "\nPending for Ops Team\nPending for Customer\nApproved\nRejected by Customer\nRejected by Ops Team\nCancelled",
+				fieldtype: 'Link',
+				options: "Workflow State",
+				"get_query": () => {
+					return {
+						filters: {
+							"name": ["in" , ["Pending for Ops Team","Pending for Customer","Approved","Rejected by Customer","Rejected by Ops Team","Cancelled"]]
+						}
+					}
+				},
 				change: () => this.fetch_and_render()
 			},
 		  {
@@ -109,21 +116,19 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 
 
     let data = window.location.search;
-    if (data && !filters.status){
-		function getParameterValue(url, parameterName) {
-			const urlParams = new URLSearchParams(url);
-			return urlParams.get(parameterName);
-		}
-		let workflowStateValue = getParameterValue(data, 'workflow_state');
-		let decodedValue = decodeURIComponent(workflowStateValue);
-		filters['status'] = decodedValue
-		// filters.status.setInput = decodedValue
-		// this.form.fields[9]['default'] = decodedValue
-		// console.log(this.form.fields_list[5]);
-		// this.form.fields_list[5].value = decodedValue;
+    if (!filters.status){
+		if (data) {
+			function getParameterValue(url, parameterName) {
+				const urlParams = new URLSearchParams(url);
+				return urlParams.get(parameterName);
+			}
+			let workflowStateValue = getParameterValue(data, 'workflow_state');
+			let decodedValue = decodeURIComponent(workflowStateValue);
+			filters['status'] = decodedValue
+			$('[data-fieldname="status"]').val(decodedValue)
+			window.history.replaceState({}, document.title, window.location.pathname);
 
-		// console.log(this.form.fields[9].set_input(decodedValue))
-		
+		}
     }
 
 
