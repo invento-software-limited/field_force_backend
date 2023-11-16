@@ -13,7 +13,7 @@ def get_data(filters):
     condition = get_conditions(filters)
     
     query = frappe.db.sql("""select dt.name as id, dt.driver_name, dt.driver, dt.territory, date(dt.departure_time) as departure_date,
-                          			time(dt.departure_time) as departure_time, dt.status, ds.customer, ds.grand_total, ds.address, ds.total_qty
+                          			time(dt.departure_time) as departure_time, ds.status, ds.customer, ds.grand_total, ds.address, ds.total_qty
                              			from `tabDelivery Stop` as ds left join `tabDelivery Trip` as dt on dt.name = ds.parent 
                                 			where dt.name is not null {}""".format(condition),as_dict=1)
     return query
@@ -23,15 +23,15 @@ def get_conditions(filters):
 	if not filters: filters = {}
 	conditions = ""
 	if filters.get("departure_date"):
-		conditions += " and dt.departure_time = '{}'".format(filters.get("departure_date"))
+		conditions += " and date(dt.departure_time) = '{}'".format(filters.get("departure_date"))
 	if filters.get("customer"):
-		conditions += " and ds.customer <= '{}'".format(filters.get("to_date"))
+		conditions += " and ds.customer = '{}'".format(filters.get("customer"))
 	if filters.get("territory"):
 		conditions += " and dt.territory = '{}'".format(filters.get("territory"))
 	if filters.get("driver"):
 		conditions += " and dt.driver = '{}'".format(filters.get("driver"))
 	if filters.get("status"):
-		conditions += " and dt.status = '{}'".format(filters.get("status"))
+		conditions += " and ds.status = '{}'".format(filters.get("status"))
 	return conditions
 
 
