@@ -18,12 +18,14 @@
   "order_type",
   "skip_delivery_note",
   "status",
+  "delivery_status",
   "column_break_9",
   "amended_from",
   "company",
   "transaction_date",
   "delivery_date",
   "expected_delivery_date",
+  "expire_date",
   "po_no",
   "po_date",
   "customer_po_file",
@@ -56,6 +58,12 @@
   "section_break_p9q6w",
   "items",
   "section_break_36",
+  "export_format",
+  "custom_export_for_netsuite",
+  "column_break_b2e8y",
+  "custom_export_for_samoha",
+  "import_from_samoha",
+  "section_break_e8gb1",
   "total_items",
   "total_qty",
   "requisition_excel",
@@ -63,6 +71,7 @@
   "purchase_order_file",
   "base_total",
   "base_net_total",
+  "note",
   "column_break_40",
   "total_net_weight",
   "total",
@@ -667,16 +676,60 @@
   },
   {
    "fieldname": "expected_delivery_date",
-   "fieldtype": "Data",
-   "label": "Expected (for Operation)",
-   "read_only_depends_on": "eval: !(frappe.user.has_role(\"Operation\"));"
+   "fieldtype": "Date",
+   "label": "Expected Delivery Date (for Ops)"
+  },
+  {
+   "fieldname": "expire_date",
+   "fieldtype": "Date",
+   "label": "Expire Date"
+  },
+  {
+   "fieldname": "delivery_status",
+   "fieldtype": "Select",
+   "label": "Delivery Status",
+   "options": "\nScheduled\nShipped\nCompleted\nPartially Completed\nCanelled"
+  },
+  {
+   "fieldname": "export_format",
+   "fieldtype": "Attach",
+   "hidden": 1,
+   "label": "Export Format"
+  },
+  {
+   "fieldname": "custom_export_for_netsuite",
+   "fieldtype": "Button",
+   "label": "Export Accepted Qty (NetSuite)"
+  },
+  {
+   "fieldname": "column_break_b2e8y",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "custom_export_for_samoha",
+   "fieldtype": "Button",
+   "label": "Export Requested Qty (Samoha)"
+  },
+  {
+   "fieldname": "import_from_samoha",
+   "fieldtype": "Attach",
+   "label": "Import from Samoha"
+  },
+  {
+   "fieldname": "section_break_e8gb1",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2023-11-14 15:51:31.212691",
+ "modified": "2023-11-19 18:10:50.471496",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",

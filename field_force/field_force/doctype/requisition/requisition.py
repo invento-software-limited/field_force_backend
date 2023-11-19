@@ -116,6 +116,7 @@ class Requisition(Document):
                 if not item.price_list_rate:
                     item.price_list_rate = frappe.db.get_value("Item Price", {"item_code": item.item_code,
                                                                               "selling": 1}, ["price_list_rate"])
+
                 if not item.price_list_rate and not item.rate:
                     frappe.throw(f"There is no selling rate of item <b>{item.item_name}</b>")
 
@@ -130,6 +131,9 @@ class Requisition(Document):
 
                     item.amount = item.qty * item.rate
                     total += float(item.amount)
+
+                if item.accepted_qty:
+                    item.accepted_amount = item.accepted_qty * item.rate
 
                 total_items += 1
                 total_qty += int(item.qty)
