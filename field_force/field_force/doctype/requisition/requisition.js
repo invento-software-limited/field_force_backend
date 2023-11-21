@@ -62,7 +62,7 @@ frappe.ui.form.on('Requisition', {
     // }
 	},
 	refresh: function (frm){
-    check_role(frm);
+    // check_role(frm);
 
 		frm.fields_dict['items'].grid.get_field('item_code').get_query = function(doc, cdt, cdn) {
 			let item = locals[cdt][cdn];
