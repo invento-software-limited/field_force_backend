@@ -137,7 +137,7 @@ class Requisition(Document):
 
                 total_items += 1
                 total_qty += int(item.qty)
-                self.validate_accepted_qty(item)
+                # self.validate_accepted_qty(item)
         else:
             frappe.throw("Items are required")
 

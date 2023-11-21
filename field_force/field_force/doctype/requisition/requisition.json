@@ -247,7 +247,8 @@
   {
    "fieldname": "expected_delivery_date",
    "fieldtype": "Date",
-   "label": "Expected Delivery Date (for Ops)"
+   "label": "Expected Delivery Date (for Ops)",
+   "read_only_depends_on": "eval: doc.workflow_state != \"Pending for Ops Team\" || !frappe.user.has_role(\"Operation\");"
   },
   {
    "fieldname": "expire_date",
@@ -260,19 +261,22 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "PO Number"
+   "label": "PO Number",
+   "mandatory_depends_on": "eval: doc.workflow_state == \"Pending for Customer\";"
   },
   {
-   "depends_on": "eval: doc.po_no && doc.workflow_state == \"Pending for Customer\";",
+   "depends_on": "eval: doc.po_no;",
    "fieldname": "po_date",
    "fieldtype": "Date",
    "label": "PO Date"
   },
   {
-   "depends_on": "eval: doc.po_no && doc.workflow_state == \"Pending for Customer\";",
+   "depends_on": "eval: doc.po_no;",
    "fieldname": "customer_po_file",
    "fieldtype": "Attach",
-   "label": "Po File"
+   "label": "Po File",
+   "mandatory_depends_on": "eval: doc.workflow_state == \"Pending for Customer\";",
+   "read_only_depends_on": "eval: !(doc.workflow_state == \"Pending for Customer\") && !(frappe.user.has_role(\"Customer\");"
   },
   {
    "fieldname": "tax_id",
@@ -737,7 +741,7 @@
  "is_submittable": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2023-11-20 18:02:46.137516",
+ "modified": "2023-11-21 12:49:12.323827",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",
