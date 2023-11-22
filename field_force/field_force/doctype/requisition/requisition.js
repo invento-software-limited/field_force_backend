@@ -62,10 +62,7 @@ frappe.ui.form.on('Requisition', {
     // }
 	},
 	refresh: function (frm){
-    check_role(frm);
-    // frm.set_df_property("expected_delivery_date", "read_only", false);
-    apply_field_access(frm, ['customer'])
-
+    // check_role(frm);
 
 		frm.fields_dict['items'].grid.get_field('item_code').get_query = function(doc, cdt, cdn) {
 			let item = locals[cdt][cdn];
@@ -189,13 +186,6 @@ frappe.ui.form.on('Requisition', {
     },
 
 });
-
-
-function apply_field_access(frm, fields){
-  for (let field in frm.doc){
-    frm.set_df_property(field, 'read_only', true);
-  }
-}
 
 function is_sales_person_exists(frm) {
 	var exists = false;

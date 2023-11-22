@@ -110,7 +110,7 @@ def get_store_visit_assigns_list(doctype):
 def get_territories(doctype):
     sales_person_filters = {
         "user": frappe.session.user,
-        "territory": ["!=", None]
+        "territory": ["not in", ["", 'NULL']]
     }
 
     if frappe.db.exists("Sales Person", sales_person_filters):
@@ -121,7 +121,6 @@ def get_territories(doctype):
             lft, rgt = frappe.db.get_value("Territory", territory, ['lft', 'rgt'])
             territories = frappe.get_list("Territory", filters={'lft': ['>=', lft], 'rgt': ['<=', rgt]},
                                           fields=fields, order_by='lft')
-
             frappe.local.response.total_items = len(territories)
             return territories
 
