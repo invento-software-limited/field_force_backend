@@ -2,6 +2,7 @@ import frappe
 import json
 import datetime
 from frappe.utils import pretty_date, now, add_to_date
+from field_force.field_force.page.utils import generate_excel_and_download, get_time_in_12_hour_format
 
 @frappe.whitelist()
 def execute(filters=None):
@@ -20,11 +21,13 @@ def get_absolute_data(filters, export=False):
         requisition['delivery_date'] = frappe.format(requisition.delivery_date, 'Date')
         requisition['expected_delivery_date'] = frappe.format(requisition.expected_delivery_date, 'Date')
         requisition['pretty_date'] = custom_pretty_date(requisition.modified)
+        requisition['difference'] = requisition.get("total_qty") - requisition.get("total_accepted_qty")
 
         if not export:
             set_link_to_doc(requisition, 'name', 'requisition', color='#006433')
             set_link_to_doc(requisition, 'customer', 'customer', color='dodgerblue')
             set_link_to_doc(requisition, 'territory', 'territory', color='teal')
+            set_link_to_doc(requisition, 'department', 'department', color='slateblue')
             requisition['print'] = get_pdf_button("Requisition", requisition['docname'])
 
         else:
@@ -38,6 +41,8 @@ def get_conditions(filters):
     customer = filters.get('customer')
     status = filters.get('status')
     territory = filters.get('territory')
+    department = filters.get('department')
+    partner_group = filters.get('partner_group')
 
     conditions = {}
 
@@ -49,6 +54,10 @@ def get_conditions(filters):
         conditions['workflow_state'] = status
     if territory:
         conditions['territory'] = territory
+    if department:
+        conditions['department'] = department
+    if partner_group:
+        conditions['partner_group'] = partner_group
 
     # return " and ".join(conditions)
     return conditions
@@ -63,7 +72,7 @@ def get_query_data(filters):
 
 
     fields = ['name', 'modified','owner','grand_total','transaction_date', 'customer', 'delivery_date','expected_delivery_date',
-              'workflow_state', 'territory','total_qty','total_items']
+              'workflow_state', 'territory','total_qty','total_items','total_accepted_qty','department']
 
     query_result = frappe.get_list("Requisition", filters=conditions, fields=fields,
                                   order_by='modified desc', page_length=100)
@@ -71,16 +80,19 @@ def get_query_data(filters):
 
 def get_columns():
     columns =  [
-        {'fieldname': 'date', 'label': 'Date',"fieldtype":"Date", 'expwidth': 15, 'width': 120},
-        {'fieldname': 'name', 'label': 'ID',"fieldtype":"Link","options" : "Requisition",'expwidth': 15, 'width': 140},
+        {'fieldname': 'date', 'label': 'Date',"fieldtype":"Date", 'expwidth': 15, 'width': 100},
+        {'fieldname': 'name', 'label': 'ID',"fieldtype":"Link","options" : "Requisition",'expwidth': 15, 'width': 120},
         {'fieldname': 'customer', 'label': 'Customer',"fieldtype":"Link","options" : "Customer",'expwidth': 15, 'width': 180},
         {'fieldname': 'territory', 'label': 'Territory', 'expwidth': 13, 'width': 140},
-        {'fieldname': 'delivery_date', 'label': 'Req Delivery',"fieldtype":"Date", 'expwidth': 13, 'width': 160, 'editable': False},
-        {'fieldname': 'expected_delivery_date', 'label': 'Expt Delivery',"fieldtype":"Date", 'expwidth': 15, 'width': 160},
+        {'fieldname': 'department', 'label': 'Department', 'expwidth': 13, 'width': 100},
+        {'fieldname': 'delivery_date', 'label': 'Req Delivery',"fieldtype":"Date", 'expwidth': 13, 'width': 100, 'editable': False},
+        {'fieldname': 'expected_delivery_date', 'label': 'Expt Delivery',"fieldtype":"Date", 'expwidth': 15, 'width': 100},
         {'fieldname': 'status', 'label': 'Status', 'fieldtype': 'Data', 'expwidth': 15, 'width': 140},
-        {'fieldname': 'total_items', 'label': 'Items', 'fieldtype': 'Data', 'width':60, 'export': False},
-        {'fieldname': 'total_qty', 'label': 'Qty', 'fieldtype': 'Data', 'width':60, 'export': False},
-        {'fieldname': 'action', 'label': 'Action', 'fieldtype': 'Button', 'width':50, 'export': False},
+        {'fieldname': 'total_items', 'label': 'Items', 'fieldtype': 'Data', 'width':60},
+        {'fieldname': 'total_qty', 'label': 'Reqst Qty', 'fieldtype': 'Data', 'width':80},
+        {'fieldname': 'total_accepted_qty', 'label': 'Acpt Qty', 'fieldtype': 'Data', 'width':80},
+        {'fieldname': 'difference', 'label': 'Diff Qty', 'fieldtype': 'Data', 'width':80},
+        {'fieldname': 'action', 'label': 'Action', 'fieldtype': 'Button', 'width':40, 'export': False},
         {'fieldname': 'print', 'label': 'Print', 'fieldtype': 'Button', 'width':50, 'export': False},
         {'fieldname': 'pretty_date', 'label': '', 'fieldtype': 'Data', 'width':50, 'export': False},
     ]
@@ -186,7 +198,7 @@ def set_link_to_doc(doc, field, doc_url='', label=None, color=None):
     style = f'style="color:{color};"' if color else ''
 
     doc[field] = f'''<a href="/app/{doc_url}/{doc[field]}" target="_blank" %s>
-                        {label or doc[field]}
+                        {label or doc[field] or ""}
                     </a>
                 ''' % style
     return doc[field]
@@ -221,3 +233,27 @@ def custom_pretty_date(date):
             return pretty_date_
     except:
         return ""
+    
+@frappe.whitelist()
+def export_file(**filters):
+    columns = get_columns()
+    data = get_export_data(filters)
+    file_name = 'Requisition_Report.xlsx'
+    generate_excel_and_download(columns, data, file_name, height=30)
+
+def get_export_data(filters):
+    query_result = get_absolute_data(filters, export=True)
+    return query_result
+
+@frappe.whitelist()
+def update_field(**kwargs):
+    docname = kwargs.get('docname')
+    fieldname = kwargs.get('fieldname')
+    value = kwargs.get('value')
+    leave_application = frappe.get_doc("Merchandising Picture", docname)
+
+    if leave_application.get(fieldname) != value:
+        leave_application.update({fieldname:value})
+        leave_application.save()
+
+    return True

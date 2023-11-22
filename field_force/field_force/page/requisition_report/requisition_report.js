@@ -32,6 +32,10 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 	  this.page.add_action_icon("refresh", () => {
 		this.fetch_and_render(true);
 	  }, "Refresh");
+
+	  this.page.add_menu_item("Export", () => {
+		this.export_excel()
+	  })
   
 	  // this.page.add_action_item("PDF", () => {
 		  // 	frappe.set_route('query-report', 'Employee Leave Balance Summary Report');
@@ -84,6 +88,16 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 				fieldtype: 'Column Break'
 			},
 			{
+				fieldname:"department",
+				label: __("Department"),
+				fieldtype: "Link",
+				options: "Department",
+				change: () => this.fetch_and_render(),
+			},
+			{
+				fieldtype: 'Column Break'
+			},
+			{
 
 				fieldname: 'status',
 				label: __('Status'),
@@ -98,13 +112,46 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 				},
 				change: () => this.fetch_and_render()
 			},
-		  {
-			fieldtype: 'Section Break'
-		  },
-		  {
-			fieldtype: 'HTML',
-			fieldname: 'preview'
-		  }
+			{
+				fieldtype: 'Section Break'
+			},
+			{
+				fieldname:"partner_group",
+				label: __("Partner Group"),
+				fieldtype: "Link",
+				options: "Partner Group",
+				change: () => this.fetch_and_render(),
+			},
+			{
+				fieldtype: 'Column Break'
+			},
+			{
+				fieldname: 'scrollable_view',
+				label: __('Scrollable View'),
+				fieldtype: 'Check',
+				default: 0,
+				change: () => this.fetch_and_render(),
+				hidden: false
+			},
+			{
+				fieldtype: 'Column Break'
+			},
+			{
+				fieldtype: 'Column Break'
+			},
+			{
+				fieldtype: 'Column Break'
+			},
+			{
+				fieldtype: 'Column Break'
+			},
+			{
+				fieldtype: 'Section Break'
+			},
+			{
+				fieldtype: 'HTML',
+				fieldname: 'preview'
+			}
 		],
 		body: this.page.body
 	  });
@@ -164,13 +211,23 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 	  let table_body = this.table_body(diff, fields);
 	  let scrollable_view = this.form.get_values()['scrollable_view']
   
-	  this.form.get_field('preview').html(
-		`<div>
-				<table class="table table-bordered" id="export_excel">
+	  if (scrollable_view === 1) {
+		this.form.get_field('preview').html(
+		  `<div style="width:100%; overflow-x:auto; margin-top: -15px;">
+			  <table class="table table-bordered" id="export_excel" style="width:160%">
 					${table_header}${table_body}
-				</table>
+			  </table>
+			</div>
+		  `);
+	  } else {
+		this.form.get_field('preview').html(
+		`<div>
+			  <table class="table table-bordered" id="export_excel">
+					${table_header}${table_body}
+			  </table>
 			</div>
 		`);
+	  }
 	  
 	}
 	table_header = (headers) => {

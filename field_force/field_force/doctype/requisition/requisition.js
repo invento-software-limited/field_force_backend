@@ -113,13 +113,25 @@ frappe.ui.form.on('Requisition', {
 			}
 		});
 	},
+	custom_export_for_samoha : function(frm) {
+
+		frappe.call({
+            method:"field_force.field_force.doctype.utils.generate_csv_and_attach_file",
+            args: {
+                requisition: frm.doc
+              },
+            callback: function(r) {
+			}
+        });
+
+	},
 	customer: function (frm){
 		if (frm.doc.customer) {
 			brand_commissions = get_brands_commissions(frm.doc.customer)
 		}
 	},
 
-  delivery_date: function(frm) {
+  	delivery_date: function(frm) {
 		$.each(frm.doc.items || [], function(i, d) {
 			if(!d.delivery_date) d.delivery_date = frm.doc.delivery_date;
 		});
@@ -141,7 +153,7 @@ frappe.ui.form.on('Requisition', {
 		let transaction_controller= new erpnext.TransactionController({frm:frm});
 		transaction_controller.scan_barcode();
 	},
-  po_file: function (frm){
+  	po_file: function (frm){
       if (!frm.doc.po_file){
         return
       }

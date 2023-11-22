@@ -33,8 +33,8 @@ class Requisition(Document):
         set_allocated_amount(self)
         # generate_requisition_excel_and_attach(self)
 
-    def before_submit(self):
-        generate_csv_and_attach_file(self)
+    # def before_submit(self):
+    #     generate_csv_and_attach_file(self)
         # generate_requisition_excel_and_attach(self)
 
     def on_submit(self):
@@ -388,6 +388,7 @@ def get_commissions_in_dict(commissions):
 
 import csv
 
+@frappe.whitelist()
 def generate_csv_and_attach_file(requisition):
     file_name = f"Requisition_{requisition.name}.csv"
     file_path = get_directory_path('requisition/')
