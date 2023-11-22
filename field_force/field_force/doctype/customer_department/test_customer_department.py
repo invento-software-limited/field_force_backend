@@ -1,0 +1,9 @@
+# Copyright (c) 2023, Invento Software Limited and Contributors
+# See license.txt
+
+# import frappe
+from frappe.tests.utils import FrappeTestCase
+
+
+class TestCustomerDepartment(FrappeTestCase):
+	pass
