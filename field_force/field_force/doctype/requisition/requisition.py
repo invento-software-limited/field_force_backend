@@ -266,8 +266,8 @@ def attach_file(requisition, file_path, file_name):
 
     file = frappe.get_doc({
         "doctype": "File",
-        "attached_to_doctype": requisition.doctype,
-        "attached_to_name": requisition.name,
+        "attached_to_doctype": requisition.get("doctype"),
+        "attached_to_name": requisition.get("name"),
         "attached_to_field": 'requisition_excel',
         "folder": 'Home/Attachments',
         "file_name": file_name,
@@ -387,10 +387,16 @@ def get_commissions_in_dict(commissions):
     return brand_wise_commission_dict
 
 import csv
+import json
 
 @frappe.whitelist()
 def generate_csv_and_attach_file(requisition):
-    file_name = f"Requisition_{requisition.name}.csv"
+    try:
+        requisition = json.loads(requisition)
+    except:
+        pass
+    
+    file_name = f"Requisition_{requisition.get('name')}.csv"
     file_path = get_directory_path('requisition/')
     absolute_path = file_path + file_name
 
@@ -402,17 +408,31 @@ def generate_csv_and_attach_file(requisition):
         # write the header
         writer.writerow(columns)
 
-        for item in requisition.items:
-            item_row_data = [item.product_id, item.item_name, item.uom, item.qty, item.rate, '', item.rate, item.amount]
+        for item in requisition.get("items"):
+            item_row_data = [item.get("product_id"), item.get("item_name"),
+                             item.get("uom"), item.get("qty"), item.get("rate"), '', item.get("rate"), item.get("amount")]
             # write the data
             writer.writerow(item_row_data)
 
 
     attach_file(requisition, absolute_path, file_name)
     file_url = absolute_path.split('public')[-1]
-    requisition.requisition_excel = file_url
-    requisition.requisition_excel_file = f'<a class="attached-file-link" href="{file_url}"' \
-                                         f' target="_blank">{file_name}</a>'
+    
+    return {
+        "url" : file_url,
+        "name" : file_name
+    }
+    
+@frappe.whitelist()
+def update_requisition_from_csv_file(file_url):
+    file_path = get_site_directory_path() + "/public/" + file_url
+    data = []
+    with open(file_path, 'r') as csvfile:
+        csvreader = csv.DictReader(csvfile)
+        for row in csvreader:
+            data.append(row)
+
+    return data
 
 def create_sales_order_on_submit(requisition):
     if requisition.create_sales_order_on_submit:
@@ -435,3 +455,8 @@ def create_sales_order_on_submit(requisition):
             })
 
         sales_order.insert()
+        
+def get_site_directory_path():
+    site_name = frappe.local.site
+    cur_dir = os.getcwd()
+    return os.path.join(cur_dir, site_name)

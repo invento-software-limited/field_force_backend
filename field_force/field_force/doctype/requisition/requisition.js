@@ -113,13 +113,41 @@ frappe.ui.form.on('Requisition', {
 	custom_export_for_samoha : function(frm) {
 
 		frappe.call({
-            method:"field_force.field_force.doctype.utils.generate_csv_and_attach_file",
+            method:"field_force.field_force.doctype.requisition.requisition.generate_csv_and_attach_file",
             args: {
                 requisition: frm.doc
               },
             callback: function(r) {
+				if (r.message.url && r.message.name) {
+					frm.set_value("requisition_excel","")
+					frm.set_value("requisition_excel_file","")
+					let link_file_link = `<a class="attached-file-link" href="${r.message.url}" target="_blank">${r.message.name}</a>`
+					frm.set_value("requisition_excel",r.message.url)
+					frm.set_value("requisition_excel_file",link_file_link)
+				}
 			}
         });
+	},
+	import_from_samoha : function(frm) {
+		if (frm.doc.import_from_samoha) {
+			frappe.call({
+				method:"field_force.field_force.doctype.requisition.requisition.update_requisition_from_csv_file",
+				args: {
+					file_url: frm.doc.import_from_samoha
+				  },
+				callback: function(r) {
+					frm.doc.items.forEach((y) => {
+						r.message.forEach((x) => {
+							if (x["Product #"] === y["product_id"]) {
+								y.accepted_qty = parseFloat(x["Quantity"])
+								y.rate = parseFloat(x["Unit Price"])
+							}
+						})
+					})
+				}
+			});
+			frm.refresh_field('items');
+		}
 
 	},
 	customer: function (frm){
