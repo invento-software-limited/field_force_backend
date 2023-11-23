@@ -80,6 +80,7 @@
   "total",
   "net_total",
   "grand_total",
+  "total_accepted_amount",
   "delivered_date",
   "delivered_amount",
   "taxes_and_charges_section",
@@ -113,6 +114,7 @@
    "in_standard_filter": 1,
    "label": "Partner Group",
    "options": "Partner Group",
+   "permlevel": 1,
    "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\")"
   },
   {
@@ -447,6 +449,7 @@
   {
    "fieldname": "po_file",
    "fieldtype": "Attach",
+   "hidden": 1,
    "label": "PO File"
   },
   {
@@ -472,6 +475,7 @@
    "label": "Export Format"
   },
   {
+   "depends_on": "eval: frappe.user.has_role(\"Operation\");",
    "fieldname": "custom_export_for_netsuite",
    "fieldtype": "Button",
    "label": "Export Accepted Qty (NetSuite)"
@@ -481,11 +485,13 @@
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval: frappe.user.has_role(\"Operation\");",
    "fieldname": "custom_export_for_samoha",
    "fieldtype": "Button",
    "label": "Export Requested Qty (Samoha)"
   },
   {
+   "depends_on": "eval: frappe.user.has_role(\"Operation\");",
    "fieldname": "import_from_samoha",
    "fieldtype": "Attach",
    "label": "Import from Samoha"
@@ -756,7 +762,7 @@
   {
    "fieldname": "total_accepted_qty",
    "fieldtype": "Float",
-   "label": "Total Accepted Qty",
+   "label": "Total Accepted Quantity",
    "precision": "1",
    "read_only": 1
   },
@@ -766,13 +772,20 @@
    "label": "Warehouse",
    "options": "Warehouse",
    "read_only_depends_on": "eval: !(frappe.user.has_role(\"Operation\"));"
+  },
+  {
+   "fieldname": "total_accepted_amount",
+   "fieldtype": "Currency",
+   "label": "Total Accepted Amount",
+   "precision": "2",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2023-11-22 15:08:49.250871",
+ "modified": "2023-11-23 16:28:25.927549",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",
