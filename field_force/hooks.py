@@ -31,7 +31,7 @@ custom_hooks.execute()
 # include js, css files in header of web form
 # webform_include_js = {"doctype": "public/js/doctype.js"}
 # webform_include_css = {"doctype": "public/css/doctype.css"}
-
+app_include_js = "field_force.bundle.js"
 # include js in page
 # page_js = {"page" : "public/js/file.js"}
 
@@ -39,7 +39,8 @@ custom_hooks.execute()
 doctype_js = {
 	"User" : "public/js/user.js",
 	"Sales Order" : "public/js/sales_order.js",
-	"Sales Person" : "public/js/sales_person.js"
+	"Sales Person" : "public/js/sales_person.js",
+	"Delivery Trip" : "public/js/delivery_trip.js"
 }
 
 doctype_list_js = {

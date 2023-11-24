@@ -4,6 +4,7 @@ import calendar
 import copy
 import os
 import random
+from frappe.model.mapper import get_mapped_doc
 
 from openpyxl.styles import Font, PatternFill, Alignment
 from openpyxl.utils import get_column_letter
@@ -469,3 +470,33 @@ def get_site_directory_path():
     site_name = frappe.local.site
     cur_dir = os.getcwd()
     return os.path.join(cur_dir, site_name)
+
+
+@frappe.whitelist()
+def make_delivery_trip(source_name, target_doc=None):
+    def update_stop_details(source_doc, target_doc, source_parent):
+        target_doc.customer = source_parent.customer
+        target_doc.address = source_parent.address
+        target_doc.grand_total = source_parent.grand_total
+
+        # Append unique Delivery Notes in Delivery Trip
+        requisition.append(target_doc.delivery_note)
+
+    requisition = []
+
+    doclist = get_mapped_doc(
+        "Requisition",
+        source_name,
+        {
+            "Requisition": {"doctype": "Delivery Trip", "validation": {"docstatus": ["=", 1]}},
+            "Requisition Item": {
+                "doctype": "Delivery Stop",
+                "field_map": {"parent": "requisition"},
+                "condition": lambda item: item.parent not in requisition,
+                "postprocess": update_stop_details,
+            },
+        },
+        target_doc,
+    )
+
+    return doclist
