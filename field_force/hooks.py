@@ -106,9 +106,9 @@ doctype_tree_js = {
 # ---------------
 # Override standard doctype classes
 
-# override_doctype_class = {
-# 	"ToDo": "custom_app.overrides.CustomToDo"
-# }
+override_doctype_class = {
+	"Delivery Trip": "field_force.field_force.hook_functions.delivery_trip.UpdateDeliveryTrip"
+}
 
 # Document Events
 # ---------------
