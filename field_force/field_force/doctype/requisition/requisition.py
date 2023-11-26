@@ -490,6 +490,7 @@ def get_site_directory_path():
 def make_delivery_trip(source_name, target_doc=None):
     def update_stop_details(source_doc, target_doc, source_parent):
         target_doc.customer = source_parent.customer
+        target_doc.requisition = source_parent.name
         target_doc.grand_total = source_parent.grand_total
 
         # Append unique Delivery Notes in Delivery Trip
