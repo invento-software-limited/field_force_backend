@@ -484,7 +484,8 @@ def make_delivery_trip(source_name, target_doc=None):
         target_doc.grand_total = source_parent.grand_total
 
         # Append unique Delivery Notes in Delivery Trip
-        requisition.append(target_doc.delivery_note)
+        requisition.append(target_doc.requisition)
+        
 
     requisition = []
 
