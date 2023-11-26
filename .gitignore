@@ -5,3 +5,5 @@
 tags
 field_force/docs/current
 field_force/api_methods/api_response_fields.json
+field_force/public/dist
+field_force/public/dist/*
