@@ -414,7 +414,7 @@ def generate_csv_and_attach_file(requisition):
                              item.get("uom"), item.get("qty"), item.get("rate"), '', item.get("rate"), item.get("amount")]
             # write the data
             writer.writerow(item_row_data)
-
+    import io
 
     attach_file(requisition, absolute_path, file_name)
     file_url = absolute_path.split('public')[-1]
@@ -423,6 +423,20 @@ def generate_csv_and_attach_file(requisition):
         "url" : file_url,
         "name" : file_name
     }
+
+@frappe.whitelist()
+def download_requisition_file(requisition_excel):
+    req = requisition_excel.split("/")[3]
+    if requisition_excel:
+        file_path = get_site_directory_path() + '/public' + requisition_excel
+        with open(file_path, "rb") as file:
+            frappe.local.response.filename = requisition_excel.split('/')[3]
+            frappe.local.response.filecontent = file.read()
+            frappe.local.response.type = "download"
+    else:
+        frappe.throw('Group file not found!')
+
+    return {}
     
 @frappe.whitelist()
 def update_requisition_from_csv_file(file_url):
@@ -466,7 +480,6 @@ def get_site_directory_path():
 def make_delivery_trip(source_name, target_doc=None):
     def update_stop_details(source_doc, target_doc, source_parent):
         target_doc.customer = source_parent.customer
-        target_doc.address = source_parent.address
         target_doc.grand_total = source_parent.grand_total
 
         # Append unique Delivery Notes in Delivery Trip

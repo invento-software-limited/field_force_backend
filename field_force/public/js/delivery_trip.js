@@ -24,6 +24,7 @@ frappe.ui.form.on('Delivery Trip', {
 		}
         setTimeout(() => {
             frm.remove_custom_button('Delivery Note','Get customers from');
+            frm.remove_custom_button('Delivery Notes','View');
         }, 10);
 	},
   })

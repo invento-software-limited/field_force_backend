@@ -111,7 +111,6 @@ frappe.ui.form.on('Requisition', {
 		});
 	},
 	custom_export_for_samoha : function(frm) {
-
 		frappe.call({
             method:"field_force.field_force.doctype.requisition.requisition.generate_csv_and_attach_file",
             args: {
@@ -128,6 +127,13 @@ frappe.ui.form.on('Requisition', {
 			}
         });
 	},
+	requisition_excel: function(frm) {
+		if (frm.doc.requisition_excel) {
+			var url = `/api/method/field_force.field_force.doctype.requisition.requisition.download_requisition_file`;
+			url = url + `?requisition_excel=${frm.doc.requisition_excel}`;
+			window.open(url, '_blank');
+		}
+	},
 	import_from_samoha : function(frm) {
 		if (frm.doc.import_from_samoha) {
 			frappe.call({
@@ -136,6 +142,8 @@ frappe.ui.form.on('Requisition', {
 					file_url: frm.doc.import_from_samoha
 				  },
 				callback: function(r) {
+					let items = ""
+					let mes = `Requisition ${items} are not in Imported Items` 
 					frm.doc.items.forEach((y) => {
 						r.message.forEach((x) => {
 							if (x["Product #"] === y["product_id"]) {
