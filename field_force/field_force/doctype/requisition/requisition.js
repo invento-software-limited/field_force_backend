@@ -142,25 +142,16 @@ frappe.ui.form.on('Requisition', {
 					file_url: frm.doc.import_from_samoha
 				  },
 				callback: function(r) {
-					if (r.message) {
-						frm.doc.items.forEach((y) => {
-							r.message.forEach((x) => {
-								if (x["Product #"] === y["product_id"]) {
-									y.accepted_qty = parseFloat(x["Quantity"])
-									y.rate = parseFloat(x["Unit Price"])
-								}
-							})
+					let items = ""
+					let mes = `Requisition ${items} are not in Imported Items` 
+					frm.doc.items.forEach((y) => {
+						r.message.forEach((x) => {
+							if (x["Product #"] === y["product_id"]) {
+								y.accepted_qty = parseFloat(x["Quantity"])
+								y.rate = parseFloat(x["Unit Price"])
+							}
 						})
-					}
-					// Extract item codes from vari1 and vari2
-					let itemCodesVari1 = frm.doc.items.map(item => item.product_id);
-					let itemCodesVari2 = r.message.map(item => item["Product #"]);
-
-					// Find item codes that are in vari1 but not in vari2
-					let missingItemCodes = itemCodesVari1.filter(code => !itemCodesVari2.includes(code));
-					let mes = `Imported Item ${missingItemCodes} are not in Requisition Items`
-					frappe.throw(mes)
-					
+					})
 				}
 			});
 			frm.refresh_field('items');
@@ -432,4 +423,3 @@ function set_item_values(frm, cdt, cdn, row, item){
 	frappe.model.set_value(cdt, cdn, "price_list_rate", item.price_list_rate);
 	frm.refresh_fields(cdt, cdn);
 }
-
