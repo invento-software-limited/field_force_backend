@@ -91,7 +91,7 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 				fieldname:"department",
 				label: __("Department"),
 				fieldtype: "Link",
-				options: "Department",
+				options: "Customer Department",
 				change: () => this.fetch_and_render(),
 			},
 			{
