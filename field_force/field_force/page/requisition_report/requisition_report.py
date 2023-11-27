@@ -92,7 +92,7 @@ def get_columns():
         {'fieldname': 'total_qty', 'label': 'Reqst Qty', 'fieldtype': 'Data', 'width':80},
         {'fieldname': 'total_accepted_qty', 'label': 'Acpt Qty', 'fieldtype': 'Data', 'width':80},
         {'fieldname': 'difference', 'label': 'Diff Qty', 'fieldtype': 'Data', 'width':80},
-        {'fieldname': 'action', 'label': 'Action', 'fieldtype': 'Button', 'width':40, 'export': False},
+        {'fieldname': 'action', 'label': 'View', 'fieldtype': 'Button', 'width':40, 'export': False},
         {'fieldname': 'print', 'label': 'Print', 'fieldtype': 'Button', 'width':50, 'export': False},
         {'fieldname': 'pretty_date', 'label': '', 'fieldtype': 'Data', 'width':50, 'export': False},
     ]
@@ -100,31 +100,33 @@ def get_columns():
 def get_appropiate_action_button(requisition):
     user_roles = frappe.get_roles(frappe.session.user)
     owner = requisition.get("owner")
-    action = ''
-    if requisition.get("workflow_state") == "Pending for Ops Team" and "Operation" in user_roles:
-        action = f'''<div id="{requisition.get("name")}">
-                        <button id="{requisition.get("name")}_Approve" class="btn btn-primary btn-sm" onclick="play_action(this.id)"
-                            style="width:66px;">Approve</button><br>
-                        <button id="{requisition.get("name")}_Reject" class="btn btn-danger btn-sm" onclick="play_action(this.id)"
-                            style="width:66px; margin-top:5px;">Reject</button>
-                    </div>
-                '''
-    elif requisition.get("workflow_state") == "Pending for Customer" and "Customer" in user_roles and frappe.session.user == owner:
-        action = f'''<div id="{requisition.get("name")}">
-                        <button id="{requisition.get("name")}_Approve" class="btn btn-primary btn-sm" onclick="play_action(this.id)"
-                            style="width:66px;">Approve</button><br>
-                        <button id="{requisition.get("name")}_Reject" class="btn btn-danger btn-sm" onclick="play_action(this.id)"
-                            style="width:66px; margin-top:5px;">Reject</button>
-                    </div>
-                '''
-    elif requisition.workflow_state == "Approved" and \
-        frappe.has_permission("Requisition", "cancel", requisition.name):
+    action = f'''<a href="/app/requisition/{requisition.get("name")} "id="{requisition.get("name")}_Approve" class="btn btn-success btn-sm" 
+                            style="width:66px;">View</a><br>'''
+                            
+    # if requisition.get("workflow_state") == "Pending for Ops Team" and "Operation" in user_roles:
+    #     action = f'''<div id="{requisition.get("name")}">
+    #                     <button id="{requisition.get("name")}_Approve" class="btn btn-primary btn-sm" onclick="play_action(this.id)"
+    #                         style="width:66px;">Approve</button><br>
+    #                     <button id="{requisition.get("name")}_Reject" class="btn btn-danger btn-sm" onclick="play_action(this.id)"
+    #                         style="width:66px; margin-top:5px;">Reject</button>
+    #                 </div>
+    #             '''
+    # elif requisition.get("workflow_state") == "Pending for Customer" and "Customer" in user_roles and frappe.session.user == owner:
+    #     action = f'''<div id="{requisition.get("name")}">
+    #                     <button id="{requisition.get("name")}_Approve" class="btn btn-primary btn-sm" onclick="play_action(this.id)"
+    #                         style="width:66px;">Approve</button><br>
+    #                     <button id="{requisition.get("name")}_Reject" class="btn btn-danger btn-sm" onclick="play_action(this.id)"
+    #                         style="width:66px; margin-top:5px;">Reject</button>
+    #                 </div>
+    #             '''
+    # elif requisition.workflow_state == "Approved" and \
+    #     frappe.has_permission("Requisition", "cancel", requisition.name):
 
-        action = f'''<div id="{requisition.get("name")}">
-                        <button id="{requisition.get("name")}_Cancel" class="btn btn-danger btn-sm" onclick="play_action(this.id)"
-                            style="width: 66px;">Cancel</button>
-                    </div>
-                '''
+    #     action = f'''<div id="{requisition.get("name")}">
+    #                     <button id="{requisition.get("name")}_Cancel" class="btn btn-danger btn-sm" onclick="play_action(this.id)"
+    #                         style="width: 66px;">Cancel</button>
+    #                 </div>
+    #             '''
     return action
 
 @frappe.whitelist()
