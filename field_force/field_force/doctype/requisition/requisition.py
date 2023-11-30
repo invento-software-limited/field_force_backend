@@ -104,6 +104,8 @@ class Requisition(Document):
         commission_brand_dict = get_brands_commission(self.customer)
         total_items = 0
         total_qty = 0
+        total_accepted_qty = 0
+        total_accepted_amount = 0
         total = 0
 
         if self.items:
@@ -135,9 +137,12 @@ class Requisition(Document):
 
                 if item.accepted_qty:
                     item.accepted_amount = item.accepted_qty * item.rate
+                    total_accepted_qty += float(item.accepted_qty)
+                    total_accepted_amount += float(item.accepted_amount)
 
                 total_items += 1
                 total_qty += int(item.qty)
+
                 # self.validate_accepted_qty(item)
         else:
             frappe.throw("Items are required")
@@ -150,6 +155,10 @@ class Requisition(Document):
         if total_items and total_qty:
             self.total_qty = total_qty
             self.total_items = total_items
+
+        if total_accepted_qty:
+            self.total_accepted_qty = total_accepted_qty
+            self.total_accepted_amount = total_accepted_amount
 
     def validate_accepted_qty(self, item):
         if not item.accepted_qty:
@@ -396,7 +405,7 @@ def generate_csv_and_attach_file(requisition):
         requisition = json.loads(requisition)
     except:
         pass
-    
+
     file_name = f"Requisition_{requisition.get('name')}.csv"
     file_path = get_directory_path('requisition/')
     absolute_path = file_path + file_name
@@ -418,7 +427,7 @@ def generate_csv_and_attach_file(requisition):
 
     attach_file(requisition, absolute_path, file_name)
     file_url = absolute_path.split('public')[-1]
-    
+
     return {
         "url" : file_url,
         "name" : file_name
@@ -437,7 +446,7 @@ def download_requisition_file(requisition_excel):
         frappe.throw('Group file not found!')
 
     return {}
-    
+
 @frappe.whitelist()
 def update_requisition_from_csv_file(file_url):
     file_path = get_site_directory_path() + "/public/" + file_url
@@ -470,11 +479,12 @@ def create_sales_order_on_submit(requisition):
             })
 
         sales_order.insert()
-        
+
 def get_site_directory_path():
     site_name = frappe.local.site
     cur_dir = os.getcwd()
     return os.path.join(cur_dir, site_name)
+
 
 @frappe.whitelist()
 def make_delivery_trip(source_name, target_doc=None):
@@ -503,5 +513,5 @@ def make_delivery_trip(source_name, target_doc=None):
         },
         target_doc,
     )
-    
+
     return doclist

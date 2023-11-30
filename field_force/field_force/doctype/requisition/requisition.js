@@ -125,7 +125,7 @@ frappe.ui.form.on('Requisition', {
 					frm.set_value("requisition_excel_file",link_file_link)
 				}
 			}
-        });
+    });
 	},
 	requisition_excel: function(frm) {
 		if (frm.doc.requisition_excel) {
@@ -156,7 +156,6 @@ frappe.ui.form.on('Requisition', {
 			});
 			frm.refresh_field('items');
 		}
-
 	},
 	customer: function (frm){
 		if (frm.doc.customer) {
@@ -172,14 +171,14 @@ frappe.ui.form.on('Requisition', {
 	},
 	sales_person: function (frm){
 		if (!is_sales_person_exists(frm) && frm.doc.sales_person !==""){
-            frm.add_child('sales_team', {
-                sales_person: frm.doc.sales_person,
-                allocated_percentage: 100,
-                employee: frm.doc.employee,
-                user: frm.doc.user,
-            });
-            frm.refresh_fields("sales_team");
-        }
+        frm.add_child('sales_team', {
+            sales_person: frm.doc.sales_person,
+            allocated_percentage: 100,
+            employee: frm.doc.employee,
+            user: frm.doc.user,
+        });
+        frm.refresh_fields("sales_team");
+      }
     },
 
 	scan_barcode: function(frm) {
@@ -281,7 +280,9 @@ frappe.ui.form.on("Requisition Item", {
 
 		if (row.item_code !== '' && row.item_code !== null
 			&& row.item_code !== undefined && row.item_code !== item_data[item_str]){
-			get_and_set_item_details(frm, cdt,cdn, row);
+      if (frm.doc.department_type === "Internal"){
+        get_and_set_item_details(frm, cdt,cdn, row);
+      }
 		}
 	},
 	price_list_rate: function (frm, cdt, cdn){

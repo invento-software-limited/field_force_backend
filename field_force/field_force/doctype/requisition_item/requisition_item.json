@@ -26,14 +26,14 @@
   "discount_amount",
   "stock_uom",
   "picked_qty",
-  "col_break2",
   "qty",
-  "accepted_qty",
-  "delivered_qty",
-  "rate",
-  "accepted_amount",
-  "delivered_amount",
   "amount",
+  "col_break2",
+  "rate",
+  "accepted_qty",
+  "accepted_amount",
+  "delivered_qty",
+  "delivered_amount",
   "conversion_factor",
   "stock_qty",
   "section_break_16",
@@ -267,6 +267,7 @@
    "collapsible": 1,
    "fieldname": "discount_and_margin",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Discount and Margin"
   },
   {
@@ -302,6 +303,7 @@
    "depends_on": "price_list_rate",
    "fieldname": "discount_percentage",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "Discount (%)",
    "oldfieldname": "adj_rate",
    "oldfieldtype": "Float",
@@ -314,6 +316,7 @@
    "depends_on": "price_list_rate",
    "fieldname": "discount_amount",
    "fieldtype": "Currency",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Discount Amount",
    "options": "currency"
@@ -494,7 +497,7 @@
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Accepted Quantity",
-   "read_only_depends_on": "eval: doc.workflow_state != \"Pending for Ops Team\" || !frappe.user.has_role(\"Operation\");"
+   "read_only_depends_on": "eval: doc.workflow_state != \"Pending for Ops Team\" && !(frappe.user.has_role(\"Operation\"));"
   },
   {
    "fetch_from": "item_code.product_id",
@@ -509,6 +512,7 @@
    "allow_on_submit": 1,
    "fieldname": "delivered_qty",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "Delivered Quantity",
    "permlevel": 1,
    "precision": "1"
@@ -517,18 +521,18 @@
    "fieldname": "accepted_amount",
    "fieldtype": "Currency",
    "label": "Accepted Amount",
-   "read_only": 1
+   "read_only_depends_on": "eval: doc.workflow_state == \"Pending for Ops Team\" || !(frappe.user.has_role(\"Operation\"));"
   },
   {
    "fieldname": "delivered_amount",
    "fieldtype": "Data",
-   "label": "Delivered Amount",
-   "read_only": 1
+   "hidden": 1,
+   "label": "Delivered Amount"
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2023-11-21 10:44:29.949604",
+ "modified": "2023-11-23 16:15:03.808006",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition Item",
