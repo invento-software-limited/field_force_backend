@@ -34,6 +34,10 @@ class Requisition(Document):
         set_allocated_amount(self)
         # generate_requisition_excel_and_attach(self)
 
+        if self.is_new():
+            print("=================>>", self)
+            self.customer_requisition_time = frappe.utils.now()
+
     # def before_submit(self):
     #     generate_csv_and_attach_file(self)
         # generate_requisition_excel_and_attach(self)
@@ -495,7 +499,7 @@ def make_delivery_trip(source_name, target_doc=None):
 
         # Append unique Delivery Notes in Delivery Trip
         requisition.append(target_doc.requisition)
-        
+
 
     requisition = []
 
@@ -515,3 +519,19 @@ def make_delivery_trip(source_name, target_doc=None):
     )
 
     return doclist
+
+@frappe.whitelist()
+def set_datetime_by_workflow_state(docname, state):
+    workflow_states_datetime_fields = {
+        "Pending for Ops Team": "customer_requisition_time",
+        "Rejected by Ops Team": "ops_team_rejection_time",
+        "Pending for Customer": "ops_team_approval_time",
+        "Rejected by Customer": "customer_rejection_time",
+        "Approved": "customer_approval_time"
+    }
+
+    datetime_field = workflow_states_datetime_fields[state]
+    frappe.db.set_value("Requisition", docname, datetime_field, frappe.utils.now())
+    frappe.msgprint("Requisition datetime updated")
+
+
