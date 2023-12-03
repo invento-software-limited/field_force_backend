@@ -509,7 +509,6 @@ def make_delivery_trip(source_name, target_doc=None):
         {
             "Requisition": {"doctype": "Delivery Trip", "validation": {"docstatus": ["=", 1]}},
             "Requisition Item": {
-                "doctype": "Delivery Stop",
                 "field_map": {"parent": "requisition"},
                 "condition": lambda item: item.parent not in requisition,
                 "postprocess": update_stop_details,
@@ -532,6 +531,3 @@ def set_datetime_by_workflow_state(docname, state):
 
     datetime_field = workflow_states_datetime_fields[state]
     frappe.db.set_value("Requisition", docname, datetime_field, frappe.utils.now())
-    frappe.msgprint("Requisition datetime updated")
-
-
