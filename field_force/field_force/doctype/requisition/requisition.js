@@ -61,7 +61,10 @@ frappe.ui.form.on('Requisition', {
     frm.set_df_property("expected_delivery_date", "read_only", true);
     // }
 	},
+
 	refresh: function (frm){
+    // var targetState = frm.workflow_state.states.find(state => state.action === 'Approve');
+    console.log(frm);
     // check_role(frm);
 
 		frm.fields_dict['items'].grid.get_field('item_code').get_query = function(doc, cdt, cdn) {
@@ -95,6 +98,12 @@ frappe.ui.form.on('Requisition', {
     // setup: function (frm){
     //     frm.add_fetch('customer', 'tax_id', 'tax_id');
     // },
+  //  before_workflow_action: function(frm, state) {
+  // },
+  after_workflow_action: function(frm, state) {
+    set_datetime_by_workflow_state(frm);
+  },
+
 	partner_group: function (frm){
 		frm.set_value("customer", null);
 		var filters_ = [];
@@ -143,7 +152,7 @@ frappe.ui.form.on('Requisition', {
 				  },
 				callback: function(r) {
 					let items = ""
-					let mes = `Requisition ${items} are not in Imported Items` 
+					let mes = `Requisition ${items} are not in Imported Items`
 					frm.doc.items.forEach((y) => {
 						r.message.forEach((x) => {
 							if (x["Product #"] === y["product_id"]) {
@@ -423,4 +432,20 @@ function set_item_values(frm, cdt, cdn, row, item){
 	frappe.model.set_value(cdt, cdn, "brand", item.brand);
 	frappe.model.set_value(cdt, cdn, "price_list_rate", item.price_list_rate);
 	frm.refresh_fields(cdt, cdn);
+}
+
+function set_datetime_by_workflow_state(frm){
+  frappe.call({
+		method: 'field_force.field_force.doctype.requisition.requisition.set_datetime_by_workflow_state',
+		args: {
+			'docname': frm.doc.name,
+      'state': frm.doc.workflow_state
+		},
+		callback: function(r) {
+			if (!r.exc) {
+				let message = r.message;
+        frm.reload_doc();
+			}
+		}
+	})
 }

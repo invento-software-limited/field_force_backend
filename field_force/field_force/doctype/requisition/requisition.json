@@ -19,13 +19,13 @@
   "order_type",
   "skip_delivery_note",
   "status",
-  "warehouse",
   "delivery_status",
   "column_break_9",
   "amended_from",
   "company",
   "transaction_date",
   "delivery_date",
+  "warehouse",
   "expected_delivery_date",
   "expire_date",
   "po_no",
@@ -104,7 +104,14 @@
   "supervisor_employee_number",
   "supervisor_user",
   "achievement_amount",
-  "sales_team"
+  "sales_team",
+  "time_section",
+  "customer_requisition_time",
+  "ops_team_approval_time",
+  "customer_approval_time",
+  "column_break_dbz1c",
+  "ops_team_rejection_time",
+  "customer_rejection_time"
  ],
  "fields": [
   {
@@ -115,7 +122,7 @@
    "label": "Partner Group",
    "options": "Partner Group",
    "permlevel": 1,
-   "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\")"
+   "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\") || doc.workflow_state != \"Pending for Ops Team\";"
   },
   {
    "bold": 1,
@@ -125,7 +132,7 @@
    "in_standard_filter": 1,
    "label": "Customer",
    "options": "Customer",
-   "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\");",
+   "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\") || doc.workflow_state != \"Pending for Ops Team\";",
    "reqd": 1
   },
   {
@@ -224,7 +231,7 @@
    "label": "Company",
    "options": "Company",
    "print_hide": 1,
-   "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\");",
+   "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\") || doc.workflow_state != \"Pending for Ops Team\";",
    "remember_last_selected_value": 1,
    "reqd": 1
   },
@@ -235,7 +242,7 @@
    "in_standard_filter": 1,
    "label": "Date",
    "no_copy": 1,
-   "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\");",
+   "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\") || doc.workflow_state != \"Pending for Ops Team\";",
    "reqd": 1,
    "search_index": 1
   },
@@ -246,14 +253,14 @@
    "in_list_view": 1,
    "label": "Required Delivery Date (for Customer)",
    "no_copy": 1,
-   "read_only_depends_on": "eval: !frappe.user.has_role(\"Customer\");",
+   "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\") || doc.workflow_state != \"Pending for Ops Team\";",
    "reqd": 1
   },
   {
    "fieldname": "expected_delivery_date",
    "fieldtype": "Date",
    "label": "Expected Delivery Date (for Ops)",
-   "mandatory_depends_on": "eval: (doc.workflow_state == \"Pending for Ops Team\") || (frappe.user.has_role(\"Operation\"));",
+   "mandatory_depends_on": "eval: frappe.user.has_role(\"Operation\");",
    "read_only_depends_on": "eval: !(doc.workflow_state == \"Pending for Ops Team\") || !(frappe.user.has_role(\"Operation\"));"
   },
   {
@@ -263,12 +270,13 @@
    "label": "Expire Date"
   },
   {
+   "depends_on": "eval: doc.workflow_state == \"Pending for Customer\" && doc.department_type == \"External\";",
    "fieldname": "po_no",
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "PO Number",
-   "mandatory_depends_on": "eval: doc.workflow_state == \"Pending for Customer\";",
+   "mandatory_depends_on": "eval: doc.workflow_state == \"Pending for Customer\" && doc.department_type == \"External\";",
    "read_only_depends_on": "eval: !(doc.workflow_state == \"Pending for Customer\");"
   },
   {
@@ -279,12 +287,12 @@
    "label": "PO Date"
   },
   {
-   "depends_on": "eval: doc.po_no;",
+   "depends_on": "eval: doc.workflow_state == \"Pending for Customer\" && doc.department_type == \"External\";",
    "fieldname": "customer_po_file",
    "fieldtype": "Attach",
    "label": "Po File",
-   "mandatory_depends_on": "eval: doc.workflow_state == \"Pending for Customer\";",
-   "read_only_depends_on": "eval: !(doc.workflow_state == \"Pending for Customer\") && !(frappe.user.has_role(\"Customer\"));"
+   "mandatory_depends_on": "eval: doc.workflow_state == \"Pending for Customer\" && doc.department_type == \"External\";",
+   "read_only_depends_on": "eval: !(doc.workflow_state == \"Pending for Customer\");"
   },
   {
    "fieldname": "tax_id",
@@ -703,8 +711,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Sales Person",
-   "options": "Sales Person",
-   "reqd": 1
+   "options": "Sales Person"
   },
   {
    "fetch_from": "sales_person.employee",
@@ -774,6 +781,7 @@
    "fieldname": "warehouse",
    "fieldtype": "Link",
    "label": "Warehouse",
+   "mandatory_depends_on": "eval: frappe.user.has_role(\"Operation\");",
    "options": "Warehouse",
    "read_only_depends_on": "eval: !(frappe.user.has_role(\"Operation\"));"
   },
@@ -783,13 +791,53 @@
    "label": "Total Accepted Amount",
    "precision": "2",
    "read_only": 1
+  },
+  {
+   "fieldname": "ops_team_approval_time",
+   "fieldtype": "Datetime",
+   "label": "Ops Team Approval Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "time_section",
+   "fieldtype": "Section Break",
+   "label": "Time Section",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "customer_requisition_time",
+   "fieldtype": "Datetime",
+   "label": "Customer Requisition Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer_approval_time",
+   "fieldtype": "Datetime",
+   "label": "Customer Approval Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_dbz1c",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ops_team_rejection_time",
+   "fieldtype": "Datetime",
+   "label": "Ops team Rejection Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "customer_rejection_time",
+   "fieldtype": "Datetime",
+   "label": "Customer Rejection Time",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2023-11-26 11:48:32.668937",
+ "modified": "2023-12-03 13:06:13.829033",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",
