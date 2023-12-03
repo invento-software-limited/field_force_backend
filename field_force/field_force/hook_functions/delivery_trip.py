@@ -7,6 +7,7 @@ from frappe.contacts.doctype.address.address import get_address_display
 from frappe.model.document import Document
 from frappe.utils import cint, get_datetime, get_link_to_form
 from erpnext.stock.doctype.delivery_trip.delivery_trip import DeliveryTrip
+import os
 
 class UpdateDeliveryTrip(DeliveryTrip):
     def __init__(self, *args, **kwargs):
@@ -244,20 +245,181 @@ class UpdateDeliveryTrip(DeliveryTrip):
         return directions[0] if directions else False
     
 def sanitize_address(address):
-	"""
-	Remove HTML breaks in a given address
+    """
+    Remove HTML breaks in a given address
 
-	Args:
-	        address (str): Address to be sanitized
+    Args:
+            address (str): Address to be sanitized
 
-	Returns:
-	        (str): Sanitized address
-	"""
+    Returns:
+            (str): Sanitized address
+    """
 
-	if not address:
-		return
+    if not address:
+        return
 
-	address = address.split("<br>")
+    address = address.split("<br>")
 
-	# Only get the first 3 blocks of the address
-	return ", ".join(address[:3])
+    # Only get the first 3 blocks of the address
+    return ", ".join(address[:3])
+
+
+from frappe.utils.pdf import get_pdf
+import frappe
+from frappe import _
+from frappe import publish_progress
+from frappe.core.api.file import create_new_folder
+from frappe.utils.file_manager import save_file
+from frappe.model.naming import _format_autoname
+from frappe.utils.weasyprint import PrintFormatGenerator
+import json
+
+
+@frappe.whitelist()
+def attach_pdf(doc_data):
+    doc = frappe.get_doc("Requisition",doc_data)
+    print_format = "Requisition Standard"
+    letter_head = None
+
+    fallback_language = frappe.db.get_single_value("System Settings", "language") or "en"
+    args = {
+        "doctype": doc.get("doctype"),
+        "name": doc.get("name"),
+        "title": "Test Title",
+        "lang": getattr(doc, "language", fallback_language),
+        "show_progress": 1,
+        "auto_name": "requisiton",
+        "print_format": print_format,
+        "letter_head": letter_head,
+        "to_field": "file",
+        "to_field_as_link": "order_file"
+    }
+
+    execute(**args)
+
+
+def enqueue(args):
+    """Add method `execute` with given args to the queue."""
+    frappe.enqueue(method=execute, queue='long',
+                   timeout=30, is_async=True, **args)
+
+
+def execute(doctype, name, title, lang=None, show_progress=True, auto_name=None, print_format=None,
+            letter_head=None, to_field=None, to_field_as_link=None):
+    """
+    Queue calls this method, when it's ready.
+
+    1. Create necessary folders
+    2. Get raw PDF data
+    3. Save PDF file and attach it to the document
+    """
+    progress = frappe._dict(title=_("Creating PDF ..."), percent=0, doctype=doctype, docname=name)
+
+    if lang:
+        frappe.local.lang = lang
+        # unset lang and jenv to load new language
+        frappe.local.lang_full_dict = None
+        frappe.local.jenv = None
+
+    if show_progress:
+        publish_progress(**progress)
+
+    doctype_folder = create_folder(doctype, "Home")
+    title_folder = create_folder(title, doctype_folder)
+
+    if show_progress:
+        progress.percent = 33
+        publish_progress(**progress)
+
+    if frappe.db.get_value("Print Format", print_format, "print_format_builder_beta"):
+        doc = frappe.get_doc(doctype, name)
+        pdf_data = PrintFormatGenerator(print_format, doc, letter_head).render_pdf()
+    else:
+        pdf_data = get_pdf_data(doctype, name, print_format, letter_head)
+
+    if show_progress:
+        progress.percent = 66
+        publish_progress(**progress)
+
+    save_and_attach(pdf_data, doctype, name, title_folder, auto_name, to_field, to_field_as_link)
+    
+    if show_progress:
+        progress.percent = 100
+        publish_progress(**progress)
+
+
+def create_folder(folder, parent):
+    """Make sure the folder exists and return it's name."""
+    new_folder_name = "/".join([parent, folder])
+
+    if not frappe.db.exists("File", new_folder_name):
+        create_new_folder(folder, parent)
+
+    return new_folder_name
+
+
+def get_pdf_data(doctype, name, print_format: None, letterhead: None):
+    """Document -> HTML -> PDF."""
+    html = frappe.get_print(doctype, name, print_format, letterhead=letterhead)
+    return frappe.utils.pdf.get_pdf(html)
+
+
+def save_and_attach(content, to_doctype, to_name, folder, auto_name=None, to_field=None, to_field_as_link=None):
+    """
+    Save content to disk and create a File document.
+
+    File document is linked to another document.
+    """
+    if auto_name:
+        doc = frappe.get_doc(to_doctype, to_name)
+        # based on type of format used set_name_form_naming_option return result.
+        pdf_name = set_name_from_naming_options(auto_name, doc)
+        file_name = "{pdf_name}.pdf".format(pdf_name=pdf_name.replace("/", "-"))
+    else:
+        file_name = "{to_name}.pdf".format(to_name=to_name.replace("/", "-"))
+
+    file = save_file(file_name, content, to_doctype, to_name, folder=folder, is_private=0, df=to_field)
+    # set_file_to_doctype(to_doctype, to_name, file.file_url, to_field, to_field_as_link)
+    download_requisition_file(file.file_url)
+
+def set_file_to_doctype(to_doctype, to_name, file_url=None, to_field=None, to_field_as_link=None):
+    try:
+        if to_field and file_url:
+            frappe.db.set_value(to_doctype, to_name, to_field, file_url)
+        if to_field_as_link and file_url:
+            file_name = file_url.split('/')[-1]
+            link = f'<a class="attached-file-link" href="{file_url}" target="_blank">{file_name}</a>'
+            frappe.db.set_value(to_doctype, to_name, to_field_as_link, link)
+            
+    except:
+        
+        pass
+
+@frappe.whitelist()
+def download_requisition_file(requisition_excel):
+    if requisition_excel:
+        file_path = get_site_directory_path() + '/public' + requisition_excel
+        with open(file_path, "rb") as file:
+            frappe.local.response.filename = requisition_excel.split('/')[2]
+            frappe.local.response.filecontent = file.read()
+            frappe.local.response.type = "download"
+    else:
+        frappe.throw('Group file not found!')
+
+    return {}
+
+def get_site_directory_path():
+    site_name = frappe.local.site
+    cur_dir = os.getcwd()
+    return os.path.join(cur_dir, site_name)
+
+def set_name_from_naming_options(autoname, doc):
+    """
+    Get a name based on the autoname field option
+    """
+    _autoname = autoname.lower()
+
+    if _autoname.startswith("format:"):
+        return _format_autoname(autoname, doc)
+
+    return doc.name

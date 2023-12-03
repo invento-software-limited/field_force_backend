@@ -27,5 +27,39 @@ frappe.ui.form.on('Delivery Trip', {
             frm.remove_custom_button('Delivery Notes','View');
         }, 10);
 	},
-  })
+    get_files : function(frm) {
+		frappe.call({
+            method:"field_force.field_force.hook_functions.delivery_trip.attach_pdf",
+            args: {
+                doc_data: frm.doc
+              },
+        });
+	},
+})
+
+frappe.ui.form.on('Delivery Stop', {
+
+    download_requisition: function(frm,cdt,cdn){
+        let row = locals[cdt][cdn]
+        if (row.requisition){
+            var url = `/api/method/field_force.field_force.hook_functions.delivery_trip.attach_pdf`;
+			url = url + `?doc_data=${row.requisition}`;
+			window.open(url, '_blank');
+        }
+    },
+    download_po: function(frm,cdt,cdn){
+        let row = locals[cdt][cdn]
+        if (row.requisition){
+            frappe.db.get_value('Requisition', row.requisition, ['customer_po_file'], (result) => {
+                if (result.customer_po_file) {
+                    var url = `/api/method/field_force.field_force.hook_functions.delivery_trip.download_requisition_file`;
+                    url = url + `?requisition_excel=${result.customer_po_file}`;
+                    window.open(url, '_blank');
+                }
+            });
+            
+        }
+    }
+
+})
   
