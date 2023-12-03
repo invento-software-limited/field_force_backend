@@ -25,8 +25,8 @@
   "company",
   "transaction_date",
   "delivery_date",
-  "expected_delivery_date",
   "warehouse",
+  "expected_delivery_date",
   "expire_date",
   "po_no",
   "po_date",
@@ -121,7 +121,8 @@
    "in_standard_filter": 1,
    "label": "Partner Group",
    "options": "Partner Group",
-   "permlevel": 1
+   "permlevel": 1,
+   "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\") || doc.workflow_state != \"Pending for Ops Team\";"
   },
   {
    "bold": 1,
@@ -131,7 +132,7 @@
    "in_standard_filter": 1,
    "label": "Customer",
    "options": "Customer",
-   "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\");",
+   "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\") || doc.workflow_state != \"Pending for Ops Team\";",
    "reqd": 1
   },
   {
@@ -230,7 +231,7 @@
    "label": "Company",
    "options": "Company",
    "print_hide": 1,
-   "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\");",
+   "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\") || doc.workflow_state != \"Pending for Ops Team\";",
    "remember_last_selected_value": 1,
    "reqd": 1
   },
@@ -241,7 +242,7 @@
    "in_standard_filter": 1,
    "label": "Date",
    "no_copy": 1,
-   "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\");",
+   "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\") || doc.workflow_state != \"Pending for Ops Team\";",
    "reqd": 1,
    "search_index": 1
   },
@@ -252,7 +253,7 @@
    "in_list_view": 1,
    "label": "Required Delivery Date (for Customer)",
    "no_copy": 1,
-   "read_only_depends_on": "eval: !frappe.user.has_role(\"Customer\");",
+   "read_only_depends_on": "eval: frappe.user.has_role(\"Operation\") || doc.workflow_state != \"Pending for Ops Team\";",
    "reqd": 1
   },
   {
@@ -269,6 +270,7 @@
    "label": "Expire Date"
   },
   {
+   "depends_on": "eval: doc.workflow_state == \"Pending for Customer\" && doc.department_type == \"External\";",
    "fieldname": "po_no",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -285,6 +287,7 @@
    "label": "PO Date"
   },
   {
+   "depends_on": "eval: doc.workflow_state == \"Pending for Customer\" && doc.department_type == \"External\";",
    "fieldname": "customer_po_file",
    "fieldtype": "Attach",
    "label": "Po File",
@@ -708,8 +711,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Sales Person",
-   "options": "Sales Person",
-   "reqd": 1
+   "options": "Sales Person"
   },
   {
    "fetch_from": "sales_person.employee",
@@ -835,7 +837,7 @@
  "is_submittable": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2023-11-30 16:31:06.405210",
+ "modified": "2023-12-03 13:06:13.829033",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",
