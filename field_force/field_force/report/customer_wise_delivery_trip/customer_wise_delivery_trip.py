@@ -3,6 +3,7 @@
 
 import frappe
 from frappe import _
+from field_force.field_force.page.utils import *
 
 
 def execute(filters=None):
@@ -11,58 +12,81 @@ def execute(filters=None):
 
 def get_data(filters):
     condition = get_conditions(filters)
-    
-    query = frappe.db.sql("""select dt.name as id, dt.driver_name, dt.driver, dt.territory, date(dt.departure_time) as departure_date,dt.vehicle,
-                                      time(dt.departure_time) as departure_time, ds.status, ds.customer, ds.grand_total, ds.address, ds.total_qty
-                                         from `tabDelivery Stop` as ds left join `tabDelivery Trip` as dt on dt.name = ds.parent 
-                                            where dt.name is not null {}""".format(condition),as_dict=1)
+    customers = frappe.get_list("Customer", filters={"disabled": 0}, pluck='name')
+    customers_in_tuple_str = '("' + '", "'.join(customers) + '")'
+
+    query = frappe.db.sql('''select dt.name as id, dt.driver_name, dt.driver, dt.territory, ds.requisition,
+                        date(dt.departure_time) as departure_date, dt.vehicle, time(dt.departure_time) as departure_time,
+                         ds.status, ds.customer, ds.grand_total, ds.address, ds.total_qty
+                        from `tabDelivery Stop` as ds left join `tabDelivery Trip` as dt on dt.name = ds.parent
+                        where dt.name is not null and ds.customer in {} {}
+                        order by departure_time desc'''.format(customers_in_tuple_str, condition),as_dict=1)
+
     # return query
     for trip in query:
-        set_link_to_doc(trip, 'driver_name','driver',val=trip.get("driver"),color='#006433')
-        change_color(trip,"departure_time","darkolivegreen")
+        trip['departure_time'] = get_time_in_12_hour_format(str(trip.departure_time))
+        change_color(trip,"departure_date","#0099cc")
+        change_color(trip,"departure_time","#0099cc")
+
+        if trip.requisition:
+            set_link_to_doc(trip, 'requisition','requisition',val=trip.requisition, color='blue')
+
+        set_link_to_doc(trip, 'id','delivery-trip',val=trip.id, color='blue')
+        set_link_to_doc(trip, 'customer','customer',val=trip.customer, color='#0080ff')
+        set_link_to_doc(trip, 'territory','territory',val=trip.territory, color='#0080ff	')
+        set_link_to_doc(trip, 'driver_name','driver',val=trip.driver, color='#0080ff	')
+
         if trip.get("vehicle"):
             vehicle = frappe.get_doc("Vehicle", trip.get("vehicle"))
             labels = vehicle.name +","+ vehicle.model
             set_link_to_doc(trip, 'vehicle','vehicle',val=vehicle.name,label=labels,color='#00918a')
-            
+
     return query
-    
-    
+
+
 def get_conditions(filters):
     if not filters: filters = {}
-    conditions = ""
+    conditions = ''
     if filters.get("from_date"):
-        conditions += " and date(dt.departure_time) >= '{}'".format(filters.get("from_date"))
+        conditions += ' and date(dt.departure_time) >= "{}"'.format(filters.get("from_date"))
     if filters.get("to_date"):
-        conditions += " and date(dt.departure_time) <= '{}'".format(filters.get("to_date"))
+        conditions += ' and date(dt.departure_time) <= "{}"'.format(filters.get("to_date"))
     if filters.get("customer"):
-        conditions += " and ds.customer = '{}'".format(filters.get("customer"))
+        conditions += ' and ds.customer = "{}"'.format(filters.get("customer"))
     if filters.get("territory"):
-        conditions += " and dt.territory = '{}'".format(filters.get("territory"))
+        conditions += ' and dt.territory = "{}"'.format(filters.get("territory"))
     if filters.get("driver"):
-        conditions += " and dt.driver = '{}'".format(filters.get("driver"))
+        conditions += ' and dt.driver = "{}"'.format(filters.get("driver"))
     if filters.get("status"):
-        conditions += " and ds.status = '{}'".format(filters.get("status"))
+        conditions += ' and ds.status = "{}"'.format(filters.get("status"))
     if filters.get("vehicle"):
-        conditions += " and dt.vehicle = '{}'".format(filters.get("vehicle"))
+        conditions += ' and dt.vehicle = "{}"'.format(filters.get("vehicle"))
     return conditions
 
 
 def get_columns():
-    return [
-            {"label": _("ID"), "fieldtype": "Link", "fieldname": "id","options":"Delivery Trip" ,"width": 160},
-            {"label": _("Driver Name"), "fieldtype": "Data","fieldname": "driver_name", "width": 150},
-            {"label": _("Departure Date"),"fieldtype": "Date","fieldname": "departure_date","width": 120},
-            {"label": _("Departure Time"),"fieldtype": "Data","fieldname":"departure_time","width": 130},
-            {"label": _("Territory"),"fieldtype": "Link","fieldname": "territory","options":"Territory","width": 180},
-               {"label": _("Customer"), "fieldtype": "Link", "fieldname": "customer","options":"Customer","width": 180},
-            {"label": _("Status"), "fieldtype": "Data","fieldname": "status", "width": 120},
-            {"label": _("Vehicle"),"fieldtype": "Data","fieldname": "vehicle","width": 180},
-            {"label": _("QTY"),"fieldtype": "Float","fieldname": "total_qty","width": 80},
-            {"label": _("Address"),"fieldtype": "Data","fieldname":"address","width": 250},
-            {"label": _("Grand Total"),"fieldtype": "Currency","fieldname": "grand_total","width": 140}
-        ]
- 
+    columns =  [
+        {"label": _("Customer"), "fieldtype": "Data", "fieldname": "customer", "options": "Customer", "width": 180},
+        {"label": _("Dep. Date"),"fieldtype": "Data","fieldname": "departure_date","width": 100},
+        {"label": _("Dep. Time"),"fieldtype": "Data","fieldname":"departure_time","width": 90},
+        {"label": _("Territory"),"fieldtype": "Data","fieldname": "territory","options":"Territory","width": 120},
+        {"label": _("Status"), "fieldtype": "Data","fieldname": "status", "width": 80},
+        {"label": _("Vehicle"),"fieldtype": "Data","fieldname": "vehicle","width": 120},
+        {"label": _("Driver Name"), "fieldtype": "Data", "fieldname": "driver_name", "width": 120},
+        {"label": _("Address"),"fieldtype": "Data","fieldname":"address","width": 200},
+        {"label": _("QTY"), "fieldtype": "Int", "fieldname": "total_qty", "width": 80},
+        {"label": _("Grand Total"),"fieldtype": "Currency","fieldname": "grand_total","width": 100}
+    ]
+
+    if 'Customer' in frappe.get_roles(frappe.session.user):
+        columns.insert(
+        0,{"label": _("Requisition ID"), "fieldtype": "Data", "fieldname": "requisition", "options":"Requisition" ,"width": 120})
+    else:
+        columns.insert(
+        0,{"label": _("Trip ID"), "fieldtype": "Data", "fieldname": "id","options":"Delivery Trip" ,"width": 120})
+
+    return  columns
+
 def set_link_to_doc(doc, field, doc_url='',val=None, label=None, color=None):
     style = f'style="color:{color};"' if color else ''
 
@@ -72,9 +96,9 @@ def set_link_to_doc(doc, field, doc_url='',val=None, label=None, color=None):
                 ''' % style
     return doc[field]
 
-def change_color(doc,field,color):
+def change_color(doc, field, color):
     style = f'style="color:{color};"' if color else ''
 
     doc[field] = f'''<span %s>{doc[field] or "" }</span>''' % style
-    
+
     return doc[field]

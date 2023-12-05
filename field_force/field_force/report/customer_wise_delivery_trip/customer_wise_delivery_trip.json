@@ -10,7 +10,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "letter_head": "General Letter Head",
- "modified": "2023-11-16 19:24:45.551047",
+ "modified": "2023-12-05 14:22:46.462271",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Customer Wise Delivery Trip",
@@ -22,16 +22,19 @@
  "report_type": "Script Report",
  "roles": [
   {
+   "role": "System Manager"
+  },
+  {
    "role": "Stock User"
   },
   {
-   "role": "Fulfillment User"
-  },
-  {
-   "role": "Employee Self Service"
-  },
-  {
    "role": "Operation"
+  },
+  {
+   "role": "Manager"
+  },
+  {
+   "role": "Channel Manager"
   }
  ]
 }
