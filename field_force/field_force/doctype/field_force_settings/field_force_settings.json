@@ -1,0 +1,60 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-12-05 12:16:50.282932",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "mushak_section",
+  "series",
+  "column_break_lpzsi",
+  "latest_series"
+ ],
+ "fields": [
+  {
+   "fieldname": "mushak_section",
+   "fieldtype": "Section Break",
+   "label": "Mushak"
+  },
+  {
+   "fieldname": "series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "Mushak-6.3-\nMS-6.3-"
+  },
+  {
+   "fieldname": "column_break_lpzsi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "latest_series",
+   "fieldtype": "Int",
+   "label": "Latest Series"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2023-12-05 12:16:50.282932",
+ "modified_by": "Administrator",
+ "module": "Field Force",
+ "name": "Field Force Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
