@@ -26,6 +26,7 @@ class Requisition(Document):
         self.validate_delivery_date()
         # self.validate_po_number()
         self.validate_items()
+        self.set_item_wise_tax()
 
     def before_save(self):
         set_extra_values(self)
@@ -167,7 +168,26 @@ class Requisition(Document):
     def validate_accepted_qty(self, item):
         if not item.accepted_qty:
             item.accepted_qty = item.qty
-
+            
+    def set_item_wise_tax(self):
+        total_with_tax = 0
+        if self.items:
+            for item in self.items:
+                item_details = frappe.get_doc("Item",item.item_code)
+                tax_percentage = 0
+                if item_details.taxes:
+                    for percentage in item_details.taxes:
+                        tax_percentage += percentage.get("maximum_net_rate")
+                if tax_percentage >= 0:
+                    item.tax_percentage = tax_percentage
+                    item.tax_amount = (tax_percentage * (item.qty * item.rate )) / 100
+                    item.total_amount = (item.qty * item.rate ) + (tax_percentage * (item.qty * item.rate )) / 100
+                
+                    total_with_tax += (tax_percentage * (item.qty * item.rate )) / 100
+                    
+        self.total_with_tax = total_with_tax
+        self.grand_total = self.grand_total + total_with_tax
+        
 def set_extra_values(self):
     self.total_items = len(self.items)
 
