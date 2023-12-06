@@ -8,7 +8,8 @@ from field_force.field_force.page.utils import *
 
 def execute(filters=None):
     columns, data = get_columns(), get_data(filters)
-    return columns, data
+    card=get_card(data,filters)
+    return columns, data, None, None, card
 
 def get_data(filters):
     condition = get_conditions(filters)
@@ -47,6 +48,7 @@ def get_data(filters):
 def get_conditions(filters):
     if not filters: filters = {}
     conditions = ''
+
     if filters.get("from_date"):
         conditions += ' and date(dt.departure_time) >= "{}"'.format(filters.get("from_date"))
     if filters.get("to_date"):
@@ -61,6 +63,7 @@ def get_conditions(filters):
         conditions += ' and ds.status = "{}"'.format(filters.get("status"))
     if filters.get("vehicle"):
         conditions += ' and dt.vehicle = "{}"'.format(filters.get("vehicle"))
+
     return conditions
 
 
@@ -86,6 +89,42 @@ def get_columns():
         0,{"label": _("Trip ID"), "fieldtype": "Data", "fieldname": "id","options":"Delivery Trip" ,"width": 120})
 
     return  columns
+
+
+def get_card(data, filters):
+    cm, cn, it, sc, dt = 0, 0, 0, 0, 0
+
+    for x in data:
+        if x.get("status") == "In Transit":
+            it += 1
+        elif x.get("status") == "Scheduled":
+            sc += 1
+        elif x.get("status") == "Completed":
+            cm += 1
+        elif x.get("status") == "Cancelled":
+            cn += 1
+        elif x.get("status") == "Draft":
+            dt += 1
+
+    if filters.get("status") == "In Transit":
+        return {"value": it, "label": _("In Transit"), "datatype": "Data", "indicator": "Blue"},
+    elif filters.get("status") == "Scheduled":
+        return {"value": sc, "label": _("Scheduled"), "datatype": "Data", "indicator": "Purpel"},
+    elif filters.get("status") == "Completed":
+        return {"value": cm, "label": _("Completed"), "datatype": "Data", "indicator": "Orange"},
+    elif filters.get("status") == "Cancelled":
+        return {"value": cn, "label": _("Cancelled"), "datatype": "Data", "indicator": "Orange"},
+    elif filters.get("status") == "Draft":
+        return {"value": dt, "label": _("Draft"), "datatype": "Data", "indicator": "Orange"},
+    else:
+        return [
+            {"value": dt, "label": _("Draft"), "datatype": "Data", "indicator": "Orange"},
+            {"value": sc, "label": _("Scheduled"), "datatype": "Data", "indicator": "Purpel"},
+            {"value": it, "label": _("In Transit"), "datatype": "Data", "indicator": "Blue"},
+            {"value": cm, "label": _("Completed"), "datatype": "Data", "indicator": "Green"},
+            {"value": cn, "label": _("Cancelled"), "datatype": "Data", "indicator": "Red"},
+        ]
+
 
 def set_link_to_doc(doc, field, doc_url='',val=None, label=None, color=None):
     style = f'style="color:{color};"' if color else ''

@@ -1,5 +1,5 @@
 {
- "add_total_row": 1,
+ "add_total_row": 0,
  "columns": [],
  "creation": "2023-11-15 12:47:16.348415",
  "disable_prepared_report": 0,
@@ -10,7 +10,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "letter_head": "General Letter Head",
- "modified": "2023-12-05 14:22:46.462271",
+ "modified": "2023-12-06 11:20:14.197966",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Customer Wise Delivery Trip",
