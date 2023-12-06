@@ -83,8 +83,8 @@ def get_columns():
         {'fieldname': 'check', 'label': '',"fieldtype":"Check", 'expwidth': 5, 'width': 20},
         {'fieldname': 'date', 'label': 'Date',"fieldtype":"Date", 'expwidth': 15, 'width': 100},
         {'fieldname': 'name', 'label': 'ID',"fieldtype":"Link","options" : "Requisition",'expwidth': 15, 'width': 120},
-        {'fieldname': 'customer', 'label': 'Customer',"fieldtype":"Link","options" : "Customer",'expwidth': 15, 'width': 180},
-        {'fieldname': 'territory', 'label': 'Territory', 'expwidth': 13, 'width': 140},
+        {'fieldname': 'customer', 'label': 'Customer',"fieldtype":"Link","options" : "Customer",'expwidth': 15, 'width': 150},
+        {'fieldname': 'territory', 'label': 'Territory', 'expwidth': 13, 'width': 110},
         {'fieldname': 'department', 'label': 'Department', 'expwidth': 13, 'width': 100},
         {'fieldname': 'delivery_date', 'label': 'Req Delivery',"fieldtype":"Date", 'expwidth': 13, 'width': 100, 'editable': False},
         {'fieldname': 'expected_delivery_date', 'label': 'Expt Delivery',"fieldtype":"Date", 'expwidth': 15, 'width': 100},
@@ -101,7 +101,7 @@ def get_columns():
 def get_appropiate_action_button(requisition):
     user_roles = frappe.get_roles(frappe.session.user)
     owner = requisition.get("owner")
-    action = f'''<a href="/app/requisition/{requisition.get("name")} "id="{requisition.get("name")}_Approve" class="btn btn-success btn-sm" 
+    action = f'''<a href="/app/requisition/{requisition.get("name")} "id="{requisition.get("name")}_Approve" target="_blank" class="btn btn-success btn-sm" 
                             style="width:66px;">View</a><br>'''
                             
     # if requisition.get("workflow_state") == "Pending for Ops Team" and "Operation" in user_roles:

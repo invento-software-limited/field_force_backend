@@ -290,7 +290,7 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 			html += `<td id="${data.docname}_${field.fieldname}" class="editable-field parent-container"
 					  data-fieldname="${field.fieldname}" data-name="${data.docname}">${data[field.fieldname] || ''}</td>`
 		  } else if (field.fieldname === 'check') {
-			html += `<td><input type="checkbox" id="${data.docname}"></td>`
+			html += `<td style="    padding-right: 4px;padding-left: 5px;"><input type="checkbox" id="${data.docname}" style="margin-right: 0px !important;"></td>`
 		  }
 		  else {
 			html += get_absolute_format_and_html(field, data);
