@@ -1,13 +1,17 @@
 
 import datetime
-
 import frappe
+import os
 from frappe import _
 from frappe.contacts.doctype.address.address import get_address_display
 from frappe.model.document import Document
 from frappe.utils import cint, get_datetime, get_link_to_form
 from erpnext.stock.doctype.delivery_trip.delivery_trip import DeliveryTrip
-import os
+from frappe import publish_progress
+from frappe.core.api.file import create_new_folder
+from frappe.utils.file_manager import save_file
+from frappe.utils.weasyprint import PrintFormatGenerator
+
 
 class UpdateDeliveryTrip(DeliveryTrip):
     def __init__(self, *args, **kwargs):
@@ -23,13 +27,18 @@ class UpdateDeliveryTrip(DeliveryTrip):
 
     def validate(self):
         if self._action == "submit" and not self.driver:
-            frappe.throw(_("A driver must be set to submit."))
-
+            frappe.throw(_("A driver must be set to submit.")) 
         # self.validate_stop_addresses()
+        
+    def before_submit(self):
+        self.set_mushak_unique_number()
+        self.get_requisition_files()
 
     def on_submit(self):
+        # self.set_mushak_unique_number()
         self.update_status()
         self.update_delivery_notes()
+        
 
     def on_update_after_submit(self):
         self.update_status()
@@ -37,6 +46,32 @@ class UpdateDeliveryTrip(DeliveryTrip):
     def on_cancel(self):
         self.update_status()
         self.update_delivery_notes(delete=True)
+        
+        
+    def get_requisition_files(self):
+        if self.delivery_stops:
+            for stop in self.delivery_stops:
+                if stop.get("requisition"):
+                    files = get_files_path_from_requisition(stop.get("requisition"))
+                    for file in files:
+                        if file.get("requisition_standard"):
+                            stop.requisition_pdf = file.get("requisition_standard")
+                        if file.get("requisition_mushak_6.3"):
+                            stop.mushak_6_3_pdf = file.get("requisition_mushak_6.3")
+                        if file.get("po_file"):
+                            stop.po_file = file.get("po_file")
+        
+    def set_mushak_unique_number(self):
+        if self.delivery_stops:
+            for stop in self.delivery_stops:
+                if stop.get("requisition") and not stop.get("mushak_serial"):
+                    serial =  frappe.db.get_single_value("Field Force Settings", "series")
+                    latest_serial = frappe.db.get_single_value("Field Force Settings", "latest_series")
+                    mushak_serial = f"{serial}{latest_serial + 1}"
+                    frappe.client.set_value("Field Force Settings", "Field Force Settings", "latest_series", latest_serial+1 )
+                    reg = frappe.get_doc("Requisition",stop.get("requisition"))
+                    reg.db_set("mushak_serial",mushak_serial)
+                    stop.mushak_serial = mushak_serial
 
     def validate_stop_addresses(self):
         for stop in self.delivery_stops:
@@ -263,18 +298,7 @@ def sanitize_address(address):
     # Only get the first 3 blocks of the address
     return ", ".join(address[:3])
 
-
-from frappe.utils.pdf import get_pdf
-import frappe
-from frappe import _
-from frappe import publish_progress
-from frappe.core.api.file import create_new_folder
-from frappe.utils.file_manager import save_file
-from frappe.model.naming import _format_autoname
-from frappe.utils.weasyprint import PrintFormatGenerator
-import json
-
-
+# For Download Print FOrmat Wise Requisition
 @frappe.whitelist()
 def attach_pdf(doc_data):
     doc = frappe.get_doc("Requisition",doc_data)
@@ -285,7 +309,7 @@ def attach_pdf(doc_data):
     args = {
         "doctype": doc.get("doctype"),
         "name": doc.get("name"),
-        "title": "Test Title",
+        "title": "Standard",
         "lang": getattr(doc, "language", fallback_language),
         "show_progress": 1,
         "auto_name": "requisiton",
@@ -297,6 +321,27 @@ def attach_pdf(doc_data):
 
     execute(**args)
 
+@frappe.whitelist()
+def attach_pdf_for_mushak(doc_data):
+    doc = frappe.get_doc("Requisition",doc_data)
+    print_format = "Requisition Mushak 6.3"
+    letter_head = None
+
+    fallback_language = frappe.db.get_single_value("System Settings", "language") or "en"
+    args = {
+        "doctype": doc.get("doctype"),
+        "name": doc.get("name"),
+        "title": "Mushak 6.3",
+        "lang": getattr(doc, "language", fallback_language),
+        "show_progress": 1,
+        "auto_name": "requisiton",
+        "print_format": print_format,
+        "letter_head": letter_head,
+        "mushak": "Yes"
+    }
+
+    execute(**args)
+
 
 def enqueue(args):
     """Add method `execute` with given args to the queue."""
@@ -304,8 +349,8 @@ def enqueue(args):
                    timeout=30, is_async=True, **args)
 
 
-def execute(doctype, name, title, lang=None, show_progress=True, auto_name=None, print_format=None,
-            letter_head=None, to_field=None, to_field_as_link=None):
+def execute(doctype, name, title,lang=None, show_progress=True, auto_name=None, print_format=None,
+            letter_head=None, to_field=None, to_field_as_link=None,mushak=None):
     """
     Queue calls this method, when it's ready.
 
@@ -341,7 +386,7 @@ def execute(doctype, name, title, lang=None, show_progress=True, auto_name=None,
         progress.percent = 66
         publish_progress(**progress)
 
-    save_and_attach(pdf_data, doctype, name, title_folder, auto_name, to_field, to_field_as_link)
+    save_and_attach(pdf_data, doctype, name,title_folder, auto_name, to_field, to_field_as_link,mushak)
     
     if show_progress:
         progress.percent = 100
@@ -364,19 +409,17 @@ def get_pdf_data(doctype, name, print_format: None, letterhead: None):
     return frappe.utils.pdf.get_pdf(html)
 
 
-def save_and_attach(content, to_doctype, to_name, folder, auto_name=None, to_field=None, to_field_as_link=None):
+def save_and_attach(content, to_doctype, to_name, folder,auto_name=None, to_field=None, to_field_as_link=None,mushak=None):
     """
     Save content to disk and create a File document.
 
     File document is linked to another document.
     """
-    if auto_name:
-        doc = frappe.get_doc(to_doctype, to_name)
-        # based on type of format used set_name_form_naming_option return result.
-        pdf_name = set_name_from_naming_options(auto_name, doc)
-        file_name = "{pdf_name}.pdf".format(pdf_name=pdf_name.replace("/", "-"))
+    if mushak == "Yes":
+        final_name = "Mushak-6.3-" + to_name
+        file_name = "{to_name}.pdf".format(to_name=final_name)
     else:
-        file_name = "{to_name}.pdf".format(to_name=to_name.replace("/", "-"))
+        file_name = "{to_name}.pdf".format(to_name=to_name)
 
     file = save_file(file_name, content, to_doctype, to_name, folder=folder, is_private=0, df=to_field)
     # set_file_to_doctype(to_doctype, to_name, file.file_url, to_field, to_field_as_link)
@@ -413,13 +456,113 @@ def get_site_directory_path():
     cur_dir = os.getcwd()
     return os.path.join(cur_dir, site_name)
 
-def set_name_from_naming_options(autoname, doc):
-    """
-    Get a name based on the autoname field option
-    """
-    _autoname = autoname.lower()
 
-    if _autoname.startswith("format:"):
-        return _format_autoname(autoname, doc)
+import io
+from zipfile import ZipFile
+import json
 
-    return doc.name
+@frappe.whitelist()
+def download_all_files(doc_data):
+
+    doc = frappe.get_doc("Delivery Trip",doc_data)
+
+    files = get_file_urls_from_delivery_stops(doc.delivery_stops)
+    print("===========================================",files)
+    zip_file_name = f"{doc.name}.zip"
+
+    # Open StringIO to grab in-memory ZIP contents
+    byte_data = io.BytesIO()
+    # The zip compressor
+    zf = ZipFile(byte_data, "w")
+
+    for file in files:
+        try:
+            zf.write(file, os.path.basename(file))
+        except:
+            pass
+
+    # Must close zip for all contents to be written
+    zf.close()
+
+    frappe.local.response.filename = zip_file_name
+    frappe.local.response.filecontent = byte_data.getvalue()
+    frappe.local.response.type = "download"
+
+def get_file_urls_from_delivery_stops(delivery_stops):
+    urls = []
+    for stop in delivery_stops:
+        if stop.get("requisition_pdf"):
+            req = get_site_directory_path() + '/public' + stop.get("requisition_pdf")
+            urls.append(req)
+        if stop.get("mushak_6_3_pdf"):
+            mu = get_site_directory_path() + '/public' + stop.get("mushak_6_3_pdf")
+            urls.append(mu)
+        if stop.get("po_file"):
+            po_file_path = get_site_directory_path() + '/public' + stop.get("po_file")
+            urls.append(po_file_path)
+            
+    return urls
+
+def get_files_path_from_requisition(requisition):
+    data = []
+    print_format = ["Requisition Standard","Requisition Mushak 6.3"]
+    doc = frappe.get_doc("Requisition",requisition)
+    letter_head = None
+    for x in print_format:
+        fallback_language = frappe.db.get_single_value("System Settings", "language") or "en"
+        args = {
+            "doctype": doc.get("doctype"),
+            "name": doc.get("name"),
+            "title": "Standard",
+            "lang": getattr(doc, "language", fallback_language),
+            "show_progress": 1,
+            "auto_name": "requisiton",
+            "print_format": x,
+            "letter_head": letter_head,
+            "to_field": "file",
+            "to_field_as_link": "order_file"
+        }
+        if x == "Requisition Mushak 6.3":
+            args["mushak"] = "Yes"
+
+        if args.get("lang"):
+            frappe.local.lang = args.get("lang")
+            # unset lang and jenv to load new language
+            frappe.local.lang_full_dict = None
+            frappe.local.jenv = None
+
+        doctype_folder = create_folder(args.get("doctype"), "Home")
+        title_folder = create_folder(args.get("title"), doctype_folder)
+
+
+        if frappe.db.get_value("Print Format", args.get("print_format"), "print_format_builder_beta"):
+            doc = frappe.get_doc(args.get("doctype"), args.get("name"))
+            pdf_data = PrintFormatGenerator(args.get("print_format"), doc, letter_head).render_pdf()
+        else:
+            pdf_data = get_pdf_data(args.get("doctype"), args.get("name"), args.get("print_format"), letter_head)
+    
+        """
+        Save content to disk and create a File document.
+
+        File document is linked to another document.
+        """
+        if args.get("mushak") == "Yes":
+            final_name = "Mushak-6-3-" + args.get("name")
+            file_name = "{to_name}.pdf".format(to_name=final_name)
+        else:
+            file_name = "{to_name}.pdf".format(to_name=args.get("name"))
+
+        file = save_file(file_name, pdf_data, args.get("doctype"), args.get("name"), folder=title_folder, is_private=0, df=args.get("to_field"))
+        # set_file_to_doctype(to_doctype, to_name, file.file_url, to_field, to_field_as_link)
+        label = x.replace(' ','_').lower()
+        data.append({label : file.file_url})
+        
+    # Get And Insert PO File to zip
+    if doc.customer_po_file:
+        try:
+            data.append({"po_file": doc.customer_po_file})
+        except:
+            pass
+        
+    return data
+

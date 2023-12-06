@@ -1,4 +1,8 @@
 frappe.ui.form.on('Delivery Trip', {
+    onload: function(frm) {
+        frm.refresh_field("delivery_stops")
+        frm.refresh()
+    },
     refresh: function (frm) {
 		if (frm.doc.docstatus === 0) {
             frm.add_custom_button(__('Get Requisition'),
@@ -28,38 +32,8 @@ frappe.ui.form.on('Delivery Trip', {
         }, 10);
 	},
     get_files : function(frm) {
-		frappe.call({
-            method:"field_force.field_force.hook_functions.delivery_trip.attach_pdf",
-            args: {
-                doc_data: frm.doc
-              },
-        });
+        var url = `/api/method/field_force.field_force.hook_functions.delivery_trip.download_all_files`;
+        url = url + `?doc_data=${frm.doc.name}`;
+        window.open(url, '_blank');
 	},
 })
-
-frappe.ui.form.on('Delivery Stop', {
-
-    download_requisition: function(frm,cdt,cdn){
-        let row = locals[cdt][cdn]
-        if (row.requisition){
-            var url = `/api/method/field_force.field_force.hook_functions.delivery_trip.attach_pdf`;
-			url = url + `?doc_data=${row.requisition}`;
-			window.open(url, '_blank');
-        }
-    },
-    download_po: function(frm,cdt,cdn){
-        let row = locals[cdt][cdn]
-        if (row.requisition){
-            frappe.db.get_value('Requisition', row.requisition, ['customer_po_file'], (result) => {
-                if (result.customer_po_file) {
-                    var url = `/api/method/field_force.field_force.hook_functions.delivery_trip.download_requisition_file`;
-                    url = url + `?requisition_excel=${result.customer_po_file}`;
-                    window.open(url, '_blank');
-                }
-            });
-            
-        }
-    }
-
-})
-  
