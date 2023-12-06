@@ -1,7 +1,28 @@
 frappe.ui.form.on('Delivery Trip', {
     onload: function(frm) {
-        frm.refresh_field("delivery_stops")
-        frm.refresh()
+        let queryString = window.location.search;
+        if (queryString){
+            let queryStringWithoutQuestionMark = queryString.substring(1);
+            frappe.call({
+                method: 'field_force.field_force.hook_functions.delivery_trip.get_requistion_for_delivery_trip',
+                args: {
+                    'requisitions': queryStringWithoutQuestionMark
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        r.message.forEach(function(row){
+                            let tb_row = frm.add_child("delivery_stops")
+                            tb_row.requisition = row.requisition;
+                            tb_row.customer = row.customer;
+                            tb_row.grand_total = row.grand_total
+                            tb_row.total_qty = row.total_qty
+                        })
+                        frm.refresh_field("delivery_stops")
+                    }
+                }
+            })
+        }
+        
     },
     refresh: function (frm) {
 		if (frm.doc.docstatus === 0) {

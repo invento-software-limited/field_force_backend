@@ -566,3 +566,22 @@ def get_files_path_from_requisition(requisition):
         
     return data
 
+@frappe.whitelist()
+def get_requistion_for_delivery_trip(requisitions):
+    try:
+        requisitions = json.loads(requisitions)
+    except:
+        pass
+    requisitions = requisitions.split(",")
+    data = []
+    for req in requisitions:
+        requisition = frappe.get_doc("Requisition",req)
+        data_dict = {}
+        data_dict["requisition"] = requisition.name
+        data_dict["customer"] = requisition.customer
+        data_dict["total_qty"] = requisition.total_qty
+        data_dict["grand_total"] = requisition.grand_total
+        data.append(data_dict)
+        
+    return data
+

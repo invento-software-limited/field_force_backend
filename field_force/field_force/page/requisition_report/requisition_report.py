@@ -80,6 +80,7 @@ def get_query_data(filters):
 
 def get_columns():
     columns =  [
+        {'fieldname': 'check', 'label': '',"fieldtype":"Check", 'expwidth': 5, 'width': 20},
         {'fieldname': 'date', 'label': 'Date',"fieldtype":"Date", 'expwidth': 15, 'width': 100},
         {'fieldname': 'name', 'label': 'ID',"fieldtype":"Link","options" : "Requisition",'expwidth': 15, 'width': 120},
         {'fieldname': 'customer', 'label': 'Customer',"fieldtype":"Link","options" : "Customer",'expwidth': 15, 'width': 180},

@@ -36,6 +36,40 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 	  this.page.add_menu_item("Export", () => {
 		this.export_excel()
 	  })
+	  this.page.add_button("New Delivery Trip", () => {
+		// frappe.model.with_doctype("Delivery Trip", function() {
+		// 	let prospect = frappe.model.get_new_doc("Delivery Trip");
+		// 	let requisition = [];
+		// 	let checkboxes = document.querySelectorAll('input[type="checkbox"]');
+		// 	checkboxes.forEach(function(checkbox) {
+		// 		if (checkbox.checked) {
+		// 			requisition.push(checkbox.id);
+		// 		}
+		// 	});
+		// 	console.log(requisition[0])
+		// 	frappe.db.get_value("Requisition", requisition[0], ["name","customer",], (r) => {
+		// 		requisition.forEach(function(req) {
+		// 			frappe.db.get_value("Requisition", req, ["name","customer","grand_total","total_qty"], (v) => {
+		// 				let stops_row = frappe.model.add_child(prospect, 'delivery_stops');
+		// 				stops_row.customer = v.customer;
+		// 				stops_row.requisition = v.name;
+		// 				stops_row.total_qty = v.total_qty;
+		// 				stops_row.grand_total = v.grand_total;
+		// 			});
+		// 		});
+		// 		frappe.set_route("Form", "Delivery Trip", prospect.name);
+		// 	});
+		// });
+		let requisition = [];
+		let checkboxes = document.querySelectorAll('input[type="checkbox"]');
+		checkboxes.forEach(function(checkbox) {
+			if (checkbox.checked) {
+				requisition.push(checkbox.id);
+			}
+		});
+		let url = `/app/delivery-trip/new-delivery-trip-1?${requisition}`
+		window.location.href = url;
+	  })
   
 	  // this.page.add_action_item("PDF", () => {
 		  // 	frappe.set_route('query-report', 'Employee Leave Balance Summary Report');
@@ -255,6 +289,8 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 		  } else if (field.editable) {
 			html += `<td id="${data.docname}_${field.fieldname}" class="editable-field parent-container"
 					  data-fieldname="${field.fieldname}" data-name="${data.docname}">${data[field.fieldname] || ''}</td>`
+		  } else if (field.fieldname === 'check') {
+			html += `<td><input type="checkbox" id="${data.docname}"></td>`
 		  }
 		  else {
 			html += get_absolute_format_and_html(field, data);
