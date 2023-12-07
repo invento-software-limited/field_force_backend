@@ -168,7 +168,7 @@ class Requisition(Document):
     def validate_accepted_qty(self, item):
         if not item.accepted_qty:
             item.accepted_qty = item.qty
-            
+
     def set_item_wise_tax(self):
         total_with_tax = 0
         if self.items:
@@ -182,12 +182,12 @@ class Requisition(Document):
                     item.tax_percentage = tax_percentage
                     item.tax_amount = (tax_percentage * (item.qty * item.rate )) / 100
                     item.total_amount = (item.qty * item.rate ) + (tax_percentage * (item.qty * item.rate )) / 100
-                
+
                     total_with_tax += (tax_percentage * (item.qty * item.rate )) / 100
-                    
+
         self.total_with_tax = total_with_tax
         self.grand_total = self.grand_total + total_with_tax
-        
+
 def set_extra_values(self):
     self.total_items = len(self.items)
 
@@ -512,32 +512,36 @@ def get_site_directory_path():
 
 @frappe.whitelist()
 def make_delivery_trip(source_name, target_doc=None):
-    def update_stop_details(source_doc, target_doc, source_parent):
-        target_doc.customer = source_parent.customer
-        target_doc.requisition = source_parent.name
-        target_doc.grand_total = source_parent.grand_total
+    try:
+        def update_stop_details(source_doc, target_doc, source_parent):
+            target_doc.customer = source_parent.customer
+            target_doc.requisition = source_parent.name
+            target_doc.grand_total = source_parent.grand_total
 
-        # Append unique Delivery Notes in Delivery Trip
-        requisition.append(target_doc.requisition)
+            # Append unique Delivery Notes in Delivery Trip
+            requisition.append(target_doc.requisition)
 
 
-    requisition = []
+        requisition = []
 
-    doclist = get_mapped_doc(
-        "Requisition",
-        source_name,
-        {
-            "Requisition": {"doctype": "Delivery Trip", "validation": {"docstatus": ["=", 1]}},
-            "Requisition Item": {
-                "field_map": {"parent": "requisition"},
-                "condition": lambda item: item.parent not in requisition,
-                "postprocess": update_stop_details,
+        doclist = get_mapped_doc(
+            "Requisition",
+            source_name,
+            {
+                "Requisition": {"doctype": "Delivery Trip", "validation": {"docstatus": ["=", 1]}},
+                "Requisition Item": {
+                    "doctype": "Delivery Stop",
+                    "field_map": {"parent": "requisition"},
+                    "condition": lambda item: item.parent not in requisition,
+                    "postprocess": update_stop_details,
+                },
             },
-        },
-        target_doc,
-    )
+            target_doc,
+        )
 
-    return doclist
+        return doclist
+    except:
+        frappe.log_error(frappe.get_traceback(), 'get requisition failed')
 
 @frappe.whitelist()
 def set_datetime_by_workflow_state(docname, state):

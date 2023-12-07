@@ -65,13 +65,14 @@ class UpdateDeliveryTrip(DeliveryTrip):
         if self.delivery_stops:
             for stop in self.delivery_stops:
                 if stop.get("requisition") and not stop.get("mushak_serial"):
-                    serial =  frappe.db.get_single_value("Field Force Settings", "series")
-                    latest_serial = frappe.db.get_single_value("Field Force Settings", "latest_series")
-                    mushak_serial = f"{serial}{latest_serial + 1}"
-                    frappe.client.set_value("Field Force Settings", "Field Force Settings", "latest_series", latest_serial+1 )
                     reg = frappe.get_doc("Requisition",stop.get("requisition"))
-                    reg.db_set("mushak_serial",mushak_serial)
-                    stop.mushak_serial = mushak_serial
+                    if not reg.mushak_serial:
+                        serial =  frappe.db.get_single_value("Field Force Settings", "series")
+                        latest_serial = frappe.db.get_single_value("Field Force Settings", "latest_series")
+                        mushak_serial = f"{serial}{latest_serial + 1}"
+                        frappe.client.set_value("Field Force Settings", "Field Force Settings", "latest_series", latest_serial+1 )
+                        reg.db_set("mushak_serial",mushak_serial)
+                        stop.mushak_serial = mushak_serial
 
     def validate_stop_addresses(self):
         for stop in self.delivery_stops:
