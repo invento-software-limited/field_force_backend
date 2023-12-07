@@ -8,13 +8,15 @@ frappe.query_reports["Customer Wise Delivery Trip"] = {
 			"fieldname":"from_date",
 			"label": __("From Date"),
 			"fieldtype": "Date",
-			"width": "60px"
+			"width": "60px",
+      "default":frappe.datetime.get_today()
 		},
 		{
 			"fieldname":"to_date",
 			"label": __("To Date"),
 			"fieldtype": "Date",
-			"width": "60px"
+			"width": "60px",
+      "default":frappe.datetime.get_today()
 		},
 		{
 			"fieldname":"customer",
