@@ -80,7 +80,7 @@ frappe.ui.form.on('Requisition', {
 		  	};
 		};
 
-    if (frappe.user.has_role("Customer") || frappe.user.has_role("System Manager"){
+    if (frappe.user.has_role("Customer") || frappe.user.has_role("System Manager")) {
       		frm.add_custom_button(__('New Requisition'), () => {
             frappe.new_doc("Requisition");
           }, "fa fa-plus", "btn-default","new_requisition");
