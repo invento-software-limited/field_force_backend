@@ -80,13 +80,15 @@ frappe.ui.form.on('Requisition', {
 		  	};
 		};
 
-		frm.add_custom_button(__('New Requisition'), () => {
-			frappe.new_doc("Requisition");
-	    }, "fa fa-plus", "btn-default","new_requisition");
+    if (frappe.user.has_role("Customer") || frappe.user.has_role("System Manager"){
+      		frm.add_custom_button(__('New Requisition'), () => {
+            frappe.new_doc("Requisition");
+          }, "fa fa-plus", "btn-default","new_requisition");
 
-		// frappe.ui.keys.add_shortcut("Alt+N", function() {
-		// 	btn.trigger("click");
-		// }, "Requisition","new_requisition");
+        // frappe.ui.keys.add_shortcut("Alt+N", function() {
+        // 	btn.trigger("click");
+        // }, "Requisition","new_requisition");
+    }
 
 		if (frm.doc.customer){
 			brand_commissions = get_brands_commissions(frm.doc.customer)
