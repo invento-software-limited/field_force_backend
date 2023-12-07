@@ -114,8 +114,11 @@ class Requisition(Document):
 
         if self.items:
             for item in self.items:
+                item.qty = item.qty or 0
+                item.accepted_qty = item.accepted_qty or 0
+
                 if not item.qty:
-                    frappe.throw(f"Please give quantity of item <b>{item.item_name}</b>")
+                    frappe.throw(f"Please enter quantity of item <b>{item.item_name}</b>")
 
                 if item.qty < item.accepted_qty:
                     frappe.throw(f"Accepted quantity cannot be greater than requested quantity"
