@@ -556,8 +556,9 @@ def set_datetime_by_workflow_state(docname, state):
         "Rejected by Ops Team": "ops_team_rejection_time",
         "Pending for Customer": "ops_team_approval_time",
         "Rejected by Customer": "customer_rejection_time",
-        "Approved": "customer_approval_time"
+        "Approved": "customer_approval_time",
+        "Cancelled": "cancellation_datetime"
     }
 
-    datetime_field = workflow_states_datetime_fields[state]
+    datetime_field = workflow_states_datetime_fields.get(state)
     frappe.db.set_value("Requisition", docname, datetime_field, frappe.utils.now())
