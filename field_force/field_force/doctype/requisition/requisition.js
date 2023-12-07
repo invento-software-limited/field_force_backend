@@ -289,7 +289,7 @@ frappe.ui.form.on("Requisition Item", {
 
 		if (row.item_code !== '' && row.item_code !== null
 			&& row.item_code !== undefined && row.item_code !== item_data[item_str]){
-      if (frm.doc.department_type === "Internal"){
+      if (frm.doc.department === "F & B"){
         get_and_set_item_details(frm, cdt,cdn, row);
       }
 		}

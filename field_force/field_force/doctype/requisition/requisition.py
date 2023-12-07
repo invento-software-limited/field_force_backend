@@ -36,7 +36,6 @@ class Requisition(Document):
         # generate_requisition_excel_and_attach(self)
 
         if self.is_new():
-            print("=================>>", self)
             self.customer_requisition_time = frappe.utils.now()
 
     # def before_submit(self):
@@ -117,6 +116,10 @@ class Requisition(Document):
             for item in self.items:
                 if not item.qty:
                     frappe.throw(f"Please give quantity of item <b>{item.item_name}</b>")
+
+                if item.qty < item.accepted_qty:
+                    frappe.throw(f"Accepted quantity cannot be greater than requested quantity"
+                                 f" of item <b>{item.item_code} - {item.item_name}")
 
                 if not item.discount_percentage:
                     item.discount_percentage = commission_brand_dict.get(item.brand, 0)
