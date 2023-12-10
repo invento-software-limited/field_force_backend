@@ -6,6 +6,7 @@ from field_force.field_force.page.utils import generate_excel_and_download, get_
 
 @frappe.whitelist()
 def execute(filters=None):
+    print(filters)
     columns = get_columns()
     data = get_absolute_data(filters)
     return data, columns
@@ -43,6 +44,7 @@ def get_conditions(filters):
     territory = filters.get('territory')
     department = filters.get('department')
     partner_group = filters.get('partner_group')
+    delivery_trip_created = filters.get('delivery_trip_created')
 
     conditions = {}
 
@@ -58,6 +60,11 @@ def get_conditions(filters):
         conditions['department'] = department
     if partner_group:
         conditions['partner_group'] = partner_group
+
+    if delivery_trip_created:
+        conditions['delivery_trip_created'] = delivery_trip_created
+    else:
+        conditions['delivery_trip_created'] = 0
 
     # return " and ".join(conditions)
     return conditions
@@ -101,9 +108,9 @@ def get_columns():
 def get_appropiate_action_button(requisition):
     user_roles = frappe.get_roles(frappe.session.user)
     owner = requisition.get("owner")
-    action = f'''<a href="/app/requisition/{requisition.get("name")} "id="{requisition.get("name")}_Approve" target="_blank" class="btn btn-success btn-sm" 
+    action = f'''<a href="/app/requisition/{requisition.get("name")} "id="{requisition.get("name")}_Approve" target="_blank" class="btn btn-success btn-sm"
                             style="width:66px;">View</a><br>'''
-                            
+
     # if requisition.get("workflow_state") == "Pending for Ops Team" and "Operation" in user_roles:
     #     action = f'''<div id="{requisition.get("name")}">
     #                     <button id="{requisition.get("name")}_Approve" class="btn btn-primary btn-sm" onclick="play_action(this.id)"
@@ -141,13 +148,13 @@ def play_action(action):
                 requisition.workflow_state = 'Pending for Customer'
             else:
                 requisition.workflow_state = 'Rejected by Ops Team'
-        
+
         elif requisition.workflow_state == 'Pending for Customer':
             if action == "Approve":
                 requisition.workflow_state = 'Approved'
             else:
                 requisition.workflow_state = 'Rejected by Customer'
-            
+
 
         elif requisition.workflow_state == 'Approved' and \
             frappe.has_permission("Requisition", "cancel", requisition.name) and action == 'Cancel':
@@ -215,7 +222,7 @@ def get_pdf_button(doctype, docname, label='', color=None):
                         </svg>
                     </a>
             ''' % style
-            
+
 def custom_pretty_date(date):
     try:
         if isinstance(date, str):
@@ -236,7 +243,7 @@ def custom_pretty_date(date):
             return pretty_date_
     except:
         return ""
-    
+
 @frappe.whitelist()
 def export_file(**filters):
     columns = get_columns()

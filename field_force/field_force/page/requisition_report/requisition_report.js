@@ -5,14 +5,16 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 	  title: 'Requisition Report',
 	  single_column: true
 	})
-  
-	set_background_color();
 
-	
-  
-	new RequisitionReport(page)
+	set_background_color();
+	new RequisitionReport(page);
+
+  let scrollableView = document.querySelector("[data-fieldname=scrollable_view]");
+  let deliveryTripCreated = document.querySelector("[data-fieldname=delivery_trip_created]");
+  scrollableView.style = 'margin-top: 30px;';
+  deliveryTripCreated.style = 'margin-top: 30px;';
   }
-  
+
   class RequisitionReport {
 	constructor(page) {
 	  this.page = page;
@@ -22,13 +24,13 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 	  // this.open_image_modal()
 	  // this.initialize_events();
 	}
-  
+
 	initialize_events = () => {
 	  this.fetch_and_render();
 	}
-  
+
 	make_menu = () => {
-  
+
 	  this.page.add_action_icon("refresh", () => {
 		this.fetch_and_render(true);
 	  }, "Refresh");
@@ -70,11 +72,11 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 		let url = `/app/delivery-trip/new-delivery-trip-1?${requisition}`
 		window.location.href = url;
 	  })
-  
+
 	  // this.page.add_action_item("PDF", () => {
 		  // 	frappe.set_route('query-report', 'Employee Leave Balance Summary Report');
 	  // })
-  
+
 	}
 	make_form = () => {
 	  this.form = new frappe.ui.FieldGroup({
@@ -156,6 +158,17 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 				options: "Partner Group",
 				change: () => this.fetch_and_render(),
 			},
+      {
+				fieldtype: 'Column Break'
+			},
+      {
+				fieldname: 'delivery_trip_created',
+				label: __('Delivery Trip Created'),
+				fieldtype: 'Check',
+				default: 0,
+				change: () => this.fetch_and_render(),
+				hidden: false
+			},
 			{
 				fieldtype: 'Column Break'
 			},
@@ -166,12 +179,6 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 				default: 0,
 				change: () => this.fetch_and_render(),
 				hidden: false
-			},
-			{
-				fieldtype: 'Column Break'
-			},
-			{
-				fieldtype: 'Column Break'
 			},
 			{
 				fieldtype: 'Column Break'
@@ -193,24 +200,33 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 	  this.fetch_and_render()
 	}
 	fetch_and_render = (refresh=false) => {
-	  	let filters= this.form.get_values();
+    let filters= this.form.get_values();
+    let queryParams = window.location.search;
 
-
-    let data = window.location.search;
     if (!filters.status){
-		if (data) {
-			function getParameterValue(url, parameterName) {
-				const urlParams = new URLSearchParams(url);
-				return urlParams.get(parameterName);
-			}
-			let workflowStateValue = getParameterValue(data, 'workflow_state');
-			let decodedValue = decodeURIComponent(workflowStateValue);
-			filters['status'] = decodedValue
-			$('[data-fieldname="status"]').val(decodedValue)
-			window.history.replaceState({}, document.title, window.location.pathname);
+		if (queryParams) {
+      const urlParams = new URLSearchParams(queryParams);
+      console.log(urlParams);
+      console.log(urlParams.has('workflow_state'));
+      console.log(urlParams.has('delivery_trip_created'));
 
+      if (urlParams.has('workflow_state')){
+        let workflowStateValue = urlParams.get('workflow_state');
+        workflowStateValue = decodeURIComponent(workflowStateValue);
+        filters['status'] = workflowStateValue
+        $('[data-fieldname="status"]').val(workflowStateValue)
+      }
+
+      if (urlParams.has('delivery_trip_created')){
+        let deliveryTripCreated = urlParams.get('delivery_trip_created');
+        deliveryTripCreated = decodeURIComponent(deliveryTripCreated);
+        filters['delivery_trip_created'] = parseInt(deliveryTripCreated)
+        $('[data-fieldname="delivery_trip_created"]').val(deliveryTripCreated)
+      }
+
+			window.history.replaceState({}, document.title, window.location.pathname);
 		}
-    }
+  }
 
 
 
@@ -224,7 +240,7 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 		this.form.get_field('preview').html('');
 		return;
 	  }
-  
+
 	  this.form.get_field('preview').html(`
 			  <div class="text-muted margin-top">
 				  ${__("Fetching...")}
@@ -239,12 +255,12 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 		this.render(diff, fields);
 	  });
 	}
-  
+
 	render = (diff, fields) => {
 	  let table_header = this.table_header(fields);
 	  let table_body = this.table_body(diff, fields);
 	  let scrollable_view = this.form.get_values()['scrollable_view']
-  
+
 	  if (scrollable_view === 1) {
 		this.form.get_field('preview').html(
 		  `<div style="width:100%; overflow-x:auto; margin-top: -15px;">
@@ -262,26 +278,26 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 			</div>
 		`);
 	  }
-	  
+
 	}
 	table_header = (headers) => {
 	  let table_header = `<thead><tr>`;
-  
+
 	  headers.forEach(function (field, index) {
 		table_header += `<th scope="col" style="width:${field.width}px !important;">${field.label || ''}</th>`;
 	  })
-  
+
 	  table_header += `</tr>`;
 	  return table_header;
 	}
-  
+
 	table_body = (diff, fields) => {
 	  var html = `<tbody>`;
 	  var serial_number = 1;
-  
+
 	  diff.forEach(function (data, index) {
 		html += `<tr>`;
-  
+
 		fields.forEach(function (field, indx) {
 		  if (field.fieldname === 'sl') {
 			data['sl'] = index + 1;
@@ -296,22 +312,22 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 			html += get_absolute_format_and_html(field, data);
 		  }
 		})
-  
+
 		html += `</tr>`;
 		serial_number = serial_number + 1;
 	  })
-  
+
 	  html += `</tbody>`;
 	  return html
 	}
-  
+
 	export_excel = () => {
 	  let filters= this.form.get_values();
 	  let url = `/api/method/field_force.field_force.page.requisition_report.requisition_report.export_file`;
-  
+
 	  if (filters){
 		url += `?`;
-  
+
 		for (const field in filters) {
 		  url += `${field}=${filters[field]}&`;
 		}
@@ -319,7 +335,7 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 	  window.open(url, '_blank');
 	}
   }
-  
+
 //   amjad kalir bazar life general hospital
   function play_action(action) {
 	frappe.xcall("field_force.field_force.page.requisition_report.requisition_report.play_action",
@@ -330,11 +346,11 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 		document.getElementById(statusFieldID).innerHTML = response.status;
 	  });
   }
-  
+
   function get_absolute_format_and_html(field, data, width = 50) {
 	let docname = data.docname;
 	let value = data[field.fieldname];
-  
+
 	if (field.fieldtype === "Image") {
 	  return get_image_html(value);
 	} else if (field.fieldtype === "Currency") {
@@ -345,7 +361,7 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 	  return `<td id="${docname}_${field.fieldname}">${value || ''}</td>`;
 	}
   }
-  
+
   function get_image_html(image_url) {
 	return `
 		  <td style="height:100px; width:120px;">
@@ -366,14 +382,14 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 			  </a>
 		  </td>`;
   }
-  
+
   function get_currency_format(value) {
 	const company = frappe.defaults.get_user_default("company");
 	const currency = frappe.get_doc(":Company", company).default_currency;
 	let value_in_currency = format_currency(value, currency);
 	return `<td>${value_in_currency || ''}</td>`
   }
-  
+
   function set_background_color(){
 	let current_theme = document.documentElement.getAttribute("data-theme")
 	if (current_theme === 'light'){
@@ -396,4 +412,3 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
     format_D = format_D.replace("dd", day.toString().padStart(2,"0"));
     return format_D;
 }
-  
