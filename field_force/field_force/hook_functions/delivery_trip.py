@@ -27,9 +27,9 @@ class UpdateDeliveryTrip(DeliveryTrip):
 
     def validate(self):
         if self._action == "submit" and not self.driver:
-            frappe.throw(_("A driver must be set to submit.")) 
+            frappe.throw(_("A driver must be set to submit."))
         # self.validate_stop_addresses()
-        
+
     def before_submit(self):
         self.set_mushak_unique_number()
         self.get_requisition_files()
@@ -38,7 +38,7 @@ class UpdateDeliveryTrip(DeliveryTrip):
         # self.set_mushak_unique_number()
         self.update_status()
         self.update_delivery_notes()
-        
+
 
     def on_update_after_submit(self):
         self.update_status()
@@ -46,8 +46,8 @@ class UpdateDeliveryTrip(DeliveryTrip):
     def on_cancel(self):
         self.update_status()
         self.update_delivery_notes(delete=True)
-        
-        
+
+
     def get_requisition_files(self):
         if self.delivery_stops:
             for stop in self.delivery_stops:
@@ -60,7 +60,7 @@ class UpdateDeliveryTrip(DeliveryTrip):
                             stop.mushak_6_3_pdf = file.get("requisition_mushak_6.3")
                         if file.get("po_file"):
                             stop.po_file = file.get("po_file")
-        
+
     def set_mushak_unique_number(self):
         if self.delivery_stops:
             for stop in self.delivery_stops:
@@ -71,8 +71,13 @@ class UpdateDeliveryTrip(DeliveryTrip):
                         latest_serial = frappe.db.get_single_value("Field Force Settings", "latest_series")
                         mushak_serial = f"{serial}{latest_serial + 1}"
                         frappe.client.set_value("Field Force Settings", "Field Force Settings", "latest_series", latest_serial+1 )
+
+                        reg.db_set("delivery_trip_created", 1)
+                        reg.db_set("delivery_trip", self.name)
                         reg.db_set("mushak_serial",mushak_serial)
+
                         stop.mushak_serial = mushak_serial
+                        stop.status = "Scheduled"
 
     def validate_stop_addresses(self):
         for stop in self.delivery_stops:
@@ -279,7 +284,7 @@ class UpdateDeliveryTrip(DeliveryTrip):
             frappe.throw(_(str(e)))
 
         return directions[0] if directions else False
-    
+
 def sanitize_address(address):
     """
     Remove HTML breaks in a given address
@@ -342,9 +347,9 @@ def set_file_to_doctype(to_doctype, to_name, file_url=None, to_field=None, to_fi
             file_name = file_url.split('/')[-1]
             link = f'<a class="attached-file-link" href="{file_url}" target="_blank">{file_name}</a>'
             frappe.db.set_value(to_doctype, to_name, to_field_as_link, link)
-            
+
     except:
-        
+
         pass
 
 @frappe.whitelist()
@@ -409,7 +414,7 @@ def get_file_urls_from_delivery_stops(delivery_stops):
         if stop.get("po_file"):
             po_file_path = get_site_directory_path() + '/public' + stop.get("po_file")
             urls.append(po_file_path)
-            
+
     return urls
 
 def get_files_path_from_requisition(requisition):
@@ -450,7 +455,7 @@ def get_files_path_from_requisition(requisition):
                 pdf_data = PrintFormatGenerator(args.get("print_format"), doc, letter_head).render_pdf()
             else:
                 pdf_data = get_pdf_data(args.get("doctype"), args.get("name"), args.get("print_format"), letter_head)
-        
+
             """
             Save content to disk and create a File document.
 
@@ -466,14 +471,14 @@ def get_files_path_from_requisition(requisition):
             # set_file_to_doctype(to_doctype, to_name, file.file_url, to_field, to_field_as_link)
             label = x.replace(' ','_').lower()
             data.append({label : file.file_url})
-            
+
         # Get And Insert PO File to zip
         if doc.customer_po_file:
             try:
                 data.append({"po_file": doc.customer_po_file})
             except:
                 pass
-            
+
         return data
     except:
         frappe.log_error(frappe.get_traceback(), 'pdf generatre failed')
@@ -494,6 +499,6 @@ def get_requistion_for_delivery_trip(requisitions):
         data_dict["total_qty"] = requisition.total_qty
         data_dict["grand_total"] = requisition.grand_total
         data.append(data_dict)
-        
+
     return data
 
