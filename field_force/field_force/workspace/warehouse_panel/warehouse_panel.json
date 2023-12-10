@@ -1,0 +1,94 @@
+{
+ "charts": [
+  {
+   "chart_name": "Driver Wise Delivery",
+   "label": "Driver Wise Delivery"
+  },
+  {
+   "chart_name": "Territory Wise Delivery",
+   "label": "Territory Wise Delivery"
+  }
+ ],
+ "content": "[{\"id\":\"irmWGpS6Kd\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Logistics</span>\",\"col\":4}},{\"id\":\"JRttAQ96lr\",\"type\":\"header\",\"data\":{\"text\":\"<br>\",\"col\":4}},{\"id\":\"YWp0iDelpt\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Action &amp; Master</span>\",\"col\":4}},{\"id\":\"hhYlJEJpuP\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Create Delivery Trip\",\"col\":4}},{\"id\":\"zJPERQNpf6\",\"type\":\"spacer\",\"data\":{\"col\":4}},{\"id\":\"kmGYU39K5a\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dashboard\",\"col\":4}},{\"id\":\"mT-Bts98vZ\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Customer Wise Scheduled\",\"col\":4}},{\"id\":\"ETIcLIKjig\",\"type\":\"spacer\",\"data\":{\"col\":4}},{\"id\":\"nIlTSPL4pn\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Vehicle Management\",\"col\":4}},{\"id\":\"-i8It3_ZZN\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Customer wise In Transit\",\"col\":4}},{\"id\":\"48JiTIP5Q0\",\"type\":\"spacer\",\"data\":{\"col\":4}},{\"id\":\"FjoBE5QXGu\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Diver Management\",\"col\":4}},{\"id\":\"T1AsQfJXrn\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Customer Wise Completed\",\"col\":4}},{\"id\":\"XaNbYC9zvs\",\"type\":\"spacer\",\"data\":{\"col\":4}},{\"id\":\"WNGTi8S0JA\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Territory Management\",\"col\":4}},{\"id\":\"rmSpbygNf_\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Customer Wise Cancelled Trip\",\"col\":4}},{\"id\":\"OiVhOzCD1p\",\"type\":\"spacer\",\"data\":{\"col\":8}},{\"id\":\"XWfguPMhbk\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"JNGK3e8BcZ\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Territory Wise Delivery\",\"col\":6}},{\"id\":\"oTme4FSgDu\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Driver Wise Delivery\",\"col\":6}}]",
+ "creation": "2023-12-03 15:50:20.861795",
+ "custom_blocks": [
+  {
+   "custom_block_name": "Create Delivery Trip",
+   "label": "Create Delivery Trip"
+  },
+  {
+   "custom_block_name": "Customer wise In Transit",
+   "label": "Customer wise In Transit"
+  },
+  {
+   "custom_block_name": "Customer Wise Scheduled",
+   "label": "Customer Wise Scheduled"
+  },
+  {
+   "custom_block_name": "Customer Wise Completed",
+   "label": "Customer Wise Completed"
+  },
+  {
+   "custom_block_name": "Customer Wise Cancelled Trip",
+   "label": "Customer Wise Cancelled Trip"
+  }
+ ],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Warehouse Panel",
+ "links": [],
+ "modified": "2023-12-10 17:09:40.385623",
+ "modified_by": "munim@invento.com.bd",
+ "module": "Field Force",
+ "name": "Warehouse Panel",
+ "number_cards": [],
+ "owner": "munim@invento.com.bd",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Warehouse User"
+  }
+ ],
+ "sequence_id": 34.0,
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "Diver Management",
+   "link_to": "Driver",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Dashboard",
+   "link_to": "Warehouse Dashboard",
+   "type": "Dashboard"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Vehicle Management",
+   "link_to": "Vehicle",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Territory Management",
+   "link_to": "Territory",
+   "type": "DocType"
+  }
+ ],
+ "title": "Warehouse Panel"
+}
