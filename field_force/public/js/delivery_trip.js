@@ -1,5 +1,7 @@
 frappe.ui.form.on('Delivery Trip', {
     onload: function(frm) {
+        // this.page.remove_button(__("Notify Customers via Email"));
+
         let queryString = window.location.search;
         if (queryString){
             let queryStringWithoutQuestionMark = queryString.substring(1);
@@ -48,10 +50,11 @@ frappe.ui.form.on('Delivery Trip', {
 				}
 			);
 		}
-        setTimeout(() => {
-            frm.remove_custom_button('Delivery Note','Get customers from');
-            frm.remove_custom_button('Delivery Notes','View');
-        }, 10);
+    setTimeout(() => {
+        frm.remove_custom_button('Delivery Note','Get customers from');
+        frm.remove_custom_button('Delivery Notes','View');
+        frm.remove_custom_button('Notify Customers via Email');
+    }, 10);
 	},
     get_files : function(frm) {
         var url = `/api/method/field_force.field_force.hook_functions.delivery_trip.download_all_files`;
