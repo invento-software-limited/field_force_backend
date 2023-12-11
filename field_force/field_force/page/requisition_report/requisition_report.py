@@ -6,7 +6,6 @@ from field_force.field_force.page.utils import generate_excel_and_download, get_
 
 @frappe.whitelist()
 def execute(filters=None):
-    print(filters)
     columns = get_columns()
     data = get_absolute_data(filters)
     return data, columns
@@ -60,10 +59,12 @@ def get_conditions(filters):
         conditions['department'] = department
     if partner_group:
         conditions['partner_group'] = partner_group
-
     if delivery_trip_created:
         conditions['delivery_trip_created'] = delivery_trip_created
-    else:
+    # else:
+    #     conditions['delivery_trip_created'] = 0
+
+    if "Warehouse User" in frappe.get_roles(frappe.session.user) and not delivery_trip_created:
         conditions['delivery_trip_created'] = 0
 
     # return " and ".join(conditions)
@@ -78,7 +79,8 @@ def get_query_data(filters):
     conditions = get_conditions(filters)
 
 
-    fields = ['name', 'modified','owner','grand_total','transaction_date', 'customer', 'delivery_date','expected_delivery_date',
+    fields = ['name', 'modified','owner','grand_total','transaction_date', 'customer', 'delivery_date',
+              'expected_delivery_date', 'delivery_trip_created',
               'workflow_state', 'territory','total_qty','total_items','total_accepted_qty','department']
 
     query_result = frappe.get_list("Requisition", filters=conditions, fields=fields,
@@ -100,7 +102,8 @@ def get_columns():
         {'fieldname': 'total_qty', 'label': 'Reqst Qty', 'fieldtype': 'Data', 'width':80},
         {'fieldname': 'total_accepted_qty', 'label': 'Acpt Qty', 'fieldtype': 'Data', 'width':80},
         {'fieldname': 'difference', 'label': 'Diff Qty', 'fieldtype': 'Data', 'width':80},
-        {'fieldname': 'action', 'label': 'View', 'fieldtype': 'Button', 'width':40, 'export': False},
+        {'fieldname': 'delivery_trip_created', 'label': 'Has\nDT', 'fieldtype': 'Check', 'width':20},
+        {'fieldname': 'action', 'label': 'View', 'fieldtype': 'Button', 'width':20, 'export': False},
         {'fieldname': 'print', 'label': 'Print', 'fieldtype': 'Button', 'width':50, 'export': False},
         {'fieldname': 'pretty_date', 'label': '', 'fieldtype': 'Data', 'width':50, 'export': False},
     ]
@@ -109,7 +112,7 @@ def get_appropiate_action_button(requisition):
     user_roles = frappe.get_roles(frappe.session.user)
     owner = requisition.get("owner")
     action = f'''<a href="/app/requisition/{requisition.get("name")} "id="{requisition.get("name")}_Approve" target="_blank" class="btn btn-success btn-sm"
-                            style="width:66px;">View</a><br>'''
+                            style="width:50px;">View</a><br>'''
 
     # if requisition.get("workflow_state") == "Pending for Ops Team" and "Operation" in user_roles:
     #     action = f'''<div id="{requisition.get("name")}">

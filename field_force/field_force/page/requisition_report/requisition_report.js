@@ -38,40 +38,20 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 	  this.page.add_menu_item("Export", () => {
 		this.export_excel()
 	  })
-	  this.page.add_button("New Delivery Trip", () => {
-		// frappe.model.with_doctype("Delivery Trip", function() {
-		// 	let prospect = frappe.model.get_new_doc("Delivery Trip");
-		// 	let requisition = [];
-		// 	let checkboxes = document.querySelectorAll('input[type="checkbox"]');
-		// 	checkboxes.forEach(function(checkbox) {
-		// 		if (checkbox.checked) {
-		// 			requisition.push(checkbox.id);
-		// 		}
-		// 	});
-		// 	console.log(requisition[0])
-		// 	frappe.db.get_value("Requisition", requisition[0], ["name","customer",], (r) => {
-		// 		requisition.forEach(function(req) {
-		// 			frappe.db.get_value("Requisition", req, ["name","customer","grand_total","total_qty"], (v) => {
-		// 				let stops_row = frappe.model.add_child(prospect, 'delivery_stops');
-		// 				stops_row.customer = v.customer;
-		// 				stops_row.requisition = v.name;
-		// 				stops_row.total_qty = v.total_qty;
-		// 				stops_row.grand_total = v.grand_total;
-		// 			});
-		// 		});
-		// 		frappe.set_route("Form", "Delivery Trip", prospect.name);
-		// 	});
-		// });
-		let requisition = [];
-		let checkboxes = document.querySelectorAll('input[type="checkbox"]');
-		checkboxes.forEach(function(checkbox) {
-			if (checkbox.checked) {
-				requisition.push(checkbox.id);
-			}
-		});
-		let url = `/app/delivery-trip/new-delivery-trip-1?${requisition}`
-		window.location.href = url;
-	  })
+
+    if (frappe.user.has_role("Warehouse User") || frappe.user.has_role("System Manager")) {
+      this.page.add_button("New Delivery Trip", () => {
+        let requisition = [];
+        let checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(function (checkbox) {
+          if (checkbox.checked) {
+            requisition.push(checkbox.id);
+          }
+        });
+        let url = `/app/delivery-trip/new-delivery-trip-1?${requisition}`
+        window.location.href = url;
+      })
+    }
 
 	  // this.page.add_action_item("PDF", () => {
 		  // 	frappe.set_route('query-report', 'Employee Leave Balance Summary Report');
@@ -302,11 +282,20 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 		  if (field.fieldname === 'sl') {
 			data['sl'] = index + 1;
 			html += get_absolute_format_and_html(field, data);
-		  } else if (field.editable) {
+		  }
+      else if (field.editable) {
 			html += `<td id="${data.docname}_${field.fieldname}" class="editable-field parent-container"
 					  data-fieldname="${field.fieldname}" data-name="${data.docname}">${data[field.fieldname] || ''}</td>`
-		  } else if (field.fieldname === 'check') {
-			html += `<td style="    padding-right: 4px;padding-left: 5px;"><input type="checkbox" id="${data.docname}" style="margin-right: 0px !important;"></td>`
+		  }
+      else if (field.fieldname === 'check' && data['delivery_trip_created'] === 0) {
+			  html += `<td style="padding-right: 4px;padding-left: 5px;">
+                    <input type="checkbox" id="${data.docname}" style="margin-right: 0px !important;"></td>`
+		  }
+      else if (field.fieldname === 'delivery_trip_created') {
+        let checked = data[field.fieldname] === 1 ? "checked" : "";
+			  html += `<td style="padding-right: 4px;padding-left: 5px;">
+                <input type="checkbox" ${checked} id="${data.docname}" onclick="return false;"
+                 style="margin-right: 0px !important; accent-color: #00b2ff !important;"></td>`
 		  }
 		  else {
 			html += get_absolute_format_and_html(field, data);
@@ -378,7 +367,7 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 						  return false;
 					  }
 				  )(arguments[0]);
-				  return false;">
+				  return false;
 			  </a>
 		  </td>`;
   }
