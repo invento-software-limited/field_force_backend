@@ -61,11 +61,11 @@ def get_conditions(filters):
         conditions['partner_group'] = partner_group
     if delivery_trip_created:
         conditions['delivery_trip_created'] = delivery_trip_created
-    # else:
-    #     conditions['delivery_trip_created'] = 0
-
-    if "Warehouse User" in frappe.get_roles(frappe.session.user) and not delivery_trip_created:
+    else:
         conditions['delivery_trip_created'] = 0
+
+    # if "Warehouse User" in frappe.get_roles(frappe.session.user) and not delivery_trip_created:
+    #     conditions['delivery_trip_created'] = 0
 
     # return " and ".join(conditions)
     return conditions
