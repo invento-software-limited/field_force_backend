@@ -180,6 +180,10 @@ fixtures = [
     "Workflow State",
     "Workflow",
     "Workflow Action Master",
+    "Dashboard Chart",
+    "Number Card",
+    "Custom HTML Block"
+    "Workspace"
 ]
 
 # Testing
@@ -191,7 +195,8 @@ fixtures = [
 # ------------------------------
 #
 override_whitelisted_methods = {
-	"frappe.desk.doctype.dashboard_chart.dashboard_chart.get": "field_force.api_methods.dashboard_chart.get"
+	"frappe.desk.doctype.dashboard_chart.dashboard_chart.get": "field_force.api_methods.dashboard_chart.get",
+	"frappe.desk.doctype.number_card.number_card.get_result": "field_force.api_methods.number_card.get_result"
 }
 #
 # each overriding function accepts a `data` argument;
