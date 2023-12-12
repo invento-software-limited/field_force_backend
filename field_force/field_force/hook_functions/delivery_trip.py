@@ -65,16 +65,17 @@ class UpdateDeliveryTrip(DeliveryTrip):
         if self.delivery_stops:
             for stop in self.delivery_stops:
                 if stop.get("requisition") and not stop.get("mushak_serial"):
-                    reg = frappe.get_doc("Requisition",stop.get("requisition"))
+                    reg = frappe.get_doc("Requisition", stop.get("requisition"))
                     if not reg.mushak_serial:
                         serial =  frappe.db.get_single_value("Field Force Settings", "series")
                         latest_serial = frappe.db.get_single_value("Field Force Settings", "latest_series")
                         mushak_serial = f"{serial}{latest_serial + 1}"
                         frappe.client.set_value("Field Force Settings", "Field Force Settings", "latest_series", latest_serial+1 )
 
-                        reg.db_set("delivery_trip_created", 1)
-                        reg.db_set("delivery_trip", self.name)
-                        reg.db_set("mushak_serial",mushak_serial)
+                        reg.delivery_trip_created = 1
+                        reg.delivery_trip = self.name
+                        reg.mushak_serial = mushak_serial
+                        reg.save(ignore_permissions=True)
 
                         stop.mushak_serial = mushak_serial
                         stop.status = "Scheduled"
