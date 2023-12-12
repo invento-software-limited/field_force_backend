@@ -14,6 +14,7 @@ import time
 import datetime
 from frappe.model.document import Document
 from field_force.field_force.doctype.utils import get_data_from_pdf
+from field_force.field_force.page.utils import get_spent_time
 
 import openpyxl
 
@@ -36,7 +37,8 @@ class Requisition(Document):
         # generate_requisition_excel_and_attach(self)
 
         if self.is_new():
-            self.customer_requisition_time = frappe.utils.now()
+            self.created_at = frappe.utils.now()
+            self.created_by = frappe.session.user
 
     # def before_submit(self):
     #     generate_csv_and_attach_file(self)
@@ -58,7 +60,7 @@ class Requisition(Document):
 
     def validate_delivery_date(self):
         if self.transaction_date > self.delivery_date:
-            frappe.throw("Expected delivery date should be after Requisition date")
+            frappe.throw("Required delivery date should be after Requisition date")
 
         for item in self.items:
             if not item.delivery_date:
@@ -153,8 +155,10 @@ class Requisition(Document):
 
                 total_items += 1
                 total_qty += int(item.qty)
-
                 # self.validate_accepted_qty(item)
+
+            self.difference_qty = self.total_qty - total_accepted_qty
+            self.difference_amount = self.total - total_accepted_amount
         else:
             frappe.throw("Items are required")
 
@@ -552,13 +556,31 @@ def make_delivery_trip(source_name, target_doc=None):
 @frappe.whitelist()
 def set_datetime_by_workflow_state(docname, state):
     workflow_states_datetime_fields = {
-        "Pending for Ops Team": "customer_requisition_time",
-        "Rejected by Ops Team": "ops_team_rejection_time",
-        "Pending for Customer": "ops_team_approval_time",
-        "Rejected by Customer": "customer_rejection_time",
-        "Approved": "customer_approval_time",
-        "Cancelled": "cancellation_datetime"
+        "Pending for Ops Team": ("created_at", "created_by"),
+        "Rejected by Ops Team": ("ops_rejection_time", "ops_rejected_by"),
+        "Pending for Customer": ("ops_approval_time", "ops_approved_by"),
+        "Rejected by Customer": ("customer_rejection_time", "customer_rejected_by"),
+        "Approved": ("customer_approval_time", "customer_approved_by"),
+        "Cancelled": ("cancelled_at", "cancelled_by")
     }
 
-    datetime_field = workflow_states_datetime_fields.get(state)
-    frappe.db.set_value("Requisition", docname, datetime_field, frappe.utils.now())
+    datetime_field, user_field = workflow_states_datetime_fields.get(state)
+    time = frappe.utils.now()
+    frappe.db.set_value("Requisition", docname, datetime_field, time)
+    frappe.db.set_value("Requisition", docname, user_field, frappe.session.user)
+
+    if state == "Pending for Customer":
+        created_at = frappe.db.get_value("Requisition", docname, "created_at")
+
+        if created_at:
+            lead_time = frappe.utils.pretty_date(created_at)
+            frappe.db.set_value("Requisition", docname, 'ops_lead_time', lead_time)
+
+    if state == "Approved":
+        ops_approval_time = frappe.db.get_value("Requisition", docname, "ops_approval_time")
+
+        if ops_approval_time:
+            lead_time = frappe.utils.pretty_date(ops_approval_time)
+            frappe.db.set_value("Requisition", docname, 'customer_lead_time', lead_time)
+
+    frappe.db.commit()
