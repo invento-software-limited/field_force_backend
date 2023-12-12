@@ -34,9 +34,10 @@ def get_result(doc, filters, to_date=None):
 	if to_date:
 		filters.append([doc.document_type, "creation", "<", to_date])
 
-	res = frappe.get_all(
+	res = frappe.get_list(
 		doc.document_type, fields=fields, filters=filters, parent_doctype=doc.parent_document_type
 	)
 	number = res[0]["result"] if res else 0
 
 	return cint(number)
+
