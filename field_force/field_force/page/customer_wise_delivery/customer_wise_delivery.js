@@ -25,6 +25,7 @@ frappe.pages['customer-wise-delivery'].on_page_load = function(wrapper) {
 		}, "Refresh");
 
     if (frappe.user.has_role("Warehouse User") || frappe.user.has_role("System Manager")) {
+		var me =this
 		this.page.add_button("Update Status", () => {
 			let trips = [];
 			let checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -68,6 +69,7 @@ frappe.pages['customer-wise-delivery'].on_page_load = function(wrapper) {
 								value:values
 							},
 							callback: (r) => {
+								me.fetch_and_render(true);
 							}
 						});
 						d.hide();
