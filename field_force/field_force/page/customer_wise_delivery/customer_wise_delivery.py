@@ -65,6 +65,8 @@ def get_conditions(filters):
         conditions += ' and ds.status = "{}"'.format(filters.get("status"))
     if filters.get("vehicle"):
         conditions += ' and dt.vehicle = "{}"'.format(filters.get("vehicle"))
+    if filters.get("requisition"):
+        conditions += ' and ds.requisition = "{}"'.format(filters.get("requisition"))
     
     user_roles = frappe.get_roles(frappe.session.user)
     if "Customer" in user_roles and "System Manager" not in user_roles:
