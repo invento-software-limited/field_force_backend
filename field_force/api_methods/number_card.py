@@ -2,42 +2,24 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 from frappe.utils import cint
+from frappe.boot import get_allowed_report_names
 
-@frappe.whitelist()
-def get_result(doc, filters, to_date=None):
-	doc = frappe.parse_json(doc)
-	fields = []
-	sql_function_map = {
-		"Count": "count",
-		"Sum": "sum",
-		"Average": "avg",
-		"Minimum": "min",
-		"Maximum": "max",
-	}
+ALLOWED_CHILD_DOCTYPES = ["Requisition Item", "Delivery Stop"]
 
-	function = sql_function_map[doc.function]
+def has_permission(doc, ptype, user):
+	roles = frappe.get_roles(user)
+	if "System Manager" in roles:
+		return True
 
-	if function == "count":
-		fields = [f"{function}(*) as result"]
+	if doc.type == "Report":
+		if doc.report_name in get_allowed_report_names():
+			return True
 	else:
-		fields = [
-			"{function}({based_on}) as result".format(
-				function=function, based_on=doc.aggregate_function_based_on
-			)
-		]
+		allowed_doctypes = frappe.permissions.get_doctypes_with_read()
+		allowed_doctypes.extend(ALLOWED_CHILD_DOCTYPES)
 
-	if not filters:
-		filters = []
-	elif isinstance(filters, str):
-		filters = frappe.parse_json(filters)
+		if doc.document_type in allowed_doctypes:
+			return True
 
-	if to_date:
-		filters.append([doc.document_type, "creation", "<", to_date])
-
-	res = frappe.get_list(
-		doc.document_type, fields=fields, filters=filters, parent_doctype=doc.parent_document_type
-	)
-	number = res[0]["result"] if res else 0
-
-	return cint(number)
+	return False
 

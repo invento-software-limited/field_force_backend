@@ -3,6 +3,11 @@ def execute():
     import frappe.geo.utils
     import field_force.api
     from field_force.field_force.hook_functions import geo_location
+    from frappe.desk.doctype.number_card import number_card
+    from field_force.api_methods import number_card as field_force_number_card
+
+    # number card has_permission
+    number_card.has_permission = field_force_number_card.has_permission
 
     #overriding the validate_auth function
     # frappe.api.validate_auth = field_force.api.validate_auth
