@@ -108,20 +108,30 @@ frappe.pages['customer-wise-delivery'].on_page_load = function(wrapper) {
 					fieldtype: 'Column Break'
 				},
 				{
-					fieldname:"customer",
-					label: __("Customer"),
-					fieldtype: "Link",
-					options: "Customer",
+					fieldname: 'delivery_trip',
+					label: __('Delivery Trip'),
+					fieldtype: 'Link',
+					options: "Delivery Trip",
 					change: () => this.fetch_and_render(),
 				},
 				{
 					fieldtype: 'Column Break'
 				},
 				{
-					fieldname: 'delivery_trip',
-					label: __('ID'),
+					fieldname: 'requisition',
+					label: __('Requisition'),
 					fieldtype: 'Link',
-					options: "Delivery Trip",
+					options: "Requisition",
+					change: () => this.fetch_and_render(),
+				},
+				{
+					fieldtype: 'Column Break'
+				},
+				{
+					fieldname:"customer",
+					label: __("Customer"),
+					fieldtype: "Link",
+					options: "Customer",
 					change: () => this.fetch_and_render(),
 				},
 				{
@@ -136,10 +146,10 @@ frappe.pages['customer-wise-delivery'].on_page_load = function(wrapper) {
 					change: () => this.fetch_and_render()
 				},
 				{
-					fieldtype: 'Column Break'
+					fieldtype: 'Section Break'
 				},
 				{
-
+					
 					fieldname: 'status',
 					label: __('Status'),
 					fieldtype: 'Link',
@@ -147,7 +157,7 @@ frappe.pages['customer-wise-delivery'].on_page_load = function(wrapper) {
 					change: () => this.fetch_and_render()
 				},
 				{
-					fieldtype: 'Section Break'
+					fieldtype: 'Column Break'
 				},
 				{
 					fieldname:"vehicle",
