@@ -1,4 +1,7 @@
 import frappe
+from frappe import _
+from frappe.model.document import Document
+from frappe.utils import cint
 
 @frappe.whitelist()
 def get_result(doc, filters, to_date=None):
