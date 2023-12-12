@@ -203,12 +203,8 @@ frappe.pages['customer-wise-delivery'].on_page_load = function(wrapper) {
     if (!filters.status){
 		if (queryParams) {
       const urlParams = new URLSearchParams(queryParams);
-      console.log(urlParams);
-      console.log(urlParams.has('workflow_state'));
-      console.log(urlParams.has('delivery_trip_created'));
-
-      if (urlParams.has('workflow_state')){
-        let workflowStateValue = urlParams.get('workflow_state');
+      if (urlParams.has('status')){
+        let workflowStateValue = urlParams.get('status');
         workflowStateValue = decodeURIComponent(workflowStateValue);
         filters['status'] = workflowStateValue
         $('[data-fieldname="status"]').val(workflowStateValue)
