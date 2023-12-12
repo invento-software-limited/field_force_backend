@@ -26,6 +26,14 @@ frappe.pages['customer-wise-delivery'].on_page_load = function(wrapper) {
 
     if (frappe.user.has_role("Warehouse User") || frappe.user.has_role("System Manager")) {
 		this.page.add_button("Update Status", () => {
+			let trips = [];
+			let checkboxes = document.querySelectorAll('input[type="checkbox"]');
+			checkboxes.forEach(function (checkbox) {
+				if (checkbox.checked) {
+					trips.push(checkbox.id);
+				}
+			});
+			if (trips.length > 0) {
 				let d = new frappe.ui.Dialog({
 					title: 'Enter details',
 					fields: [
@@ -67,6 +75,11 @@ frappe.pages['customer-wise-delivery'].on_page_load = function(wrapper) {
 				});
 				
 				d.show();
+			}else{
+
+				msgprint("Select Delivery Stops First","Message")
+			}
+				
 			})
 		}
 	}
@@ -292,7 +305,7 @@ frappe.pages['customer-wise-delivery'].on_page_load = function(wrapper) {
 						data-fieldname="${field.fieldname}" data-name="${data.docname}">${data[field.fieldname] || ''}</td>`
 			}
 		else if (field.fieldname === 'check') {
-			if (frappe.user.has_role("Customer")) {
+			if (frappe.user.has_role("Customer") && !frappe.user.has_role("System Manager")) {
 				html += `<td style="padding-right: 4px;padding-left: 5px;"></td>`
 			}else{
 				html += `<td style="padding-right: 4px;padding-left: 5px;">

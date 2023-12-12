@@ -24,7 +24,7 @@ def get_absolute_data(filters, export=False):
         change_color(requisition,"departure_date","#9b00d7")
         change_color(requisition,"contact_person","#00bf46")
         change_color(requisition,"contact_number","#8000cc")
-        change_color(requisition,"address","#0600cc")
+        change_color(requisition,"customer_primary_address","#0600cc")
 
         if not export:
             user_role = frappe.get_roles(frappe.session.user)
@@ -86,7 +86,7 @@ def get_query_data(filters):
 
     query = frappe.db.sql('''select dt.name as id, dt.driver_name, dt.driver, dt.territory, ds.requisition,
                         date(dt.departure_time) as departure_date, dt.vehicle, time(dt.departure_time) as departure_time,ds.requisition,
-                         ds.status, ds.customer, ds.contact_person,ds.contact_number, ds.address, ds.total_qty,ds.name as ds_id
+                         ds.status, ds.customer, ds.contact_person,ds.contact_number, ds.customer_primary_address, ds.total_qty,ds.name as ds_id
                         from `tabDelivery Stop` as ds left join `tabDelivery Trip` as dt on dt.name = ds.parent
                         left join `tabRequisition` as req on ds.requisition = req.name
                         where dt.name is not null and ds.customer in {} {}
@@ -105,7 +105,7 @@ def get_columns():
         {"label": _("Status"), "fieldtype": "Data","fieldname": "status", "width": 80},
         {"label": _("Vehicle"),"fieldtype": "Data","fieldname": "vehicle","width": 120},
         {"label": _("Driver Name"), "fieldtype": "Data", "fieldname": "driver_name", "width": 120},
-        {"label": _("Address"),"fieldtype": "Data","fieldname":"address","width": 200},
+        {"label": _("Address"),"fieldtype": "Data","fieldname":"customer_primary_address","width": 200},
         {"label": _("Contact Person"), "fieldtype": "Data", "fieldname": "contact_person", "width": 80},
         {"label": _("Contact Number"), "fieldtype": "Data", "fieldname": "contact_number", "width": 80},
         {"label": _("QTY"), "fieldtype": "Float", "fieldname": "total_qty", "width": 80},
