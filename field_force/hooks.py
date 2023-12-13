@@ -142,7 +142,10 @@ doc_events = {
 		"before_save": "field_force.field_force.hook_functions.sales_person.before_save",
 		"after_insert": "field_force.field_force.hook_functions.sales_person.after_insert",
 		"on_update": "field_force.field_force.hook_functions.sales_person.on_update",
-	}
+	},
+	"User": {
+		"on_update": "field_force.field_force.hook_functions.user.on_update"
+	},
 
 }
 
