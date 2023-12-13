@@ -852,6 +852,7 @@
    "default": "0",
    "fieldname": "delivery_trip_created",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Delivery Trip Created",
    "read_only": 1
   },
@@ -976,7 +977,7 @@
  "is_submittable": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2023-12-12 18:00:11.843499",
+ "modified": "2023-12-13 10:16:58.595287",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",
