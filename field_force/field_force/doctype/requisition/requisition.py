@@ -60,12 +60,15 @@ class Requisition(Document):
             frappe.db.set_value(self.doctype, self.name, 'status', 'Cancelled')
 
     def validate_delivery_date(self):
+        if self.transaction_date < frappe.utils.today():
+            frappe.throw("Date can not be before Today")
+
         if self.transaction_date > self.delivery_date:
             frappe.throw("Required delivery date should be after Requisition date")
 
-        for item in self.items:
-            if not item.delivery_date:
-                item.delivery_date = self.delivery_date
+        if self.expected_delivery_date:
+            if self.expected_delivery_date < self.delivery_date:
+                frappe.throw("Expected delivery date should be after Requisition date")
 
     def validate_po_number(self):
         filters =  {
@@ -119,6 +122,9 @@ class Requisition(Document):
             for item in self.items:
                 item.qty = item.qty or 0
                 item.accepted_qty = item.accepted_qty or 0
+
+                if not item.delivery_date:
+                    item.delivery_date = self.delivery_date
 
                 if not item.qty:
                     frappe.throw(f"Please enter quantity of item <b>{item.item_name}</b>")
@@ -608,7 +614,7 @@ def get_lead_time(start_time, end_time, in_word=True):
     #
     #         spent_time += f" {minutes} minutes" if minutes > 1 else f"{minutes} minute"
 
-    return spent_time
+    return spent_time.seconds
 
 def get_timedelta_time_obj(datetime_):
     if isinstance(datetime_, str):
