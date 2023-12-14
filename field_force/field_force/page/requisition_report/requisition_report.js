@@ -83,6 +83,16 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 				fieldtype: 'Column Break'
 			},
 			{
+				fieldname:"requisition",
+				label: __("Requisition"),
+				fieldtype: "Link",
+				options: "Requisition",
+				change: () => this.fetch_and_render(),
+			},
+			{
+				fieldtype: 'Column Break'
+			},
+			{
 				fieldname:"customer",
 				label: __("Customer"),
 				fieldtype: "Link",
@@ -110,8 +120,9 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 				options: "Customer Department",
 				change: () => this.fetch_and_render(),
 			},
+			
 			{
-				fieldtype: 'Column Break'
+				fieldtype: 'Section Break'
 			},
 			{
 
@@ -129,7 +140,7 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 				change: () => this.fetch_and_render()
 			},
 			{
-				fieldtype: 'Section Break'
+				fieldtype: 'Column Break'
 			},
 			{
 				fieldname:"partner_group",
@@ -287,7 +298,7 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 			html += `<td id="${data.docname}_${field.fieldname}" class="editable-field parent-container"
 					  data-fieldname="${field.fieldname}" data-name="${data.docname}">${data[field.fieldname] || ''}</td>`
 		  }
-      else if (field.fieldname === 'check' && data['delivery_trip_created'] === 0) {
+      else if (field.fieldname === 'check' && data['delivery_trip_created'] === 0 && data['workflow_state'] !== "Cancelled") {
 			  html += `<td style="padding-right: 4px;padding-left: 5px;">
                     <input type="checkbox" id="${data.docname}" style="margin-right: 0px !important;"></td>`
 		  }

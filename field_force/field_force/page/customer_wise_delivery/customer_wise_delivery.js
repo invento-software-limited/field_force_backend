@@ -315,6 +315,8 @@ frappe.pages['customer-wise-delivery'].on_page_load = function(wrapper) {
 		else if (field.fieldname === 'check') {
 			if (frappe.user.has_role("Customer") && !frappe.user.has_role("System Manager")) {
 				html += `<td style="padding-right: 4px;padding-left: 5px;"></td>`
+			}else if (frappe.user.has_role("Operation") && !frappe.user.has_role("System Manager")) {
+				html += `<td style="padding-right: 4px;padding-left: 5px;"></td>`
 			}else{
 				html += `<td style="padding-right: 4px;padding-left: 5px;">
 						<input type="checkbox" id="${data.docname}&${data.ds_docname}" 
