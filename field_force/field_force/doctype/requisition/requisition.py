@@ -15,6 +15,7 @@ import datetime
 from frappe.model.document import Document
 from field_force.field_force.doctype.utils import get_data_from_pdf
 from field_force.field_force.page.utils import get_spent_time
+from dateutil.relativedelta import relativedelta
 
 import openpyxl
 
@@ -59,12 +60,15 @@ class Requisition(Document):
             frappe.db.set_value(self.doctype, self.name, 'status', 'Cancelled')
 
     def validate_delivery_date(self):
+        if self.transaction_date < frappe.utils.today():
+            frappe.throw("Date can not be before Today")
+
         if self.transaction_date > self.delivery_date:
             frappe.throw("Required delivery date should be after Requisition date")
 
-        for item in self.items:
-            if not item.delivery_date:
-                item.delivery_date = self.delivery_date
+        if self.expected_delivery_date:
+            if self.expected_delivery_date < self.delivery_date:
+                frappe.throw("Expected delivery date should be after Requisition date")
 
     def validate_po_number(self):
         filters =  {
@@ -118,6 +122,9 @@ class Requisition(Document):
             for item in self.items:
                 item.qty = item.qty or 0
                 item.accepted_qty = item.accepted_qty or 0
+
+                if not item.delivery_date:
+                    item.delivery_date = self.delivery_date
 
                 if not item.qty:
                     frappe.throw(f"Please enter quantity of item <b>{item.item_name}</b>")
@@ -573,14 +580,46 @@ def set_datetime_by_workflow_state(docname, state):
         created_at = frappe.db.get_value("Requisition", docname, "created_at")
 
         if created_at:
-            lead_time = frappe.utils.pretty_date(created_at)
+            lead_time = get_lead_time(created_at, time)
             frappe.db.set_value("Requisition", docname, 'ops_lead_time', lead_time)
 
     if state == "Approved":
         ops_approval_time = frappe.db.get_value("Requisition", docname, "ops_approval_time")
 
         if ops_approval_time:
-            lead_time = frappe.utils.pretty_date(ops_approval_time)
+            lead_time = get_lead_time(ops_approval_time, time)
             frappe.db.set_value("Requisition", docname, 'customer_lead_time', lead_time)
 
     frappe.db.commit()
+
+def get_lead_time(start_time, end_time, in_word=True):
+    if not start_time and not end_time:
+        return ''
+
+    start_time = get_timedelta_time_obj(start_time)
+    end_time = get_timedelta_time_obj(end_time)
+
+    spent_time = end_time - start_time
+
+    # if in_word:
+    #     time_elements = str(spent_time).split(':')
+    #     hour, minutes = int(time_elements[0]), int(time_elements[1])
+    #     spent_time = ''
+    #
+    #     if hour:
+    #         spent_time = f"{hour} hours" if hour > 1 else f"{hour} hour"
+    #     if minutes:
+    #         if spent_time:
+    #             spent_time += " and"
+    #
+    #         spent_time += f" {minutes} minutes" if minutes > 1 else f"{minutes} minute"
+
+    return spent_time.seconds
+
+def get_timedelta_time_obj(datetime_):
+    if isinstance(datetime_, str):
+        datetime_ = datetime.datetime.strptime(str(datetime_), '%Y-%m-%d %H:%M:%S.%f')
+
+    return datetime.timedelta(hours=datetime_.hour, minutes=datetime_.minute,
+                              seconds=datetime_.second, microseconds=datetime_.microsecond)
+

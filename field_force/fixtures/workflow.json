@@ -4,13 +4,14 @@
   "doctype": "Workflow",
   "document_type": "Requisition",
   "is_active": 1,
-  "modified": "2023-12-07 14:18:26.845422",
+  "modified": "2023-12-13 14:37:44.732199",
   "name": "Requisition Workflow",
   "override_status": 0,
   "send_email_alert": 0,
   "states": [
    {
     "allow_edit": "Operation",
+    "avoid_status_override": 0,
     "doc_status": "0",
     "is_optional_state": 0,
     "message": null,
@@ -24,6 +25,7 @@
    },
    {
     "allow_edit": "Customer",
+    "avoid_status_override": 0,
     "doc_status": "0",
     "is_optional_state": 0,
     "message": null,
@@ -37,6 +39,7 @@
    },
    {
     "allow_edit": "Operation",
+    "avoid_status_override": 0,
     "doc_status": "0",
     "is_optional_state": 0,
     "message": null,
@@ -50,6 +53,7 @@
    },
    {
     "allow_edit": "Customer",
+    "avoid_status_override": 0,
     "doc_status": "1",
     "is_optional_state": 0,
     "message": null,
@@ -63,6 +67,7 @@
    },
    {
     "allow_edit": "Customer",
+    "avoid_status_override": 0,
     "doc_status": "0",
     "is_optional_state": 0,
     "message": null,
@@ -75,7 +80,22 @@
     "update_value": null
    },
    {
+    "allow_edit": "Customer",
+    "avoid_status_override": 0,
+    "doc_status": "1",
+    "is_optional_state": 0,
+    "message": null,
+    "next_action_email_template": null,
+    "parent": "Requisition Workflow",
+    "parentfield": "states",
+    "parenttype": "Workflow",
+    "state": "Cancelled",
+    "update_field": "status",
+    "update_value": "Cancelled"
+   },
+   {
     "allow_edit": "System Manager",
+    "avoid_status_override": 0,
     "doc_status": "2",
     "is_optional_state": 0,
     "message": null,
@@ -112,6 +132,17 @@
     "state": "Pending for Ops Team"
    },
    {
+    "action": "Cancel",
+    "allow_self_approval": 1,
+    "allowed": "Customer",
+    "condition": null,
+    "next_state": "Cancelled",
+    "parent": "Requisition Workflow",
+    "parentfield": "transitions",
+    "parenttype": "Workflow",
+    "state": "Pending for Ops Team"
+   },
+   {
     "action": "Approve",
     "allow_self_approval": 1,
     "allowed": "Customer",
@@ -128,6 +159,17 @@
     "allowed": "Customer",
     "condition": "",
     "next_state": "Rejected by Customer",
+    "parent": "Requisition Workflow",
+    "parentfield": "transitions",
+    "parenttype": "Workflow",
+    "state": "Pending for Customer"
+   },
+   {
+    "action": "Cancel",
+    "allow_self_approval": 1,
+    "allowed": "Customer",
+    "condition": null,
+    "next_state": "Cancelled",
     "parent": "Requisition Workflow",
     "parentfield": "transitions",
     "parenttype": "Workflow",
