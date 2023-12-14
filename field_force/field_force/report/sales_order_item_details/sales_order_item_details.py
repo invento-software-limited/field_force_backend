@@ -98,7 +98,7 @@ def get_columns():
          "width": 100},
         {"label": _("Sales Person Name"), "fieldname": "sales_person", "fieldtype": "Link", "options": "Sales Person",
          "width": 100},
-        {"label": _("Supervisor ID"), "fieldname": "supervisor_employee", "fieldtype": "Data", "options": "Sales Person",
+        {"label": _("Supervisor ID"), "fieldname": "custom_supervisor_employee", "fieldtype": "Data", "options": "Sales Person",
          "width": 100},
         {"label": _("Supervisor Name"), "fieldname": "sales_person", "fieldtype": "Link", "options": "Sales Person",
          "width": 100},
@@ -107,8 +107,8 @@ def get_columns():
         {"label": _("Order Time"), "fieldname": "transaction_time", "width": 100},
 
         {"label": _("Customer Group"), "fieldname": "customer_group", "width": 100, "fieldtype": "Link", "options": "Customer Group"},
-        {"label": _("Partner Group"), "fieldname": "partner_group", "width": 100, "fieldtype": "Link", "options": "Customer Group"},
-        {"label": _("Customer ID"), "fieldname": "customer_id", "width": 100, "fieldtype": "Link", "options": "Customer"},
+        {"label": _("Partner Group"), "fieldname": "custom_partner_group", "width": 100, "fieldtype": "Link", "options": "Customer Group"},
+        {"label": _("Customer ID"), "fieldname": "custom_customer_id", "width": 100, "fieldtype": "Link", "options": "Customer"},
         {"label": _("Customer Name"), "fieldname": "customer_name", "width": 200, "fieldtype": "Data", "options": "Customer"},
         {"label": _("Brand"), "fieldname": "brand", "width": 100, "fieldtype": "Link", "options": "Brand"},
         {"label": _("Item Group"), "fieldname": "item_group", "fieldtype": "Link", "options": "Item Group",
@@ -135,10 +135,10 @@ def get_data(filters):
     print(conditions)
 
     query_string = '''SELECT sales_order.name, sales_order.transaction_date,sales_order.delivery_date,
-                    time(sales_order.creation) as transaction_time, sales_order.customer_group, sales_order.partner_group,
-                    sales_order.sales_person, sales_order.customer, sales_order.customer_id, sales_order.customer_name,
+                    time(sales_order.creation) as transaction_time, sales_order.customer_group, sales_order.custom_partner_group,
+                    sales_order.sales_person, sales_order.customer, sales_order.custom_customer_id, sales_order.customer_name,
                     sales_order.contact_number, sales_order.territory,
-                    sales_order.grand_total, sales_order.employee, sales_order.supervisor_employee,
+                    sales_order.grand_total, sales_order.employee, sales_order.custom_supervisor_employee,
                     sales_order_item.item_code, sales_order_item.item_name, sales_order_item.item_group,
                     sales_order_item.uom, sales_order_item.brand, sales_order_item.price_list_rate, sales_order_item.qty,
                     sales_order_item.discount_percentage, sales_order_item.discount_amount, sales_order_item.rate,
@@ -192,7 +192,7 @@ def get_conditions(filters):
     if customer_group:
         conditions.append('sales_order.customer_group = "%s"' % customer_group)
     if partner_group:
-        conditions.append('sales_order.partner_group = "%s"' % partner_group)
+        conditions.append('sales_order.custom_partner_group = "%s"' % partner_group)
     if customer:
         conditions.append('sales_order.customer = "%s"' % customer)
     if brand:
