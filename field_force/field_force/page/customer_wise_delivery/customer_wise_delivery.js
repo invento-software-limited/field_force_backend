@@ -43,12 +43,7 @@ frappe.pages['customer-wise-delivery'].on_page_load = function(wrapper) {
 							label: __("Status"),
 							fieldname: "status",
 							options: [
-								"",
-								"Draft",
-								"Scheduled",
 								"In Transit",
-								"Completed",
-								"Cancelled"
 							],
 						},
 					],
