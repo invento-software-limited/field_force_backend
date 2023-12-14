@@ -614,7 +614,7 @@ def get_lead_time(start_time, end_time, in_word=True):
     #
     #         spent_time += f" {minutes} minutes" if minutes > 1 else f"{minutes} minute"
 
-    return spent_time.seconds
+    return spent_time
 
 def get_timedelta_time_obj(datetime_):
     if isinstance(datetime_, str):
@@ -622,4 +622,3 @@ def get_timedelta_time_obj(datetime_):
 
     return datetime.timedelta(hours=datetime_.hour, minutes=datetime_.minute,
                               seconds=datetime_.second, microseconds=datetime_.microsecond)
-
