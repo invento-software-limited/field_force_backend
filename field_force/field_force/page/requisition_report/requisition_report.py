@@ -39,6 +39,7 @@ def get_conditions(filters):
     from_date = filters.get('from_date')
     to_date = filters.get('to_date')
     customer = filters.get('customer')
+    requisition = filters.get('requisition')
     status = filters.get('status')
     territory = filters.get('territory')
     department = filters.get('department')
@@ -51,6 +52,8 @@ def get_conditions(filters):
         conditions["transaction_date"] = ["between", [from_date, to_date]]
     if customer:
         conditions["customer"] = customer
+    if requisition:
+        conditions["name"] = requisition
     if status:
         conditions['workflow_state'] = status
     if territory:
