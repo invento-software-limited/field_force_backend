@@ -18,7 +18,7 @@ def execute(filters=None):
 
     for sales_order_item in data:
         set_link_to_doc(sales_order_item, 'item_code', 'item', sales_order_item.product_id)
-        set_link_to_doc(sales_order_item, 'customer', 'item', sales_order_item.custom_customer_id)
+        set_link_to_doc(sales_order_item, 'customer', 'customer', sales_order_item.custom_customer_id)
         sales_order_item['transaction_time'] = get_time_in_12_hour_format(sales_order_item.transaction_time)
         sales_order_item['transaction_date'] = frappe.format(sales_order_item.transaction_date, {"fieldtype": "Date"})
         # date_wise_total = set_date_wise_qty_and_amount(date_wise_total, sales_order_item)
