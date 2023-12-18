@@ -3,21 +3,26 @@
 import datetime
 
 import frappe
-from field_force.field_force.report.utils import set_user_link
+from field_force.field_force.report.utils import *
+from field_force.field_force.page.utils import *
 from frappe import _
 
 def execute(filters=None):
     columns = get_columns()
     data = get_data(filters)
     # sales_order_name = ''
-    # sales_order_items = []
+    sales_order_items = []
     # subtotal = get_subtotal()
     # date_wise_total = {}
     # item_count = 0
 
-    # for sales_order_item in data:
-    #     # date_wise_total = set_date_wise_qty_and_amount(date_wise_total, sales_order_item)
-    #
+    for sales_order_item in data:
+        set_link_to_doc(sales_order_item, 'item_code', 'item', sales_order_item.product_id)
+        set_link_to_doc(sales_order_item, 'customer', 'item', sales_order_item.custom_customer_id)
+        sales_order_item['transaction_time'] = get_time_in_12_hour_format(sales_order_item.transaction_time)
+        sales_order_item['transaction_date'] = frappe.format(sales_order_item.transaction_date, {"fieldtype": "Date"})
+        # date_wise_total = set_date_wise_qty_and_amount(date_wise_total, sales_order_item)
+
     #     # if sales_order_name == sales_order_item.name:
     #     #     sales_order_item.transaction_date = None
     #     #     sales_order_item.name = None
@@ -108,12 +113,12 @@ def get_columns():
 
         {"label": _("Customer Group"), "fieldname": "customer_group", "width": 100, "fieldtype": "Link", "options": "Customer Group"},
         {"label": _("Partner Group"), "fieldname": "custom_partner_group", "width": 100, "fieldtype": "Link", "options": "Customer Group"},
-        {"label": _("Customer ID"), "fieldname": "custom_customer_id", "width": 100, "fieldtype": "Link", "options": "Customer"},
+        {"label": _("Customer ID"), "fieldname": "customer", "width": 100, "fieldtype": "Data", "options": "Customer"},
         {"label": _("Customer Name"), "fieldname": "customer_name", "width": 200, "fieldtype": "Data", "options": "Customer"},
         {"label": _("Brand"), "fieldname": "brand", "width": 100, "fieldtype": "Link", "options": "Brand"},
         {"label": _("Item Group"), "fieldname": "item_group", "fieldtype": "Link", "options": "Item Group",
          "width": 100},
-        {"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Link", "options": "Item", "width": 180},
+        {"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Data", "options": "Item", "width": 180},
         {"label": _("Item Name"), "fieldname": "item_name", "width": 180},
         {"label": _("Order QTY"), "fieldname": "qty", "fieldtype": "Int", "width": 80},
         # {"label": _("UOM"), "fieldname": "uom", "fieldtype": "Data", "width": 70},
@@ -132,13 +137,13 @@ def get_columns():
 
 def get_data(filters):
     conditions = get_conditions(filters)
-    print(conditions)
 
     query_string = '''SELECT sales_order.name, sales_order.transaction_date,sales_order.delivery_date,
-                    time(sales_order.creation) as transaction_time, sales_order.customer_group, sales_order.custom_partner_group,
-                    sales_order.sales_person, sales_order.customer, sales_order.custom_customer_id, sales_order.customer_name,
-                    sales_order.contact_number, sales_order.territory,
-                    sales_order.grand_total, sales_order.employee, sales_order.custom_supervisor_employee,
+                    time(sales_order.creation) as transaction_time, sales_order.customer_group,
+                    sales_order.custom_partner_group, sales_order.custom_supervisor_employee, sales_order.custom_customer_id,
+                    sales_order.sales_person, sales_order.customer, sales_order.customer_name,
+                    sales_order.contact_number, sales_order.territory, sales_order_item.product_id,
+                    sales_order.grand_total, sales_order.employee,
                     sales_order_item.item_code, sales_order_item.item_name, sales_order_item.item_group,
                     sales_order_item.uom, sales_order_item.brand, sales_order_item.price_list_rate, sales_order_item.qty,
                     sales_order_item.discount_percentage, sales_order_item.discount_amount, sales_order_item.rate,
@@ -147,7 +152,6 @@ def get_data(filters):
                     on sales_order.name=sales_order_item.parent where %s order by
                     sales_order.transaction_date desc''' % (conditions)
 
-    print(query_string)
     query_result = frappe.db.sql(query_string, as_dict=1, debug=0)
     return query_result
 
