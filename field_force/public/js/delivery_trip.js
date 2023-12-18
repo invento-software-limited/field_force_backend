@@ -2,13 +2,12 @@ frappe.ui.form.on('Delivery Trip', {
     onload: function(frm) {
         // this.page.remove_button(__("Notify Customers via Email"));
 
-        let queryString = window.location.search;
+        let queryString = frm.doc.custom_requisition_list;
         if (queryString){
-            let queryStringWithoutQuestionMark = queryString.substring(1);
             frappe.call({
                 method: 'field_force.field_force.hook_functions.delivery_trip.get_requistion_for_delivery_trip',
                 args: {
-                    'requisitions': queryStringWithoutQuestionMark
+                    'requisitions': queryString
                 },
                 callback: function(r) {
                     if (r.message) {
@@ -20,6 +19,7 @@ frappe.ui.form.on('Delivery Trip', {
                             tb_row.total_qty = row.total_qty
                         })
                         frm.refresh_field("delivery_stops")
+                        frm.set_value("custom_requisition_list","")
                     }
                 }
             })
