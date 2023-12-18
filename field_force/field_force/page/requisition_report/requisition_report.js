@@ -48,8 +48,15 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
             requisition.push(checkbox.id);
           }
         });
-        let url = `/app/delivery-trip/new-delivery-trip-1?${requisition}`
-        window.location.href = url;
+		if (requisition.length > 0) {
+			frappe.model.with_doctype("Delivery Trip", function() {
+				let prospect = frappe.model.get_new_doc("Delivery Trip");
+				prospect.custom_requisition_list = requisition.join(",");
+				frappe.set_route("Form", "Delivery trip", prospect.name);
+			});
+		}else{
+			msgprint("Select Requisitions First","Message")
+		}
       })
     }
 
