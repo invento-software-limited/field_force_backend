@@ -112,7 +112,8 @@ def get_columns():
         {"label": _("Order Time"), "fieldname": "transaction_time", "width": 100},
 
         {"label": _("Customer Group"), "fieldname": "customer_group", "width": 100, "fieldtype": "Link", "options": "Customer Group"},
-        {"label": _("Partner Group"), "fieldname": "custom_partner_group", "width": 100, "fieldtype": "Link", "options": "Customer Group"},
+        {"label": _("Partner Group"), "fieldname": "custom_partner_group", "width": 100, "fieldtype": "Link", "options": "Partner Group"},
+        {"label": _("Distributor"), "fieldname": "distributor", "width": 100, "fieldtype": "Link", "options": "Distributor"},
         {"label": _("Customer ID"), "fieldname": "customer", "width": 100, "fieldtype": "Data", "options": "Customer"},
         {"label": _("Customer Name"), "fieldname": "customer_name", "width": 200, "fieldtype": "Data", "options": "Customer"},
         {"label": _("Brand"), "fieldname": "brand", "width": 100, "fieldtype": "Link", "options": "Brand"},
@@ -122,7 +123,7 @@ def get_columns():
         {"label": _("Product Name"), "fieldname": "item_name", "width": 180},
         {"label": _("Order QTY"), "fieldname": "qty", "fieldtype": "Int", "width": 100},
         # {"label": _("UOM"), "fieldname": "uom", "fieldtype": "Data", "width": 70},
-        {"label": _("Unit Price"), "fieldname": "price_list_rate", "fieldtype": "Currency", "width": 100},
+        {"label": _("Unit Price"), "fieldname": "rate", "fieldtype": "Currency", "width": 100},
         # {"label": _("Discount(%)"), "fieldname": "discount_percentage", "fieldtype": "Float", "precision":2, "width": 100},
         # {"label": _("Discount Amount"), "fieldname": "discount_amount", "fieldtype": "Currency", "width": 100},
         # {"label": _("Rate"), "fieldname": "rate", "fieldtype": "Currency", "width": 100},
@@ -143,7 +144,7 @@ def get_data(filters):
                     sales_order.custom_partner_group, sales_order.custom_supervisor_employee, sales_order.custom_customer_id,
                     sales_order.sales_person, sales_order.customer, sales_order.customer_name,
                     sales_order.contact_number, sales_order.territory, sales_order_item.product_id,
-                    sales_order.grand_total, sales_order.employee, sales_order.supervisor,
+                    sales_order.grand_total, sales_order.employee, sales_order.supervisor, sales_order.distributor,
                     sales_order_item.item_code, sales_order_item.item_name, sales_order_item.item_group,
                     sales_order_item.uom, sales_order_item.brand, sales_order_item.price_list_rate, sales_order_item.qty,
                     sales_order_item.discount_percentage, sales_order_item.discount_amount, sales_order_item.rate,
@@ -164,6 +165,7 @@ def get_conditions(filters):
     supervisor = filters.get('supervisor')
     customer_group = filters.get('customer_group')
     partner_group = filters.get('partner_group')
+    distributor = filters.get('distributor')
     customer = filters.get('customer')
     brand = filters.get('brand')
     item_group = filters.get('item_group')
@@ -197,6 +199,8 @@ def get_conditions(filters):
         conditions.append('sales_order.customer_group = "%s"' % customer_group)
     if partner_group:
         conditions.append('sales_order.custom_partner_group = "%s"' % partner_group)
+    if distributor:
+        conditions.append('sales_order.distributor = "%s"' % distributor)
     if customer:
         conditions.append('sales_order.customer = "%s"' % customer)
     if brand:
