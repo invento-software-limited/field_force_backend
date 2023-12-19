@@ -142,7 +142,7 @@ def get_data(filters):
 
     query_string = '''SELECT sales_order.name, sales_order.transaction_date,sales_order.delivery_date,
                     time(sales_order.creation) as transaction_time, sales_order.customer_group,
-                    # sales_order.custom_partner_group, sales_order.custom_supervisor_employee, sales_order.custom_customer_id,
+                    sales_order.custom_partner_group, sales_order.custom_supervisor_employee, sales_order.custom_customer_id,
                     sales_order.sales_person, sales_order.customer, sales_order.customer_name,
                     sales_order.contact_number, sales_order.territory, sales_order_item.product_id,
                     sales_order.grand_total, sales_order.employee, sales_order.supervisor, sales_order.distributor,
