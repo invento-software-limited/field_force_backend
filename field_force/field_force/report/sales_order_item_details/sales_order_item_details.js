@@ -73,6 +73,14 @@ frappe.query_reports["Sales Order Item Details"] = {
 
 		},
     {
+			"fieldname": "distributor",
+			"label": __("Distributor"),
+			"fieldtype": "Link",
+			"width": "100",
+			"options": "Distributor"
+
+		},
+    {
 			"fieldname": "customer",
 			"label": __("Customer"),
 			"fieldtype": "Link",
@@ -89,6 +97,9 @@ frappe.query_reports["Sales Order Item Details"] = {
         }
         if(frappe.query_report.get_filter_value('partner_group')){
           filters.push(["partner_group", "=", frappe.query_report.get_filter_value('partner_group')]);
+        }
+        if(frappe.query_report.get_filter_value('distributor')){
+          filters.push(["distributor", "=", frappe.query_report.get_filter_value('distributor')]);
         }
 
 				return {
