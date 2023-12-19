@@ -20,7 +20,8 @@ def execute(filters=None):
         set_link_to_doc(sales_order_item, 'item_code', 'item', sales_order_item.product_id)
         set_link_to_doc(sales_order_item, 'customer', 'customer', sales_order_item.custom_customer_id)
         sales_order_item['transaction_time'] = get_time_in_12_hour_format(sales_order_item.transaction_time)
-        sales_order_item['transaction_date'] = frappe.format(sales_order_item.transaction_date, {"fieldtype": "Date"})
+        # sales_order_item['transaction_date'] = frappe.format(sales_order_item.transaction_date, {"fieldtype": "Date"})
+        sales_order_item['transaction_date'] = sales_order_item.transaction_date.strftime("%m-%d-%Y")
         # date_wise_total = set_date_wise_qty_and_amount(date_wise_total, sales_order_item)
 
     #     # if sales_order_name == sales_order_item.name:
@@ -97,6 +98,7 @@ def get_subtotal():
 def get_columns():
     """ Columns of Report Table"""
     return [
+        {"label": _("Order Date"), "fieldname": "transaction_date", "width": 100},
         {"label": _("Territory"), "fieldname": "territory", "width": 100, "fieldtype": "Link",
          "options": "Territory"},
         {"label": _("Sales Person ID"), "fieldname": "employee", "fieldtype": "Data", "options": "Sales Person",
@@ -108,7 +110,6 @@ def get_columns():
         {"label": _("Supervisor Name"), "fieldname": "supervisor", "fieldtype": "Link", "options": "Sales Person",
          "width": 120},
         {"label": _("Order Number"), "fieldname": "name", "width": 130, "fieldtype": "Link", "options": "Sales Order"},
-        {"label": _("Order Date"), "fieldname": "transaction_date", "width": 100},
         {"label": _("Order Time"), "fieldname": "transaction_time", "width": 100},
 
         {"label": _("Customer Group"), "fieldname": "customer_group", "width": 100, "fieldtype": "Link", "options": "Customer Group"},
@@ -141,7 +142,7 @@ def get_data(filters):
 
     query_string = '''SELECT sales_order.name, sales_order.transaction_date,sales_order.delivery_date,
                     time(sales_order.creation) as transaction_time, sales_order.customer_group,
-                    sales_order.custom_partner_group, sales_order.custom_supervisor_employee, sales_order.custom_customer_id,
+                    # sales_order.custom_partner_group, sales_order.custom_supervisor_employee, sales_order.custom_customer_id,
                     sales_order.sales_person, sales_order.customer, sales_order.customer_name,
                     sales_order.contact_number, sales_order.territory, sales_order_item.product_id,
                     sales_order.grand_total, sales_order.employee, sales_order.supervisor, sales_order.distributor,
