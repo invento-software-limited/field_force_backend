@@ -2,17 +2,22 @@ import frappe
 import datetime
 
 def before_save(self, method):
-    pass
+    create_employee_and_set_role_profile(self)
+    update_customers(self)
+    update_sales_person(self)
 
 def after_insert(self, method):
-    create_employee_and_set_role_profile(self)
-    update_sales_person(self)
-    update_customers(self)
+    # create_employee_and_set_role_profile(self)
+    # update_sales_person(self)
+    # update_customers(self)
+    # self.save()
+    pass
 
 def on_update(self, method):
     # create_employee_and_set_role_profile(self)
-    update_customers(self)
-    update_sales_person(self)
+    # update_customers(self)
+    # update_sales_person(self)
+    pass
 
 def update_sales_person(self):
     if self.type == "Sales Representative" and self.distributor:
@@ -36,10 +41,6 @@ def create_employee_and_set_role_profile(self):
             self.user = frappe.db.get_value("Employee", self.employee, 'user_id')
 
     if self.create_employee and self.employee_number and not self.employee and not self.employee_created:
-        if self.user:
-            if frappe.db.exists("Employee", {"user_id": self.user}):
-                frappe.throw(f"Employee already exists with user id '<b>{self.user}</b>'")
-
         if not frappe.db.exists("Gender", {"name": "N/A"}):
             gender = frappe.get_doc({
                 "doctype": "Gender",
@@ -47,21 +48,20 @@ def create_employee_and_set_role_profile(self):
             })
             gender.insert()
 
-        employee = frappe.get_doc({
-            "doctype": "Employee",
-            "employee_number": self.employee_number,
-            "first_name": self.sales_person_name,
-            "gender": "N/A",
-            "date_of_birth": (datetime.datetime.today() - datetime.timedelta(days=1)).date(),
-            "date_of_joining": datetime.datetime.today().date(),
-            "user_id": self.user,
-        })
-
-        employee.insert()
-        self.employee = employee.name
-        self.employee_created = 1
-        employee.reports_to = sales_person.employee
-        employee.save()
+        if self.user and not frappe.db.exists("Employee", {"name": self.employee_number, "user_id": self.user}):
+            employee = frappe.get_doc({
+                "doctype": "Employee",
+                "employee_number": self.employee_number,
+                "first_name": self.sales_person_name,
+                "gender": "N/A",
+                "date_of_birth": (datetime.datetime.today() - datetime.timedelta(days=1)).date(),
+                "date_of_joining": datetime.datetime.today().date(),
+                "user_id": self.user,
+            })
+            self.employee = employee.name
+            self.employee_created = 1
+            employee.reports_to = sales_person.employee
+            employee.save()
 
     elif sales_person.employee and frappe.db.exists("Employee", self.employee):
         employee = frappe.get_doc("Employee", self.employee)
@@ -71,8 +71,10 @@ def create_employee_and_set_role_profile(self):
         #     frappe.throw("Employee's user id doesn't match with sales person's user")
         # elif not employee.user_id and self.user:
         #     employee.user_id = self.user
-
         employee.save()
+
+    if self.employee_number and self.employee_created:
+        self.employee = self.employee_number
 
     if self.user and self.type:
         user = frappe.get_doc("User", self.user)
