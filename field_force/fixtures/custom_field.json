@@ -89,7 +89,7 @@
         "name": "User-department",
         "no_copy": 0,
         "non_negative": 0,
-        "options": "Department",
+        "options": "Customer Department",
         "parent": null,
         "parentfield": null,
         "parenttype": null,
