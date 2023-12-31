@@ -398,7 +398,7 @@ def generate_csv_and_attach_file(requisition):
         writer.writerow(columns)
 
         for item in requisition.items:
-            item_row_data = [item.product_id, item.item_name, item.uom, item.qty, item.rate, '', item.rate, item.amount]
+            item_row_data = [str(item.product_id), item.item_name, item.uom, item.qty, item.rate, '', item.rate, item.amount]
             # write the data
             writer.writerow(item_row_data)
 
