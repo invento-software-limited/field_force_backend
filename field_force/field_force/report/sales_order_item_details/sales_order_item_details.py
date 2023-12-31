@@ -114,6 +114,7 @@ def get_columns():
 
         {"label": _("Customer Group"), "fieldname": "customer_group", "width": 100, "fieldtype": "Link", "options": "Customer Group"},
         {"label": _("Partner Group"), "fieldname": "custom_partner_group", "width": 100, "fieldtype": "Link", "options": "Partner Group"},
+        {"label": _("Distributor ID"), "fieldname": "distributor_id", "width": 100, "fieldtype": "Data", "options": "Distributor"},
         {"label": _("Distributor"), "fieldname": "distributor", "width": 100, "fieldtype": "Link", "options": "Distributor"},
         {"label": _("Customer ID"), "fieldname": "customer", "width": 100, "fieldtype": "Data", "options": "Customer"},
         {"label": _("Customer Name"), "fieldname": "customer_name", "width": 200, "fieldtype": "Data", "options": "Customer"},
@@ -149,9 +150,10 @@ def get_data(filters):
                     sales_order_item.item_code, sales_order_item.item_name, sales_order_item.item_group,
                     sales_order_item.uom, sales_order_item.brand, sales_order_item.price_list_rate, sales_order_item.qty,
                     sales_order_item.discount_percentage, sales_order_item.discount_amount, sales_order_item.rate,
-                    sales_order_item.amount, sales_order.user, sales_order.company
+                    sales_order_item.amount, sales_order.user, sales_order.company, customer.customer_id as distributor_id
                     from `tabSales Order` sales_order left join `tabSales Order Item` sales_order_item
-                    on sales_order.name=sales_order_item.parent where %s order by
+                    on sales_order.name=sales_order_item.parent left join `tabCustomer` customer
+                     on sales_order.distributor = customer.name where %s order by
                     sales_order.transaction_date desc''' % (conditions)
 
     query_result = frappe.db.sql(query_string, as_dict=1, debug=0)
