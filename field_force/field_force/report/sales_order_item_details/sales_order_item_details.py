@@ -114,7 +114,7 @@ def get_columns():
 
         {"label": _("Customer Group"), "fieldname": "customer_group", "width": 100, "fieldtype": "Link", "options": "Customer Group"},
         {"label": _("Partner Group"), "fieldname": "custom_partner_group", "width": 100, "fieldtype": "Link", "options": "Partner Group"},
-        {"label": _("Distributor ID"), "fieldname": "distributor_id", "width": 100, "fieldtype": "Data", "options": "Distributor"},
+        {"label": _("Dist. ID"), "fieldname": "distributor_id", "width": 100, "fieldtype": "Data", "options": "Distributor"},
         {"label": _("Distributor"), "fieldname": "distributor", "width": 100, "fieldtype": "Link", "options": "Distributor"},
         {"label": _("Customer ID"), "fieldname": "customer", "width": 100, "fieldtype": "Data", "options": "Customer"},
         {"label": _("Customer Name"), "fieldname": "customer_name", "width": 200, "fieldtype": "Data", "options": "Customer"},
