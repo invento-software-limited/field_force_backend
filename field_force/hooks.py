@@ -144,6 +144,8 @@ doc_events = {
 		"on_update": "field_force.field_force.hook_functions.sales_person.on_update",
 	},
 	"User": {
+		"validate": "field_force.field_force.hook_functions.user.validate",
+		# "before_save": "field_force.field_force.hook_functions.user.before_save",
 		"on_update": "field_force.field_force.hook_functions.user.on_update"
 	},
 
@@ -183,10 +185,7 @@ fixtures = [
     "Workflow State",
     "Workflow",
     "Workflow Action Master",
-    "Dashboard Chart",
-    "Number Card",
-    "Custom HTML Block"
-    "Workspace"
+    "UserType"
 ]
 
 # Testing
