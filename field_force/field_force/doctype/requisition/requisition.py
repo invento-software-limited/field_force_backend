@@ -136,24 +136,25 @@ class Requisition(Document):
                 if not item.discount_percentage:
                     item.discount_percentage = commission_brand_dict.get(item.brand, 0)
 
-                if not item.price_list_rate:
-                    item.price_list_rate = frappe.db.get_value("Item Price", {"item_code": item.item_code,
-                                                                              "selling": 1}, ["price_list_rate"])
+                if self.auto_rate_calculation:
+                    if not item.price_list_rate:
+                        item.price_list_rate = frappe.db.get_value("Item Price", {"item_code": item.item_code,
+                                                                                  "selling": 1}, ["price_list_rate"])
 
-                if not item.price_list_rate and not item.rate:
-                    frappe.throw(f"There is no selling rate of item <b>{item.item_name}</b>")
+                    if not item.price_list_rate and not item.rate:
+                        frappe.throw(f"There is no selling rate of item <b>{item.item_name}</b>")
 
-                elif item.price_list_rate or item.rate:
-                    if (item.price_list_rate and not item.rate) or (item.price_list_rate == item.rate):
-                        if item.discount_percentage:
-                            item.discount_amount = item.price_list_rate * (float(item.discount_percentage) / 100)
-                        else:
-                            item.discount_amount = 0
+                    elif item.price_list_rate or item.rate:
+                        if (item.price_list_rate and not item.rate) or (item.price_list_rate == item.rate):
+                            if item.discount_percentage:
+                                item.discount_amount = item.price_list_rate * (float(item.discount_percentage) / 100)
+                            else:
+                                item.discount_amount = 0
 
-                        item.rate = item.price_list_rate - item.discount_amount
+                            item.rate = item.price_list_rate - item.discount_amount
 
-                    item.amount = item.qty * item.rate
-                    total += float(item.amount)
+                        item.amount = item.qty * item.rate
+                        total += float(item.amount)
 
                 if item.accepted_qty:
                     item.accepted_amount = item.accepted_qty * item.rate
@@ -188,8 +189,10 @@ class Requisition(Document):
 
     def set_item_wise_tax(self):
         total_with_tax = 0
+
         if self.items:
             for item in self.items:
+                item.rate = item.rate or 0
                 item_details = frappe.get_doc("Item",item.item_code)
                 tax_percentage = 0
                 if item_details.taxes:

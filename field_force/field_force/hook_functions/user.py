@@ -48,7 +48,6 @@ def set_user_permission(doc_name, allow_doc, field_value):
         user_permission.save()
 
 def delete_user_permission(doc_name, allow_doc, field_value):
-    print(doc_name, allow_doc, field_value)
 
     if frappe.db.exists('User Permission', {'user':doc_name, 'allow':allow_doc}):
         permission_doc = frappe.get_doc("User Permission", {'user':doc_name, 'allow':allow_doc})
