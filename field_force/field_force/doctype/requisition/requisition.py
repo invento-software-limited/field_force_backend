@@ -325,16 +325,22 @@ def set_column_width(worksheet, column=None, width=None):
 
 @frappe.whitelist()
 def get_brands_commission(customer, brand=None):
-    customer_group, distributor = frappe.db.get_value("Customer", customer, ['customer_group', 'distributor'])
+    customer_group, distributor, partner_group = frappe.db.get_value("Customer", customer,
+                                                                     ['customer_group', 'distributor', 'partner_group'])
     brand_wise_commission_dict = {}
 
-    if customer_group == "Retail Shop" and distributor:
+    if partner_group:
+        commissions = frappe.db.get_all('Customer Brand Commission', {'parenttype': 'Partner Group', 'parent': partner_group},
+                                        ['brand', 'commission_rate'])
+        brand_wise_commission_dict = get_commissions_in_dict(commissions)
+
+    if not brand_wise_commission_dict and customer_group == "Retail Shop" and distributor:
         commissions = frappe.db.get_all('Distributor Brand Commission', {'parent': distributor},
                                         ['brand', 'commission_rate'])
         brand_wise_commission_dict = get_commissions_in_dict(commissions)
 
     if not brand_wise_commission_dict:
-        commissions = frappe.db.get_all('Customer Brand Commission', {'parent': customer},
+        commissions = frappe.db.get_all('Customer Brand Commission', {'parent': customer, 'parenttype': 'Customer'},
                                         ['brand', 'commission_rate'])
         brand_wise_commission_dict = get_commissions_in_dict(commissions)
 
