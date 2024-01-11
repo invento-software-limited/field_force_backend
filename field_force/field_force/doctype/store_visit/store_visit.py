@@ -33,6 +33,7 @@ class StoreVisit(Document):
         set_sales_person(self)
         set_employee(self)
         set_cheat_status(self)
+        self.set_customer_latitude_longitude()
 
     def after_insert(self):
         self.assign_store_visit_to_store_visit_assign()
@@ -75,3 +76,12 @@ class StoreVisit(Document):
 
         store_visit_destination.validate()
         store_visit_destination.save(ignore_permissions=True)
+
+    def set_customer_latitude_longitude(self):
+        if self.latitude and self.longitude:
+            customer = frappe.get_doc("Customer", self.customer)
+
+            if not customer.latitude or not customer.longitude:
+                customer.latitude = self.latitude
+                customer.longitude = self.longitude
+                customer.save()
