@@ -44,7 +44,8 @@ doctype_js = {
 
 doctype_list_js = {
 	"Sales Order" : "public/js/sales_order_list.js",
-	"Sales Person" : "public/js/sales_person_list.js"
+	"Sales Person" : "public/js/sales_person_list.js",
+	"Customer" : "public/js/customer_list.js"
 }
 
 doctype_tree_js = {

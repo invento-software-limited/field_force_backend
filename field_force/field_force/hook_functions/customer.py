@@ -25,6 +25,19 @@ def on_update(self, method):
             add_customer_to_sales_person(self)
             frappe.db.commit()
 
+@frappe.whitelist()
+def generate_customer_id_if_not_exist():
+    frappe.msgprint("Generating Retail Customer's ID(if blank) ...")
+    customers = frappe.get_list("Customer", {'customer_group': 'Retail Shop', 'customer_id':['=', '']})
+
+    for customer_ in customers:
+        customer = frappe.get_doc("Customer", customer_.name)
+
+        if customer.distributor:
+            customer.save()
+
+    frappe.db.commit()
+
 def generate_customer_id(self, method):
     if not self.customer_id and self.customer_group == "Retail Shop" and self.distributor:
         customer = frappe.db.get_value("Distributor", self.distributor, 'customer')
