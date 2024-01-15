@@ -50,7 +50,7 @@ def execute(filters=None):
     #     requisition_items.append(subtotal)
 
     chart = get_chart(data, date_wise_total, filters)
-    return columns, requisition_items, '', chart
+    return columns, requisition_items
 
 def set_date_wise_qty_and_amount(date_wise_total, requisition_item):
     transaction_date = str(requisition_item.transaction_date)
@@ -96,6 +96,8 @@ def get_columns():
         {"label": _("ID"), "fieldname": "name", "width": 130, "fieldtype": "Link", "options": "Requisition"},
         {"label": _("Distributor"), "fieldname": "distributor", "width": 130, "fieldtype": "Link",
          "options": "Distributor"},
+        {"label": _("Partner Group"), "fieldname": "partner_group", "width": 130, "fieldtype": "Link",
+         "options": "Partner Group"},
         {"label": _("Customer"), "fieldname": "customer", "width": 200, "fieldtype": "Link", "options": "Customer"},
         {"label": _("PO Number"), "fieldname": "po_no", "width": 120},
         {"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Link", "options": "Item", "width": 140},
@@ -121,12 +123,13 @@ def get_columns():
 def get_data(filters):
     conditions = get_conditions(filters)
 
-    query_string = '''SELECT 
+    query_string = '''SELECT
                         requisition.name,
                         requisition.transaction_date,
                         requisition.delivery_date,
                         requisition.sales_person,
                         requisition.customer,
+                        requisition.partner_group,
                         requisition.contact_number,
                         requisition.distributor,
                         requisition.po_no,
@@ -145,7 +148,7 @@ def get_data(filters):
                         requisition.user,
                         requisition.company,
                         requisition.status
-                    from `tabRequisition` requisition left join `tabRequisition Item` requisition_item 
+                    from `tabRequisition` requisition left join `tabRequisition Item` requisition_item
                     on requisition.name=requisition_item.parent
                     where %s order by requisition.transaction_date desc''' % conditions
 
@@ -160,6 +163,7 @@ def get_conditions(filters):
     sales_person = filters.get('sales_person')
     customer = filters.get('customer')
     distributor = filters.get('distributor')
+    partner_group = filters.get('partner_group')
     item = filters.get('item')
     company = filters.get('company')
     status = filters.get('status')
@@ -177,6 +181,8 @@ def get_conditions(filters):
         conditions.append('requisition.customer = "%s"' % customer)
     if distributor:
         conditions.append('requisition.distributor = "%s"' % distributor)
+    if partner_group:
+        conditions.append('requisition.partner_group = "%s"' % partner_group)
     if company:
         conditions.append('requisition.company = "%s"' % company)
     if status:

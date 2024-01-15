@@ -18,6 +18,8 @@ def get_columns():
         {"label": _("ID"), "fieldname": "name", "width": 130, "fieldtype": "Link", "options": "Requisition"},
         {"label": _("Distributor"), "fieldname": "distributor", "width": 120, "fieldtype": "Link",
          "options": "Distributor"},
+        {"label": _("Partner Group"), "fieldname": "partner_group", "width": 130, "fieldtype": "Link",
+         "options": "Partner Group"},
 		{"label": _("Customer"), "fieldname": "customer", "width": 200, "fieldtype": "Link", "options": "Customer"},
 		{"label": _("Territory"), "fieldname": "territory", "width": 120, "fieldtype": "Link", "options": "Territory"},
         {"label": _("PO Number"), "fieldname": "po_no", "width": 120},
@@ -40,6 +42,7 @@ def get_data(filters):
                         requisition.delivery_date,
                         requisition.sales_person,
                         requisition.customer,
+                        requisition.partner_group,
                         requisition.po_no,
                         requisition.distributor,
                         requisition.territory,
@@ -59,6 +62,7 @@ def get_conditions(filters):
     sales_person = filters.get('sales_person')
     customer = filters.get('customer')
     distributor = filters.get('distributor')
+    partner_group = filters.get('partner_group')
     territory = filters.get('territory')
     company = filters.get('company')
     status = filters.get('status')
@@ -77,6 +81,8 @@ def get_conditions(filters):
         conditions.append('requisition.customer = "%s"' % customer)
     if distributor:
         conditions.append('requisition.distributor = "%s"' % distributor)
+    if partner_group:
+        conditions.append('requisition.partner_group = "%s"' % partner_group)
     if territory:
         conditions.append('requisition.territory = "%s"' % territory)
     if company:
