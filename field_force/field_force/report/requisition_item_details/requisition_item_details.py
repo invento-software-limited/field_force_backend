@@ -23,6 +23,7 @@ def execute(filters=None):
             requisition_item.name = None
             requisition_item.customer = None
             requisition_item.distributor = None
+            requisition_item.partner_group = None
             requisition_item.delivery_date = None
             requisition_item.sales_person = None
             requisition_item.grand_total = None
