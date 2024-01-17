@@ -1,0 +1,47 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "UserType",
+  "modified": "2024-01-03 19:27:22.252304",
+  "module_profile": "",
+  "name": "General",
+  "role_profile": "",
+  "type": "General"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "UserType",
+  "modified": "2024-01-03 19:28:00.709336",
+  "module_profile": "Field Force",
+  "name": "Field Force",
+  "role_profile": null,
+  "type": "Field Force"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "UserType",
+  "modified": "2024-01-03 19:28:21.532433",
+  "module_profile": "Field Force Operation",
+  "name": "Operation",
+  "role_profile": "Operation",
+  "type": "Operation"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "UserType",
+  "modified": "2024-01-03 19:29:00.802858",
+  "module_profile": "Field Force",
+  "name": "Warehouse",
+  "role_profile": "Warehouse",
+  "type": "Warehouse"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "UserType",
+  "modified": "2024-01-03 19:29:24.013539",
+  "module_profile": "Field Force Customer",
+  "name": "Customer",
+  "role_profile": "Customer",
+  "type": "Customer"
+ }
+]
