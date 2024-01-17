@@ -4,14 +4,15 @@ import frappe
 from field_force.api_methods.utils import get_api_fields
 
 
-CUSTOM_API_DOCTYPES = ['Customer', 'Item', 'Store Visit Assign', 'Territory']
+CUSTOM_API_DOCTYPES = ['Customer', 'Item', 'Store Visit Assign', 'Territory', 'Sales Person']
 
 def get_custom_data(doctype):
     method = {
         'Customer': get_customer_list,
         'Item': get_items_list,
         'Store Visit Assign': get_store_visit_assigns_list,
-        'Territory': get_territories
+        'Territory': get_territories,
+        'Sales Person': get_sales_persons_list
     }
 
     return method[doctype](doctype)
@@ -34,6 +35,14 @@ def get_customer_list(doctype):
     customers = frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
     frappe.local.response.total_items = len(customers)
     return customers
+
+def get_sales_persons_list(doctype):
+    filters = frappe.local.form_dict.get('filters') or []
+    filters.append(['enabled', '=', 1])
+    frappe.local.form_dict['filters'] = filters
+    sales_persons = frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
+    frappe.local.response.total_items = len(sales_persons)
+    return sales_persons
 
 def get_items_list(doctype):
     _, child_table_fields = get_api_fields(doctype, with_child_fields=True)
@@ -77,7 +86,7 @@ def get_items_list(doctype):
 def get_store_visit_assigns_list(doctype):
     _, child_table_fields = get_api_fields(doctype, with_child_fields=True)
 
-    # frappe.local.form_dict['filters'] = {'user': frappe.session.user}
+    frappe.local.form_dict['filters'] = [['docstatus', '=', 1]]
     store_visit_assigns = frappe.call(frappe.client.get_list, doctype, **frappe.local.form_dict)
     frappe.local.response.total_items = len(store_visit_assigns)
 
