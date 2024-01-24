@@ -625,3 +625,17 @@ def get_timedelta_time_obj(datetime_):
 
     return datetime.timedelta(hours=datetime_.hour, minutes=datetime_.minute,
                               seconds=datetime_.second, microseconds=datetime_.microsecond)
+
+@frappe.whitelist()
+def set_reason_rejection(doc, value, type):
+    try:
+        value = json.loads(value)
+    except:
+        pass
+    
+    req_doc = frappe.get_doc("Requisition",doc)
+    
+    if type == "Operation":
+        req_doc.db_set("operation_rejection_reason",value.get("reason"))
+    elif type == "Customer":
+        req_doc.db_set("customer_rejection_reason",value.get("reason"))

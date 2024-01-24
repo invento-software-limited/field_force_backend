@@ -102,9 +102,70 @@ frappe.ui.form.on('Requisition', {
     // },
   //  before_workflow_action: function(frm, state) {
   // },
-  after_workflow_action: function(frm, state) {
-    set_datetime_by_workflow_state(frm);
-  },
+	before_workflow_action: function(frm) {
+		if (frm.doc.workflow_state === "Pending for Ops Team" && frm.selected_workflow_action === "Reject") {
+			let d = new frappe.ui.Dialog({
+				title: 'Operation Rejection Reason',
+				fields: [
+					{
+						label: 'Reason',
+						fieldname: 'reason',
+						fieldtype: 'Small Text'
+					},
+				],
+				size: 'large', // small, large, extra-large 
+				primary_action_label: 'Submit',
+				primary_action(values) {
+					frappe.call({
+						method: 'field_force.field_force.doctype.requisition.requisition.set_reason_rejection',
+						args: {
+							doc: frm.doc.name,
+							value: values,
+							type : "Operation"
+						}
+					});
+					d.hide();
+					window.location.reload()
+				}
+			});
+			
+			d.show();
+
+		}
+		else if (frm.doc.workflow_state === "Pending for Customer" && frm.selected_workflow_action === "Reject") {
+			let d = new frappe.ui.Dialog({
+				title: 'Customer Rejection Reason',
+				fields: [
+					{
+						label: 'Reason',
+						fieldname: 'reason',
+						fieldtype: 'Small Text'
+					},
+				],
+				size: 'large', // small, large, extra-large 
+				primary_action_label: 'Submit',
+				primary_action(values) {
+					frappe.call({
+						method: 'field_force.field_force.doctype.requisition.requisition.set_reason_rejection',
+						args: {
+							doc: frm.doc.name,
+							value: values,
+							type : "Customer"
+						}
+					});
+					
+					d.hide();
+					window.location.reload()
+				}
+			});
+			
+			d.show();
+		}
+		
+	},
+	after_workflow_action: function(frm, state) {
+		set_datetime_by_workflow_state(frm);
+	},
 
 	partner_group: function (frm){
 		frm.set_value("customer", null);
