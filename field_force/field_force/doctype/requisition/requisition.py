@@ -156,7 +156,7 @@ class Requisition(Document):
                         item.amount = item.qty * item.rate
                         total += float(item.amount)
 
-                if item.accepted_qty:
+                if item.accepted_qty: 
                     item.accepted_amount = item.accepted_qty * item.rate
                     total_accepted_qty += float(item.accepted_qty)
                     total_accepted_amount += float(item.accepted_amount)
@@ -165,7 +165,8 @@ class Requisition(Document):
                 total_qty += int(item.qty)
                 # self.validate_accepted_qty(item)
                 
-                if self.workflow_state == "Pending for Ops Team" and item.accepted_qty <= 0:
+                if self.workflow_state == "Pending for Ops Team" and "Operation" in frappe.get_roles(frappe.session.user) and item.accepted_qty <= 0:
+                    frappe.msgprint(str("ppp"))
                     frappe.throw("Accepted Qty Must be set for item <strong>{yy}:{nn}</strong>".format(yy=item.item_code,nn=item.item_name),"QTY Message")
                     
 
