@@ -67,7 +67,7 @@ class Requisition(Document):
             frappe.throw("Required delivery date should be after Requisition date")
 
         if self.expected_delivery_date:
-            if self.expected_delivery_date < self.delivery_date:
+            if self.expected_delivery_date < self.transaction_date:
                 frappe.throw("Expected delivery date should be after Requisition date")
 
     def validate_po_number(self):
@@ -164,6 +164,10 @@ class Requisition(Document):
                 total_items += 1
                 total_qty += int(item.qty)
                 # self.validate_accepted_qty(item)
+                
+                if self.workflow_state == "Pending for Ops Team" and item.accepted_qty <= 0:
+                    frappe.throw("Accepted Qty Must be set for item <strong>{yy}:{nn}</strong>".format(yy=item.item_code,nn=item.item_name),"QTY Message")
+                    
 
             self.difference_qty = self.total_qty - total_accepted_qty
             self.difference_amount = self.total - total_accepted_amount
