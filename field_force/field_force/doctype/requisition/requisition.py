@@ -166,7 +166,6 @@ class Requisition(Document):
                 # self.validate_accepted_qty(item)
                 
                 if self.workflow_state == "Pending for Ops Team" and "Operation" in frappe.get_roles(frappe.session.user) and item.accepted_qty <= 0:
-                    frappe.msgprint(str("ppp"))
                     frappe.throw("Accepted Qty Must be set for item <strong>{yy}:{nn}</strong>".format(yy=item.item_code,nn=item.item_name),"QTY Message")
                     
 
