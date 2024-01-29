@@ -9,49 +9,50 @@ from frappe import _
 def execute(filters=None):
     columns = get_columns()
     data = get_data(filters)
-    requisition_name = ''
-    requisition_items = []
-    subtotal = get_subtotal()
-    date_wise_total = {}
-    item_count = 0
+    # requisition_name = ''
+    # requisition_items = []
+    # subtotal = get_subtotal()
+    # date_wise_total = {}
+    # item_count = 0
 
-    for requisition_item in data:
-        # date_wise_total = set_date_wise_qty_and_amount(date_wise_total, requisition_item)
+    # for requisition_item in data:
+    #     # date_wise_total = set_date_wise_qty_and_amount(date_wise_total, requisition_item)
 
-        if requisition_name == requisition_item.name:
-            requisition_item.transaction_date = None
-            requisition_item.name = None
-            requisition_item.customer = None
-            requisition_item.distributor = None
-            requisition_item.partner_group = None
-            requisition_item.delivery_date = None
-            requisition_item.sales_person = None
-            requisition_item.grand_total = None
-            requisition_item.status = None
-            requisition_item.company = None
-        else:
-            requisition_name = requisition_item.name
-            # set_user_link(requisition_item)
+    #     if requisition_name == requisition_item.name:
+    #         pass
+    #         # requisition_item.transaction_date = None
+    #         # requisition_item.name = None
+    #         # requisition_item.customer = None
+    #         # requisition_item.distributor = None
+    #         # requisition_item.partner_group = None
+    #         # requisition_item.delivery_date = None
+    #         # requisition_item.sales_person = None
+    #         # requisition_item.grand_total = None
+    #         # requisition_item.status = None
+    #         # requisition_item.company = None
+    #     else:
+    #         requisition_name = requisition_item.name
+    #         # set_user_link(requisition_item)
 
-            if item_count > 1:
-                # requisition_items.append(subtotal)
-                subtotal = get_subtotal()
-                item_count = 0
+    #         if item_count > 1:
+    #             # requisition_items.append(subtotal)
+    #             subtotal = get_subtotal()
+    #             item_count = 0
 
-            # if requisition_items:
-            #     requisition_items.append({})
+    #         # if requisition_items:
+    #         #     requisition_items.append({})
 
-        subtotal['qty'] += requisition_item.qty
-        subtotal['amount'] += requisition_item.amount
+    #     subtotal['qty'] += requisition_item.qty
+    #     subtotal['amount'] += requisition_item.amount
 
-        requisition_items.append(requisition_item)
-        item_count += 1
+    #     requisition_items.append(requisition_item)
+    #     item_count += 1
 
     # if item_count > 1:
     #     requisition_items.append(subtotal)
 
-    chart = get_chart(data, date_wise_total, filters)
-    return columns, requisition_items
+    # chart = get_chart(data, date_wise_total, filters)
+    return columns, data
 
 def set_date_wise_qty_and_amount(date_wise_total, requisition_item):
     transaction_date = str(requisition_item.transaction_date)

@@ -155,7 +155,7 @@ doc_events = {
 
 scheduler_events = {
     "cron": {
-        "35 10 * * *": [
+        "30 11 * * *": [
             "field_force.field_force.doctype.app_user_attendance.app_user_attendance.send_daily_attendance_mail"
         ]
     },

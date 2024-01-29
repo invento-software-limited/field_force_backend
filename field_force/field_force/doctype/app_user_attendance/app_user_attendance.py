@@ -8,6 +8,7 @@ from field_force.field_force.doctype.utils import set_cheat_status, set_location
 from field_force.field_force.page.utils import get_time_in_12_hour_format
 from frappe.core.doctype.communication.email import make
 from frappe.model.document import Document
+from frappe.utils import get_datetime
 
 
 class AppUserAttendance(Document):
@@ -66,6 +67,7 @@ def send_daily_attendance_mail():
         'sales_persons_attendance': sales_persons_attendance,
         'generated_at': get_time_in_12_hour_format(str(frappe.utils.nowtime()).split('.')[0])
     }
+    
 
     subject = frappe.render_template(template.subject, context)
     message = frappe.render_template(template.response_html, context)
@@ -84,7 +86,7 @@ def get_attendance_data(date, time):
         'server_time': ['<=', time]
     }
     fields =  ['name', 'sales_person', 'server_date', 'server_time']
-    sales_persons_fields = ['name', 'sales_person_group', 'type']
+    sales_persons_fields = ['name', 'sales_person_group', 'type','holiday']
     sales_persons_filters = {
         'sales_person_group': ['in', ['GT', 'MT']],
         'enabled': 1
@@ -93,7 +95,6 @@ def get_attendance_data(date, time):
     sales_persons = frappe.get_list("Sales Person", sales_persons_filters, sales_persons_fields, order_by='sales_person_group')
     sales_persons_attendance = frappe.get_list("App User Attendance", filters, fields,
                                                order_by='server_time', limit_page_length=1000)
-
     attendance_dict = {}
 
     sales_person_groups = {
@@ -130,8 +131,15 @@ def get_attendance_data(date, time):
         if sales_person.name in attendance_dict.keys():
             sales_person.update(attendance_dict[sales_person.name])
             sales_person_groups[sales_person.sales_person_group]['total_present'] += 1
-            sales_person_groups['Grand Total']['total_present'] += 1
+            sales_person_groups['Grand Total']['total_present'] += 1         
         else:
+            if sales_person.get("holiday"):
+                today_datetime = get_datetime(date)
+                day_name = today_datetime.strftime("%A")
+                if day_name == sales_person.get("holiday"):
+                    sales_person['holiday_status'] = 'Yes'
+                else:
+                    sales_person['holiday_status'] = 'No'
             sales_person['server_time'] = 'No'
             sales_person['status'] = 'No'
             sales_person['sales_person'] = sales_person.name
