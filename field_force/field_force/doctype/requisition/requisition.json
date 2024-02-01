@@ -666,7 +666,7 @@
    "label": "Create Sales Order on Submit"
   },
   {
-   "fetch_from": "customer.department",
+   "fetch_from": "",
    "fieldname": "department",
    "fieldtype": "Link",
    "label": "Department",
