@@ -3,7 +3,7 @@ frappe.ui.form.on('User', {
 
         frm.add_custom_button(__('Generate Keys'), function(){
             frappe.call({
-                method: "frappe.core.doctype.user.user.generate_keys",
+                method: "field_force.field_force.hook_functions.user.generate_keys",
                 args: {
                     user: frm.doc.name,
                 },
