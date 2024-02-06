@@ -1,7 +1,7 @@
 frappe.ui.form.on('User', {
     refresh : function(frm) {
         if (frappe.user.has_role('Admin')) {
-            frm.add_custom_button(__('Generate Keys'), function(){
+            frm.add_custom_button(__('Log Out From App'), function(){
                 frappe.call({
                     method: "field_force.field_force.hook_functions.user.generate_keys",
                     args: {
@@ -9,7 +9,7 @@ frappe.ui.form.on('User', {
                     },
                     callback: function (r) {
                         if (r.message) {
-                            frappe.msgprint(__("Save API Secret: {0}", [r.message.api_secret]));
+                            frappe.msgprint(__("<strong>{0}</strong> Has Been Logged Out From App",[frm.doc.name]));
                             frm.reload_doc();
                         }
                     },
