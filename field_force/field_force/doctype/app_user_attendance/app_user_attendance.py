@@ -73,7 +73,7 @@ def send_daily_attendance_mail():
     message = frappe.render_template(template.response_html, context)
 
     frappe.sendmail(
-        recipients= recipients,
+        recipients= "sakib@invento.com.bd",
         sender='fieldforce@best-inbrands.com',
         subject=subject,
         content=message,
@@ -86,15 +86,16 @@ def get_attendance_data(date, time):
         'server_time': ['<=', time]
     }
     fields =  ['name', 'sales_person', 'server_date', 'server_time']
-    sales_persons_fields = ['name', 'sales_person_group', 'type','holiday']
+    sales_persons_fields = ['name', 'sales_person_group', 'type','holiday',"parent_sales_person"]
     sales_persons_filters = {
         'sales_person_group': ['in', ['GT', 'MT']],
-        'enabled': 1
+        'enabled': 1,
+        'type' : ['not in',['Supervisor']]
     }
 
     sales_persons = frappe.get_list("Sales Person", sales_persons_filters, sales_persons_fields, order_by='sales_person_group')
     sales_persons_attendance = frappe.get_list("App User Attendance", filters, fields,
-                                               order_by='server_time', limit_page_length=1000)
+                                               order_by='server_time', limit_page_length=1000,debug=1)
     attendance_dict = {}
 
     sales_person_groups = {
