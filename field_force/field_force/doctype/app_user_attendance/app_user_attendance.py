@@ -73,7 +73,7 @@ def send_daily_attendance_mail():
     message = frappe.render_template(template.response_html, context)
 
     frappe.sendmail(
-        recipients= "sakib@invento.com.bd",
+        recipients= recipients,
         sender='fieldforce@best-inbrands.com',
         subject=subject,
         content=message,
