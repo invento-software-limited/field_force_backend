@@ -39,7 +39,6 @@ class UpdateDeliveryTrip(DeliveryTrip):
         self.update_status()
         self.update_delivery_notes()
 
-
     def on_update_after_submit(self):
         self.update_status()
 
@@ -53,13 +52,22 @@ class UpdateDeliveryTrip(DeliveryTrip):
             for stop in self.delivery_stops:
                 if stop.get("requisition"):
                     files = get_files_path_from_requisition(stop.get("requisition"))
+                    print("-------------------------------------------------------",files)
                     for file in files:
                         if file.get("requisition_standard"):
                             stop.requisition_pdf = file.get("requisition_standard")
                         if file.get("requisition_mushak_6.3"):
                             stop.mushak_6_3_pdf = file.get("requisition_mushak_6.3")
-                        if file.get("po_file"):
-                            stop.po_file = file.get("po_file")
+                        if file.get("customer_po_file"):
+                            stop.po_file = file.get("customer_po_file")
+                        if file.get("additional_doc_1"):
+                            stop.additional_doc_1 = file.get("additional_doc_1")
+                        if file.get("additional_doc_2"):
+                            stop.additional_doc_2 = file.get("additional_doc_2")
+                        if file.get("additional_doc_3"):
+                            stop.additional_doc_3 = file.get("additional_doc_3")
+                        if file.get("additional_doc_4"):
+                            stop.additional_doc_4 = file.get("additional_doc_4")
 
     def set_mushak_unique_number(self):
         if self.delivery_stops:
@@ -423,6 +431,7 @@ def get_files_path_from_requisition(requisition):
         data = []
         print_format = ["Requisition Standard","Requisition Mushak 6.3"]
         doc = frappe.get_doc("Requisition",requisition)
+        
         letter_head = None
         for x in print_format:
             fallback_language = frappe.db.get_single_value("System Settings", "language") or "en"
@@ -474,11 +483,13 @@ def get_files_path_from_requisition(requisition):
             data.append({label : file.file_url})
 
         # Get And Insert PO File to zip
-        if doc.customer_po_file:
-            try:
-                data.append({"po_file": doc.customer_po_file})
-            except:
-                pass
+        fileds = ["customer_po_file","additional_doc_1","additional_doc_2","additional_doc_3","additional_doc_4"]
+        for field_name in fileds:  
+            if doc.get("{}".format(field_name)):
+                try:
+                    data.append({"{}".format(field_name): doc.get("{}".format(field_name))})
+                except:
+                    pass
 
         return data
     except:
@@ -499,6 +510,7 @@ def get_requistion_for_delivery_trip(requisitions):
         data_dict["customer"] = requisition.customer
         data_dict["total_qty"] = requisition.total_qty
         data_dict["grand_total"] = requisition.grand_total
+        
         data.append(data_dict)
 
     return data
