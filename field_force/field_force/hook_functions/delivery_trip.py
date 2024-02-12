@@ -52,10 +52,9 @@ class UpdateDeliveryTrip(DeliveryTrip):
             for stop in self.delivery_stops:
                 if stop.get("requisition"):
                     files = get_files_path_from_requisition(stop.get("requisition"))
-                    print("-------------------------------------------------------",files)
                     for file in files:
-                        if file.get("requisition_standard"):
-                            stop.requisition_pdf = file.get("requisition_standard")
+                        if file.get("bib_invoice"):
+                            stop.requisition_pdf = file.get("bib_invoice")
                         if file.get("requisition_mushak_6.3"):
                             stop.mushak_6_3_pdf = file.get("requisition_mushak_6.3")
                         if file.get("customer_po_file"):
@@ -483,7 +482,7 @@ def get_files_path_from_requisition(requisition):
             data.append({label : file.file_url})
 
         # Get And Insert PO File to zip
-        fileds = ["customer_po_file","additional_doc_1","additional_doc_2","additional_doc_3","additional_doc_4"]
+        fileds = ["customer_po_file","additional_doc_1","additional_doc_2","additional_doc_3","additional_doc_4","bib_invoice"]
         for field_name in fileds:  
             if doc.get("{}".format(field_name)):
                 try:
