@@ -60,8 +60,8 @@ class Requisition(Document):
             frappe.db.set_value(self.doctype, self.name, 'status', 'Cancelled')
 
     def validate_delivery_date(self):
-        if str(self.transaction_date) < str(frappe.utils.today()):
-            frappe.throw("Date can not be before Today")
+        # if str(self.transaction_date) < str(frappe.utils.today()):
+        #     frappe.throw("Date can not be before Today")
 
         if self.transaction_date > self.delivery_date:
             frappe.throw("Required delivery date should be after Requisition date")
