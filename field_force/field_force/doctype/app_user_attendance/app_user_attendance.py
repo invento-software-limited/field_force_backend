@@ -54,7 +54,7 @@ def send_daily_attendance_mail():
         return
 
     date = frappe.utils.today()
-    time = "10:30:00"
+    time = "11:30:00"
 
     sales_person_groups, sales_persons_attendance = get_attendance_data(date, time)
     template = frappe.get_doc("Email Template", hr_settings.email_template)
@@ -67,7 +67,7 @@ def send_daily_attendance_mail():
         'sales_persons_attendance': sales_persons_attendance,
         'generated_at': get_time_in_12_hour_format(str(frappe.utils.nowtime()).split('.')[0])
     }
-    
+
 
     subject = frappe.render_template(template.subject, context)
     message = frappe.render_template(template.response_html, context)
@@ -132,7 +132,7 @@ def get_attendance_data(date, time):
         if sales_person.name in attendance_dict.keys():
             sales_person.update(attendance_dict[sales_person.name])
             sales_person_groups[sales_person.sales_person_group]['total_present'] += 1
-            sales_person_groups['Grand Total']['total_present'] += 1         
+            sales_person_groups['Grand Total']['total_present'] += 1
         else:
             if sales_person.get("holiday"):
                 today_datetime = get_datetime(date)
