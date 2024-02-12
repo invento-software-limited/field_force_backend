@@ -422,6 +422,18 @@ def get_file_urls_from_delivery_stops(delivery_stops):
         if stop.get("po_file"):
             po_file_path = get_site_directory_path() + '/public' + stop.get("po_file")
             urls.append(po_file_path)
+        if stop.get("additional_doc_1"):
+            doc_1 = get_site_directory_path() + '/public' + stop.get("additional_doc_1")
+            urls.append(doc_1)
+        if stop.get("additional_doc_2"):
+            doc_2 = get_site_directory_path() + '/public' + stop.get("additional_doc_2")
+            urls.append(doc_2)
+        if stop.get("additional_doc_3"):
+            doc_3 = get_site_directory_path() + '/public' + stop.get("additional_doc_3")
+            urls.append(doc_3)
+        if stop.get("additional_doc_4"):
+            doc_4 = get_site_directory_path() + '/public' + stop.get("additional_doc_4")
+            urls.append(doc_4)
 
     return urls
 
