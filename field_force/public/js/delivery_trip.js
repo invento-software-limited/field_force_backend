@@ -56,6 +56,13 @@ frappe.ui.form.on('Delivery Trip', {
         frm.remove_custom_button('Notify Customers via Email');
     }, 10);
 	},
+    custom_in_transit: function(frm) {
+        if (frm.doc.custom_in_transit) {
+            frm.doc.delivery_stops.forEach((row) => {
+                row.status = "In Transit";
+            });
+        }
+    },
     get_files : function(frm) {
         var url = `/api/method/field_force.field_force.hook_functions.delivery_trip.download_all_files`;
         url = url + `?doc_data=${frm.doc.name}`;
