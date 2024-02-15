@@ -90,7 +90,7 @@ def get_attendance_data(date, time):
     sales_persons_filters = {
         'sales_person_group': ['in', ['GT', 'MT']],
         'enabled': 1,
-        'type' : ['not in',['Supervisor']]
+        'type' : ['in',['Sales Representative', 'Merchandiser']]
     }
 
     sales_persons = frappe.get_list("Sales Person", sales_persons_filters, sales_persons_fields, order_by='sales_person_group')
