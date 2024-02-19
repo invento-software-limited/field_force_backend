@@ -3,54 +3,60 @@
 import datetime
 
 import frappe
-from field_force.field_force.report.utils import set_user_link
+from field_force.field_force.report.utils import *
+from field_force.field_force.page.utils import *
 from frappe import _
 
 def execute(filters=None):
     columns = get_columns()
     data = get_data(filters)
-    sales_order_name = ''
+    # sales_order_name = ''
     sales_order_items = []
-    subtotal = get_subtotal()
-    date_wise_total = {}
-    item_count = 0
+    # subtotal = get_subtotal()
+    # date_wise_total = {}
+    # item_count = 0
 
     for sales_order_item in data:
+        set_link_to_doc(sales_order_item, 'item_code', 'item', sales_order_item.product_id)
+        set_link_to_doc(sales_order_item, 'customer', 'customer', sales_order_item.custom_customer_id)
+        sales_order_item['transaction_time'] = get_time_in_12_hour_format(sales_order_item.transaction_time)
+        # sales_order_item['transaction_date'] = frappe.format(sales_order_item.transaction_date, {"fieldtype": "Date"})
+        sales_order_item['transaction_date'] = sales_order_item.transaction_date.strftime("%m-%d-%Y")
         # date_wise_total = set_date_wise_qty_and_amount(date_wise_total, sales_order_item)
 
-        if sales_order_name == sales_order_item.name:
-            sales_order_item.transaction_date = None
-            sales_order_item.name = None
-            sales_order_item.customer = None
-            sales_order_item.distributor = None
-            sales_order_item.delivery_date = None
-            sales_order_item.sales_person = None
-            sales_order_item.grand_total = None
-            sales_order_item.status = None
-            sales_order_item.company = None
-        else:
-            sales_order_name = sales_order_item.name
-            # set_user_link(sales_order_item)
-
-            if item_count > 1:
-                # sales_order_items.append(subtotal)
-                subtotal = get_subtotal()
-                item_count = 0
+    #     # if sales_order_name == sales_order_item.name:
+    #     #     sales_order_item.transaction_date = None
+    #     #     sales_order_item.name = None
+    #     #     sales_order_item.customer = None
+    #     #     sales_order_item.distributor = None
+    #     #     sales_order_item.delivery_date = None
+    #     #     sales_order_item.sales_person = None
+    #     #     sales_order_item.grand_total = None
+    #     #     sales_order_item.status = None
+    #     #     sales_order_item.company = None
+    #     # else:
+    #     #     sales_order_name = sales_order_item.name
+    #         # set_user_link(sales_order_item)
+    #
+    #         if item_count > 1:
+    #             # sales_order_items.append(subtotal)
+    #             subtotal = get_subtotal()
+    #             item_count = 0
 
             # if sales_order_items:
             #     sales_order_items.append({})
 
-        subtotal['qty'] += sales_order_item.qty
-        subtotal['amount'] += sales_order_item.amount
-
-        sales_order_items.append(sales_order_item)
-        item_count += 1
+        # subtotal['qty'] += sales_order_item.qty
+        # subtotal['amount'] += sales_order_item.amount
+        #
+        # sales_order_items.append(sales_order_item)
+        # item_count += 1
 
     # if item_count > 1:
     #     sales_order_items.append(subtotal)
 
-    chart = get_chart(data, date_wise_total, filters)
-    return columns, sales_order_items, '', chart
+    # chart = get_chart(data, date_wise_total, filters)
+    return columns, data
 
 def set_date_wise_qty_and_amount(date_wise_total, sales_order_item):
     transaction_date = str(sales_order_item.transaction_date)
@@ -92,46 +98,64 @@ def get_subtotal():
 def get_columns():
     """ Columns of Report Table"""
     return [
-        {"label": _("Date"), "fieldname": "transaction_date", "width": 100},
-        {"label": _("ID"), "fieldname": "name", "width": 130, "fieldtype": "Link", "options": "Sales Order"},
-        {"label": _("Distributor"), "fieldname": "distributor", "width": 120, "fieldtype": "Link",
-         "options": "Distributor"},
-        {"label": _("Customer"), "fieldname": "customer", "width": 200, "fieldtype": "Link", "options": "Customer"},
-        {"label": _("Item Code"), "fieldname": "item_code", "fieldtype": "Link", "options": "Item", "width": 140},
-        {"label": _("Item Name"), "fieldname": "item_name", "width": 100},
-        {"label": _("Item Group"), "fieldname": "item_group", "fieldtype": "Link", "options": "Item Group", "width": 80},
-        {"label": _("Brand"), "fieldname": "brand", "fieldtype": "Link", "options": "Brand", "width": 80},
-        {"label": _("UOM"), "fieldname": "uom", "fieldtype": "Data", "width": 70},
-        {"label": _("Unit Price"), "fieldname": "price_list_rate", "fieldtype": "Currency", "width": 100},
-        {"label": _("Discount(%)"), "fieldname": "discount_percentage", "fieldtype": "Float", "precision":2, "width": 100},
-        {"label": _("Discount Amount"), "fieldname": "discount_amount", "fieldtype": "Currency", "width": 100},
-        {"label": _("Quantity"), "fieldname": "qty", "fieldtype": "Int", "width": 80},
-        {"label": _("Rate"), "fieldname": "rate", "fieldtype": "Currency", "width": 100},
-        {"label": _("Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 100},
-        {"label": _("Total"), "fieldname": "grand_total", "fieldtype": "Currency", "width": 100},
-        {"label": _("Delivery Date"), "fieldname": "delivery_date", "width": 100},
-        {"label": _("Sales Person"), "fieldname": "sales_person", "fieldtype": "Link", "options": "Sales Person",
+        {"label": _("Order Date"), "fieldname": "transaction_date", "width": 100},
+        {"label": _("Territory"), "fieldname": "territory", "width": 100, "fieldtype": "Link",
+         "options": "Territory"},
+        {"label": _("Sales Person ID"), "fieldname": "employee", "fieldtype": "Data", "options": "Sales Person",
          "width": 100},
-        {"label": _("Status"), "fieldname": "status", "width": 80},
-		{"label": _("Company"), "fieldname": "company", "width": 100, "fieldtype": "Link", "options": "Company"},
+        {"label": _("Sales Person Name"), "fieldname": "sales_person", "fieldtype": "Link", "options": "Sales Person",
+         "width": 120},
+        {"label": _("Supervisor ID"), "fieldname": "custom_supervisor_employee", "fieldtype": "Data", "options": "Sales Person",
+         "width": 100},
+        {"label": _("Supervisor Name"), "fieldname": "supervisor", "fieldtype": "Link", "options": "Sales Person",
+         "width": 120},
+        {"label": _("Order Number"), "fieldname": "name", "width": 130, "fieldtype": "Link", "options": "Sales Order"},
+        {"label": _("Order Time"), "fieldname": "transaction_time", "width": 100},
+
+        {"label": _("Customer Group"), "fieldname": "customer_group", "width": 100, "fieldtype": "Link", "options": "Customer Group"},
+        {"label": _("Partner Group"), "fieldname": "custom_partner_group", "width": 100, "fieldtype": "Link", "options": "Partner Group"},
+        {"label": _("Dist. ID"), "fieldname": "distributor_id", "width": 100, "fieldtype": "Data", "options": "Distributor"},
+        {"label": _("Distributor"), "fieldname": "distributor", "width": 100, "fieldtype": "Link", "options": "Distributor"},
+        {"label": _("Customer ID"), "fieldname": "customer", "width": 100, "fieldtype": "Data", "options": "Customer"},
+        {"label": _("Customer Name"), "fieldname": "customer_name", "width": 200, "fieldtype": "Data", "options": "Customer"},
+        {"label": _("Brand"), "fieldname": "brand", "width": 100, "fieldtype": "Link", "options": "Brand"},
+        {"label": _("Item Group"), "fieldname": "item_group", "fieldtype": "Link", "options": "Item Group",
+         "width": 100},
+        {"label": _("Product ID"), "fieldname": "item_code", "fieldtype": "Data", "options": "Item", "width": 100},
+        {"label": _("Product Name"), "fieldname": "item_name", "width": 180},
+        {"label": _("Order QTY"), "fieldname": "qty", "fieldtype": "Int", "width": 100},
+        # {"label": _("UOM"), "fieldname": "uom", "fieldtype": "Data", "width": 70},
+        {"label": _("Unit Price"), "fieldname": "rate", "fieldtype": "Currency", "width": 100},
+        # {"label": _("Discount(%)"), "fieldname": "discount_percentage", "fieldtype": "Float", "precision":2, "width": 100},
+        # {"label": _("Discount Amount"), "fieldname": "discount_amount", "fieldtype": "Currency", "width": 100},
+        # {"label": _("Rate"), "fieldname": "rate", "fieldtype": "Currency", "width": 100},
+        {"label": _("Order Amount"), "fieldname": "amount", "fieldtype": "Currency", "width": 100},
+        # {"label": _("Total"), "fieldname": "grand_total", "fieldtype": "Currency", "width": 100},
+        # {"label": _("Delivery Date"), "fieldname": "delivery_date", "width": 100},
+
+        # {"label": _("Status"), "fieldname": "status", "width": 80},
+		# {"label": _("Company"), "fieldname": "company", "width": 100, "fieldtype": "Link", "options": "Company"},
     ]
 
 
 def get_data(filters):
     conditions = get_conditions(filters)
-    status = filters.get('status')
 
     query_string = '''SELECT sales_order.name, sales_order.transaction_date,sales_order.delivery_date,
-                    sales_order.sales_person, sales_order.customer, sales_order.contact_number, sales_order.distributor,
-                    sales_order.grand_total, sales_order_item.item_code, sales_order_item.item_name, sales_order_item.item_group,
+                    time(sales_order.creation) as transaction_time, sales_order.customer_group,
+                    sales_order.custom_partner_group, sales_order.custom_supervisor_employee, sales_order.custom_customer_id,
+                    sales_order.sales_person, sales_order.customer, sales_order.customer_name,
+                    sales_order.contact_number, sales_order.territory, sales_order_item.product_id,
+                    sales_order.grand_total, sales_order.employee, sales_order.supervisor, sales_order.distributor,
+                    sales_order_item.item_code, sales_order_item.item_name, sales_order_item.item_group,
                     sales_order_item.uom, sales_order_item.brand, sales_order_item.price_list_rate, sales_order_item.qty,
                     sales_order_item.discount_percentage, sales_order_item.discount_amount, sales_order_item.rate,
-                    sales_order_item.amount, sales_order.user, sales_order.company, "%s" as status
-                    from `tabSales Order` sales_order left join `tabSales Order Item` sales_order_item 
-                    on sales_order.name=sales_order_item.parent where %s order by 
-                    sales_order.transaction_date desc''' % (status, conditions)
+                    sales_order_item.amount, sales_order.user, sales_order.company, customer.customer_id as distributor_id
+                    from `tabSales Order` sales_order left join `tabSales Order Item` sales_order_item
+                    on sales_order.name=sales_order_item.parent left join `tabCustomer` customer
+                     on sales_order.distributor = customer.name where %s order by
+                    sales_order.transaction_date desc''' % (conditions)
 
-    # print(query_string)
     query_result = frappe.db.sql(query_string, as_dict=1, debug=0)
     return query_result
 
@@ -139,13 +163,19 @@ def get_data(filters):
 def get_conditions(filters):
     from_date = filters.get('from_date')
     to_date = filters.get('to_date')
+    territory = filters.get('territory')
     sales_person = filters.get('sales_person')
-    customer = filters.get('customer')
+    supervisor = filters.get('supervisor')
+    customer_group = filters.get('customer_group')
+    partner_group = filters.get('partner_group')
     distributor = filters.get('distributor')
+    customer = filters.get('customer')
+    brand = filters.get('brand')
+    item_group = filters.get('item_group')
     item = filters.get('item')
-    company = filters.get('company')
+    # company = filters.get('company')
     status = filters.get('status')
-    delivery_date = filters.get('delivery_date')
+    # delivery_date = filters.get('delivery_date')
 
     status_dict = {
         "Draft": 0,
@@ -156,25 +186,40 @@ def get_conditions(filters):
     conditions = []
 
     if status:
-        conditions.append('sales_order.docstatus = %s' % status_dict.get(status))
+        # conditions.append('sales_order.docstatus = %s' % status_dict.get(status))
+        conditions.append('sales_order.docstatus = 1')
     if from_date:
         conditions.append('sales_order.transaction_date >= "%s"' % from_date)
     if to_date:
         conditions.append('sales_order.transaction_date <= "%s"' % to_date)
+    if territory:
+        conditions.append('sales_order.territory = "%s"' % territory)
     if sales_person:
         conditions.append('sales_order.sales_person = "%s"' % sales_person)
-    if customer:
-        conditions.append('sales_order.customer = "%s"' % customer)
+    if supervisor:
+        conditions.append('sales_order.supervisor = "%s"' % supervisor)
+    if customer_group:
+        conditions.append('sales_order.customer_group = "%s"' % customer_group)
+    if partner_group:
+        conditions.append('sales_order.custom_partner_group = "%s"' % partner_group)
     if distributor:
         conditions.append('sales_order.distributor = "%s"' % distributor)
-    if company:
-        conditions.append('sales_order.company = "%s"' % company)
-
-    if delivery_date:
-        conditions.append('sales_order.delivery_date = "%s"' % delivery_date)
-
+    if customer:
+        conditions.append('sales_order.customer = "%s"' % customer)
+    if brand:
+        conditions.append('sales_order_item.brand = "%s"' % brand)
+    if item_group:
+        conditions.append('sales_order_item.item_group = "%s"' % item_group)
     if item:
         conditions.append('sales_order_item.item_code = "%s"' % item)
+
+    # if distributor:
+    #     conditions.append('sales_order.distributor = "%s"' % distributor)
+    # if company:
+    #     conditions.append('sales_order.company = "%s"' % company)
+    #
+    # if delivery_date:
+    #     conditions.append('sales_order.delivery_date = "%s"' % delivery_date)
 
     return " and ".join(conditions)
 
@@ -223,4 +268,3 @@ def get_chart(data, date_wise_total, filters):
     }
 
     return chart
-

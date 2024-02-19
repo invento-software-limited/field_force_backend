@@ -27,6 +27,13 @@ frappe.query_reports["Requisition Details Report"] = {
 			"width": "100",
 			"options": "Distributor",
 		},
+    {
+			"fieldname": "partner_group",
+			"label": __("Partner Group"),
+			"fieldtype": "Link",
+			"width": "100",
+			"options": "Partner Group",
+		},
 		{
 			"fieldname": "customer",
 			"label": __("Customer"),
@@ -34,11 +41,24 @@ frappe.query_reports["Requisition Details Report"] = {
 			"width": "100",
 			"options": "Customer",
 			"get_query" : function() {
+        let filters = [];
+        var distributor = frappe.query_report.get_filter_value('distributor');
+        var partner_group = frappe.query_report.get_filter_value('partner_group');
+
+        if (distributor){
+          filters.push(
+            ['distributor', '=', distributor]
+          )
+        }
+        if (partner_group){
+          filters.push(
+            ['partner_group', '=', partner_group]
+          )
+        }
+
 				return {
 					"doctype": "Customer",
-					"filters": [
-						["distributor", "!=", '']
-					]
+					"filters": filters
 				}
 			}
 		},

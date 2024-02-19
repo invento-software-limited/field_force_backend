@@ -11,7 +11,7 @@ def get_dashboard_data():
     today_date = today.date()
     month_start_date = today.replace(day=1)
 
-    current_month, current_year = today.month, frappe.defaults.get_user_default('fiscal_year')
+    current_month, current_year = today.month, today.year
     current_month_name = calendar.month_name[current_month]
 
     sales_person_names = get_sales_person_names(frappe.session.user)

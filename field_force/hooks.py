@@ -45,7 +45,8 @@ doctype_js = {
 
 doctype_list_js = {
 	"Sales Order" : "public/js/sales_order_list.js",
-	"Sales Person" : "public/js/sales_person_list.js"
+	"Sales Person" : "public/js/sales_person_list.js",
+	"Customer" : "public/js/customer_list.js"
 }
 
 doctype_tree_js = {
@@ -160,7 +161,7 @@ doc_events = {
 
 scheduler_events = {
     "cron": {
-        "35 10 * * *": [
+        "30 11 * * *": [
             "field_force.field_force.doctype.app_user_attendance.app_user_attendance.send_daily_attendance_mail"
         ]
     },
@@ -197,8 +198,7 @@ fixtures = [
 # ------------------------------
 #
 override_whitelisted_methods = {
-	"frappe.desk.doctype.dashboard_chart.dashboard_chart.get": "field_force.api_methods.dashboard_chart.get",
-	# "frappe.desk.doctype.number_card.number_card.get_result": "field_force.api_methods.number_card.get_result"
+	"frappe.desk.doctype.dashboard_chart.dashboard_chart.get": "field_force.api_methods.dashboard_chart.get"
 }
 #
 # each overriding function accepts a `data` argument;

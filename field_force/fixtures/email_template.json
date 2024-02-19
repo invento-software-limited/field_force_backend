@@ -1,0 +1,72 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Email Template",
+  "modified": "2022-12-29 13:11:35.916085",
+  "name": "Leave Approval Notification",
+  "response": "<h1>Leave Application Notification</h1>\n<h3>Details:</h3>\n\n\t<table class=\"table table-bordered small\" style=\"max-width: 500px;\">\n\t\t<tr>\n\t\t\t<td>Employee</td>\n\t\t\t<td>{{employee_name}}</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td>Leave Type</td>\n\t\t\t<td>{{leave_type}}</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td>From Date</td>\n\t\t\t<td>{{from_date}}</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td>To Date</td>\n\t\t\t<td>{{to_date}}</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td>Status</td>\n\t\t\t<td>{{status}}</td>\n\t\t</tr>\n\t</table>\n\n\t{% set doc_link = frappe.utils.get_url_to_form('Leave Application', name) %}\n\n\t<br><br>\n\t<a class=\"btn btn-primary\" href=\"{{ doc_link }}\" target=\"_blank\">{{ _('Open Now') }}</a>",
+  "response_html": null,
+  "subject": "Leave Approval Notification",
+  "use_html": 0
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Email Template",
+  "modified": "2022-12-29 13:11:35.920889",
+  "name": "Leave Status Notification",
+  "response": "<h1>Leave Application Notification</h1>\n<h3>Details:</h3>\n\n\t<table class=\"table table-bordered small\" style=\"max-width: 500px;\">\n\t\t<tr>\n\t\t\t<td>Employee</td>\n\t\t\t<td>{{employee_name}}</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td>Leave Type</td>\n\t\t\t<td>{{leave_type}}</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td>From Date</td>\n\t\t\t<td>{{from_date}}</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td>To Date</td>\n\t\t\t<td>{{to_date}}</td>\n\t\t</tr>\n\t\t<tr>\n\t\t\t<td>Status</td>\n\t\t\t<td>{{status}}</td>\n\t\t</tr>\n\t</table>\n\n\t{% set doc_link = frappe.utils.get_url_to_form('Leave Application', name) %}\n\n\t<br><br>\n\t<a class=\"btn btn-primary\" href=\"{{ doc_link }}\" target=\"_blank\">{{ _('Open Now') }}</a>",
+  "response_html": null,
+  "subject": "Leave Status Notification",
+  "use_html": 0
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Email Template",
+  "modified": "2022-12-29 13:11:35.923897",
+  "name": "Interview Reminder",
+  "response": "<h1>Interview Reminder</h1>\n\n<p>\n\tInterview: {{name}} is scheduled on {{scheduled_on}} from {{from_time}} to {{to_time}}\n</p>\n",
+  "response_html": null,
+  "subject": "Interview Reminder",
+  "use_html": 0
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Email Template",
+  "modified": "2022-12-29 13:11:35.926730",
+  "name": "Interview Feedback Reminder",
+  "response": "<h1>Interview Feedback Reminder</h1>\n\n<p>\n\tInterview Feedback for Interview {{ name }} is not submitted yet. Please submit your feedback. Thank you, good day!\n</p>\n",
+  "response_html": null,
+  "subject": "Interview Feedback Reminder",
+  "use_html": 0
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Email Template",
+  "modified": "2022-12-29 13:11:35.931463",
+  "name": "Exit Questionnaire Notification",
+  "response": "<h2>Exit Questionnaire</h2>\n<br>\n\n<p>\n\tDear {{ employee_name }},\n\t<br><br>\n\n\tThank you for the contribution you have made during your time at {{ company }}. We value your opinion and welcome the feedback on your experience working with us.\n\tRequest you to take out a few minutes to fill up this Exit Questionnaire.\n\n\t{% set web_form = frappe.db.get_value('HR Settings', 'HR Settings', 'exit_questionnaire_web_form') %}\n\t{% set web_form_link = frappe.utils.get_url(uri=frappe.db.get_value('Web Form', web_form, 'route')) %}\n\n\t<br><br>\n\t<a class=\"btn btn-primary\" href=\"{{ web_form_link }}\" target=\"_blank\">{{ _('Submit Now') }}</a>\n</p>\n",
+  "response_html": null,
+  "subject": "Exit Questionnaire Notification",
+  "use_html": 0
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Email Template",
+  "modified": "2022-12-29 13:47:08.122829",
+  "name": "Dispatch Notification",
+  "response": "<h1>Dispatch Notification</h1>\n<h3>Details:</h3>\n<table class=\"table table-bordered small\" style=\"max-width: 500px;\">\n    <tbody>\n        <tr>\n            <td>Customer's Name</td>\n            <td>{{ customer }}</td>\n        </tr>\n        <tr>\n            <td>Contact's Name</td>\n            <td>{{ first_name }} {{ last_name }}</td>\n        </tr>\n        <tr>\n            <td>Address Name</td>\n            <td>{{ address }}</td>\n        </tr>\n        <tr>\n            <td>Address Details</td>\n            <td>{{ customer_address }}</td>\n        </tr>\n        <tr>\n            <td>Order Number</td>\n            <td>{{ delivery_note }}</td>\n        </tr>\n        <tr>\n            <td>Order Total</td>\n            <td>{{ grand_total }}</td>\n        </tr>\n        <tr>\n            <td>Departure Time</td>\n            <td>{{ departure_time }}</td>\n        </tr>\n        <tr>\n            <td>Estimated Arrival</td>\n            <td>{{ estimated_arrival }}</td>\n        </tr>\n        <tr>\n            <td>Driver's Name</td>\n            <td>{{ driver_name }}</td>\n        </tr>\n        <tr>\n            <td>Driver's Number</td>\n            <td>{{ cell_number }}</td>\n        </tr>\n        <tr>\n            <td>Vehicle Number</td>\n            <td>{{ vehicle }}</td>\n        </tr>\n    </tbody>\n</table>\n",
+  "response_html": null,
+  "subject": "Your order is out for delivery!",
+  "use_html": 0
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Email Template",
+  "modified": "2024-02-07 14:17:56.475362",
+  "name": "Sales Person's Attendance",
+  "response": null,
+  "response_html": "<!DOCTYPE html>\n<html>\n<head>\n    <style>\n        .table-div{\n            width: 80%;\n        }\n    \n        @media only screen and (max-width: 600px) {\n            .table-div {\n                width: 100% !important;\n            }\n        }\n        \n    </style>\n    \n    <script>\n        document.body.style.backgroundColor = 'blue';\n    </script>\n</head>\n<body>\n    <p>\n        Dear Concern, <br><br>\n        This is the sales peron's Attendance Report of <b>{{ date }}</b> till <b>{{ time }}</b>.\n    </p>\n    <div class=\"table-div\">\n      <table class=\"table table-sm table-bordered\">\n          <thead>\n            <tr style=\"background-color: #e1eaf7;\">\n              <th>Sales Person Group</th>\n              <th>Total Sales Person</th>\n              <th>Attendance</th>\n              <th>No Attendance</th>\n            </tr>\n          </thead>\n        <tbody>\n        {% for group in sales_person_groups %}\n            {% if group.sales_person_group == \"Grand Total\" %}\n            <tr>\n                <td><b>{{ group.sales_person_group }}</b></td>\n                <td><b>{{ group.total_sales_person }}</b></td>           \n                <td><b>{{ group.total_present }}</b></td>\n                <td><b>{{ group.total_absent }}</b></td>\n            </tr>\n            {% else %}\n            <tr>\n                <td>{{ group.sales_person_group }}</td>\n                <td>{{ group.total_sales_person }}</td>           \n                <td>{{ group.total_present }}</td>\n                <td>{{ group.total_absent }}</td>\n            </tr>\n            {% endif %}\n        {% endfor %}\n        </tbody>\n      </table>\n    </div>\n      \n    <br><br>\n    \n    <div class=\"table-div\">\n      <table class=\"table table-sm table-bordered\">\n        <thead>\n            <tr style=\"background-color: #e1eaf7;\">\n              <th>Sales Person Group</th>\n              <th>Type</th>\n              <th>Supervisor</th>\n              <th>Sales Person</th>\n              <th>Holiday</th>\n              <th>Attendance Time</th>\n              <th>Attendance Staus</th>\n            </tr>\n        </thead>\n        <tbody>\n        {% for att in sales_persons_attendance %}\n            <tr>\n                <td>{{ att.sales_person_group }}</td>\n                <td>{{ att.type }}</td>\n                <td>{{ att.parent_sales_person }}</td>\n                <td>{{ att.sales_person }}</td>\n                <td>{{ att.holiday_status or \"No\" }}</td>\n                <td>\n                    {% if att.server_time == \"No\" %}\n                        <span style=\"color:red;\">{{ att.server_time }}</span>\n                    {% else %}\n                        <span style=\"color:green;\">{{ att.server_time }}</span>\n                    {% endif %}\n                </td>\n                \n                <td>\n                    {% if att.status == \"Yes\" %}\n                        <span style=\"color:green;\">{{ att.status }}</span>\n                    {% else %}\n                        <span style=\"color:red;\">{{ att.status }}</span>\n                    {% endif %}\n                </td>\n            </tr>\n        {% endfor %}\n        </tbody>\n      </table>\n    </div>\n      <p>The report has been generated at {{ generated_at }} {{ frappe.format(frappe.utils.today(), 'Date') }}</p>\n  </body>\n\n </html>\n",
+  "subject": "Attendance Report {{ date }} till {{ time }}",
+  "use_html": 1
+ }
+]

@@ -7,7 +7,9 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "partner_group_name"
+  "partner_group_name",
+  "brandwise_commissions_section",
+  "commissions"
  ],
  "fields": [
   {
@@ -15,14 +17,26 @@
    "fieldtype": "Data",
    "label": "Partner Group Name",
    "unique": 1
+  },
+  {
+   "fieldname": "brandwise_commissions_section",
+   "fieldtype": "Section Break",
+   "label": "Brandwise Commissions"
+  },
+  {
+   "fieldname": "commissions",
+   "fieldtype": "Table",
+   "label": "Comissions",
+   "options": "Customer Brand Commission"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2022-12-21 15:32:50.356174",
+ "modified": "2024-01-10 16:15:15.183624",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Partner Group",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -81,5 +95,7 @@
  ],
  "quick_entry": 1,
  "sort_field": "modified",
- "sort_order": "DESC"
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
 }

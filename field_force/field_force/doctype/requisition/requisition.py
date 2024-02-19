@@ -41,8 +41,8 @@ class Requisition(Document):
             self.created_at = frappe.utils.now()
             self.created_by = frappe.session.user
 
-    # def before_submit(self):
-    #     generate_csv_and_attach_file(self)
+    def before_submit(self):
+        generate_csv_and_attach_file(self)
         # generate_requisition_excel_and_attach(self)
 
     def on_submit(self):
@@ -156,7 +156,7 @@ class Requisition(Document):
                         item.amount = item.qty * item.rate
                         total += float(item.amount)
 
-                if item.accepted_qty: 
+                if item.accepted_qty:
                     item.accepted_amount = item.accepted_qty * item.rate
                     total_accepted_qty += float(item.accepted_qty)
                     total_accepted_amount += float(item.accepted_amount)
@@ -164,10 +164,10 @@ class Requisition(Document):
                 total_items += 1
                 total_qty += int(item.qty)
                 # self.validate_accepted_qty(item)
-                
+
                 if self.workflow_state == "Pending for Ops Team" and "Operation" in frappe.get_roles(frappe.session.user) and item.accepted_qty <= 0:
                     frappe.throw("Accepted Qty Must be set for item <strong>{yy}:{nn}</strong>".format(yy=item.item_code,nn=item.item_name),"QTY Message")
-                    
+
 
             self.difference_qty = self.total_qty - total_accepted_qty
             self.difference_amount = self.total - total_accepted_amount
@@ -387,16 +387,22 @@ def set_column_width(worksheet, column=None, width=None):
 
 @frappe.whitelist()
 def get_brands_commission(customer, brand=None):
-    customer_group, distributor = frappe.db.get_value("Customer", customer, ['customer_group', 'distributor'])
+    customer_group, distributor, partner_group = frappe.db.get_value("Customer", customer,
+                                                                     ['customer_group', 'distributor', 'partner_group'])
     brand_wise_commission_dict = {}
 
-    if customer_group == "Retail Shop" and distributor:
+    if partner_group:
+        commissions = frappe.db.get_all('Customer Brand Commission', {'parenttype': 'Partner Group', 'parent': partner_group},
+                                        ['brand', 'commission_rate'])
+        brand_wise_commission_dict = get_commissions_in_dict(commissions)
+
+    if not brand_wise_commission_dict and customer_group == "Retail Shop" and distributor:
         commissions = frappe.db.get_all('Distributor Brand Commission', {'parent': distributor},
                                         ['brand', 'commission_rate'])
         brand_wise_commission_dict = get_commissions_in_dict(commissions)
 
     if not brand_wise_commission_dict:
-        commissions = frappe.db.get_all('Customer Brand Commission', {'parent': customer},
+        commissions = frappe.db.get_all('Customer Brand Commission', {'parent': customer, 'parenttype': 'Customer'},
                                         ['brand', 'commission_rate'])
         brand_wise_commission_dict = get_commissions_in_dict(commissions)
 
@@ -636,9 +642,9 @@ def set_reason_rejection(doc, value, type):
         value = json.loads(value)
     except:
         pass
-    
+
     req_doc = frappe.get_doc("Requisition",doc)
-    
+
     if type == "Operation":
         req_doc.db_set("operation_rejection_reason",value.get("reason"))
     elif type == "Customer":

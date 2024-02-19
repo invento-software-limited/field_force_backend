@@ -67,7 +67,10 @@ def generate_row(ws, row_count, column_values, font=None, font_size=None, color=
 
 def get_time_in_12_hour_format(time):
     if time and time != 'None':
-        time = datetime.datetime.strptime(str(time), '%H:%M:%S').time()
+        if '.' in str(time):
+            time = datetime.datetime.strptime(str(time), '%H:%M:%S.%f').time()
+        else:
+            time = datetime.datetime.strptime(str(time), '%H:%M:%S').time()
 
     if isinstance(time, datetime.time):
         return time.strftime('%l:%M %p')
@@ -76,7 +79,7 @@ def get_time_in_12_hour_format(time):
 
 def get_datetime_with_12_hour_format(datetime_):
     if datetime_:
-        datetime_ = datetime.datetime.strptime(str(datetime_), '%Y-%m-%d %H:%M:%S')
+        datetime_ = datetime.datetime.strptime(datetime_, '%Y-%m-%d %H:%M:%S')
         return datetime_.strftime('%Y-%m-%d %l:%M %p')
 
     return datetime_

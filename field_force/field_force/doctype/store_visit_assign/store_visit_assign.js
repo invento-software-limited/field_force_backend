@@ -3,11 +3,20 @@
 
 frappe.ui.form.on('Store Visit Assign', {
 	onload: function (frm){
+    frm.set_query("sales_person", function() {
+        return {
+            "filters": {
+              'enabled' : 1
+            }
+        };
+    });
+
 		frm.fields_dict['destinations'].grid.get_field('customer').get_query = function(doc, cdt, cdn) {
 		  	return {
 				filters: {
-					sales_person: frm.doc.sales_person
-				}
+            sales_person: frm.doc.sales_person,
+            disabled: 0
+				  }
 		  	};
 		};
 	},

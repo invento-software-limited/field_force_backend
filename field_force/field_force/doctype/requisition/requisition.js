@@ -63,9 +63,7 @@ frappe.ui.form.on('Requisition', {
 	},
 
 	refresh: function (frm){
-    // var targetState = frm.workflow_state.states.find(state => state.action === 'Approve');
-    console.log(frm);
-    // check_role(frm);
+    check_role(frm);
 
 		frm.fields_dict['items'].grid.get_field('item_code').get_query = function(doc, cdt, cdn) {
 			let item = locals[cdt][cdn];
@@ -113,7 +111,7 @@ frappe.ui.form.on('Requisition', {
 						fieldtype: 'Small Text'
 					},
 				],
-				size: 'large', // small, large, extra-large 
+				size: 'large', // small, large, extra-large
 				primary_action_label: 'Submit',
 				primary_action(values) {
 					frappe.call({
@@ -128,7 +126,7 @@ frappe.ui.form.on('Requisition', {
 					window.location.reload()
 				}
 			});
-			
+
 			d.show();
 
 		}
@@ -142,7 +140,7 @@ frappe.ui.form.on('Requisition', {
 						fieldtype: 'Small Text'
 					},
 				],
-				size: 'large', // small, large, extra-large 
+				size: 'large', // small, large, extra-large
 				primary_action_label: 'Submit',
 				primary_action(values) {
 					frappe.call({
@@ -153,15 +151,15 @@ frappe.ui.form.on('Requisition', {
 							type : "Customer"
 						}
 					});
-					
+
 					d.hide();
 					window.location.reload()
 				}
 			});
-			
+
 			d.show();
 		}
-		
+
 	},
 	after_workflow_action: function(frm, state) {
 		set_datetime_by_workflow_state(frm);
@@ -234,8 +232,7 @@ frappe.ui.form.on('Requisition', {
 			brand_commissions = get_brands_commissions(frm.doc.customer)
 		}
 	},
-
-  	delivery_date: function(frm) {
+  delivery_date: function(frm) {
 		$.each(frm.doc.items || [], function(i, d) {
 			if(!d.delivery_date) d.delivery_date = frm.doc.delivery_date;
 		});
@@ -243,21 +240,21 @@ frappe.ui.form.on('Requisition', {
 	},
 	sales_person: function (frm){
 		if (!is_sales_person_exists(frm) && frm.doc.sales_person !==""){
-        frm.add_child('sales_team', {
-            sales_person: frm.doc.sales_person,
-            allocated_percentage: 100,
-            employee: frm.doc.employee,
-            user: frm.doc.user,
-        });
-        frm.refresh_fields("sales_team");
-      }
+            frm.add_child('sales_team', {
+                sales_person: frm.doc.sales_person,
+                allocated_percentage: 100,
+                employee: frm.doc.employee,
+                user: frm.doc.user,
+            });
+            frm.refresh_fields("sales_team");
+        }
     },
 
 	scan_barcode: function(frm) {
 		let transaction_controller= new erpnext.TransactionController({frm:frm});
 		transaction_controller.scan_barcode();
 	},
-  	po_file: function (frm){
+  po_file: function (frm){
       if (!frm.doc.po_file){
         return
       }
