@@ -4,7 +4,7 @@
   "doctype": "Workflow",
   "document_type": "Delivery Trip",
   "is_active": 1,
-  "modified": "2024-02-12 13:05:30.709537",
+  "modified": "2024-02-18 09:40:24.110219",
   "name": "Delivery Trip Workflow",
   "override_status": 0,
   "send_email_alert": 0,
@@ -20,7 +20,7 @@
     "parentfield": "states",
     "parenttype": "Workflow",
     "state": "Draft",
-    "update_field": "workflow_state",
+    "update_field": "status",
     "update_value": "Draft"
    },
    {
@@ -34,11 +34,11 @@
     "parentfield": "states",
     "parenttype": "Workflow",
     "state": "Pending",
-    "update_field": "workflow_state",
+    "update_field": "status",
     "update_value": "Pending"
    },
    {
-    "allow_edit": "Operation",
+    "allow_edit": "All",
     "avoid_status_override": 0,
     "doc_status": "1",
     "is_optional_state": 0,
@@ -47,12 +47,40 @@
     "parent": "Delivery Trip Workflow",
     "parentfield": "states",
     "parenttype": "Workflow",
-    "state": "Confirmed",
-    "update_field": "workflow_state",
+    "state": "Scheduled",
+    "update_field": "status",
+    "update_value": "Scheduled"
+   },
+   {
+    "allow_edit": "All",
+    "avoid_status_override": 0,
+    "doc_status": "1",
+    "is_optional_state": 0,
+    "message": null,
+    "next_action_email_template": null,
+    "parent": "Delivery Trip Workflow",
+    "parentfield": "states",
+    "parenttype": "Workflow",
+    "state": "In Transit",
+    "update_field": "status",
     "update_value": "Confirmed"
    },
    {
-    "allow_edit": "Operation",
+    "allow_edit": "All",
+    "avoid_status_override": 0,
+    "doc_status": "1",
+    "is_optional_state": 0,
+    "message": null,
+    "next_action_email_template": null,
+    "parent": "Delivery Trip Workflow",
+    "parentfield": "states",
+    "parenttype": "Workflow",
+    "state": "Completed",
+    "update_field": "status",
+    "update_value": "Completed"
+   },
+   {
+    "allow_edit": "All",
     "avoid_status_override": 0,
     "doc_status": "2",
     "is_optional_state": 0,
@@ -62,7 +90,7 @@
     "parentfield": "states",
     "parenttype": "Workflow",
     "state": "Cancelled",
-    "update_field": "workflow_state",
+    "update_field": "status",
     "update_value": "Cancelled"
    }
   ],
@@ -83,22 +111,11 @@
     "allow_self_approval": 1,
     "allowed": "Operation",
     "condition": null,
-    "next_state": "Confirmed",
+    "next_state": "Scheduled",
     "parent": "Delivery Trip Workflow",
     "parentfield": "transitions",
     "parenttype": "Workflow",
     "state": "Pending"
-   },
-   {
-    "action": "Cancel",
-    "allow_self_approval": 1,
-    "allowed": "Operation",
-    "condition": null,
-    "next_state": "Cancelled",
-    "parent": "Delivery Trip Workflow",
-    "parentfield": "transitions",
-    "parenttype": "Workflow",
-    "state": "Confirmed"
    }
   ],
   "workflow_name": "Delivery Trip Workflow",
@@ -109,11 +126,25 @@
   "doctype": "Workflow",
   "document_type": "Requisition",
   "is_active": 1,
-  "modified": "2023-12-13 14:37:44.732199",
+  "modified": "2024-02-13 14:02:54.280452",
   "name": "Requisition Workflow",
   "override_status": 0,
   "send_email_alert": 0,
   "states": [
+   {
+    "allow_edit": "Customer",
+    "avoid_status_override": 0,
+    "doc_status": "0",
+    "is_optional_state": 0,
+    "message": null,
+    "next_action_email_template": null,
+    "parent": "Requisition Workflow",
+    "parentfield": "states",
+    "parenttype": "Workflow",
+    "state": "Draft",
+    "update_field": null,
+    "update_value": null
+   },
    {
     "allow_edit": "Operation",
     "avoid_status_override": 0,
@@ -214,6 +245,17 @@
    }
   ],
   "transitions": [
+   {
+    "action": "Apply",
+    "allow_self_approval": 1,
+    "allowed": "Customer",
+    "condition": null,
+    "next_state": "Pending for Ops Team",
+    "parent": "Requisition Workflow",
+    "parentfield": "transitions",
+    "parenttype": "Workflow",
+    "state": "Draft"
+   },
    {
     "action": "Approve",
     "allow_self_approval": 1,

@@ -28,7 +28,7 @@ class UpdateDeliveryTrip(DeliveryTrip):
     def validate(self):
         if self._action == "submit" and not self.driver:
             frappe.throw(_("A driver must be set to submit."))
-        # self.validate_stop_addresses()
+        # self.validate_stop_addresses()  
 
     def before_submit(self):
         self.set_mushak_unique_number()
@@ -40,11 +40,36 @@ class UpdateDeliveryTrip(DeliveryTrip):
         self.update_delivery_notes()
 
     def on_update_after_submit(self):
-        self.update_status()
+        self.update_status_after_submit()
+            
+    def update_status_after_submit(self):
+        status = {0: "Draft", 1: "In Transit", 2: "Cancelled"}[self.docstatus]
+        if self.docstatus == 1:
+            visited_stops = [stop.visited for stop in self.delivery_stops]
+            if all(visited_stops):
+                status = "Completed"
+            elif any(visited_stops):
+                status = "In Transit"
+        self.db_set("workflow_state", status)     
+        self.db_set("status", status)
 
+    def update_status(self):
+        status = {0: "Draft", 1: "Scheduled", 2: "Cancelled"}[self.docstatus]
+        if self.docstatus == 1:
+            visited_stops = [stop.visited for stop in self.delivery_stops]
+            if all(visited_stops):
+                status = "Completed"
+            elif any(visited_stops):
+                status = "In Transit"
+         
+        self.db_set("status", status)
+        
     def on_cancel(self):
         self.update_status()
-        self.update_delivery_notes(delete=True)
+        # self.update_delivery_notes(delete=True)
+        if self.delivery_stops:
+            for stop in self.delivery_stops:
+                stop.status = "Cancelled"
 
 
     def get_requisition_files(self):
@@ -92,17 +117,6 @@ class UpdateDeliveryTrip(DeliveryTrip):
             if not stop.customer_address:
                 stop.customer_address = get_address_display(frappe.get_doc("Address", stop.address).as_dict())
 
-    def update_status(self):
-        status = {0: "Draft", 1: "Scheduled", 2: "Cancelled"}[self.docstatus]
-
-        if self.docstatus == 1:
-            visited_stops = [stop.visited for stop in self.delivery_stops]
-            if all(visited_stops):
-                status = "Completed"
-            elif any(visited_stops):
-                status = "In Transit"
-
-        self.db_set("status", status)
 
     def update_delivery_notes(self, delete=False):
         """
@@ -525,4 +539,3 @@ def get_requistion_for_delivery_trip(requisitions):
         data.append(data_dict)
 
     return data
-

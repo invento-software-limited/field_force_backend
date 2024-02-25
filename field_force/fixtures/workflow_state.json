@@ -160,5 +160,32 @@
   "name": "Confirmed",
   "style": "",
   "workflow_state_name": "Confirmed"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2024-02-13 15:23:07.431291",
+  "name": "Scheduled",
+  "style": "",
+  "workflow_state_name": "Scheduled"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2024-02-13 15:23:42.996741",
+  "name": "In Transit",
+  "style": "",
+  "workflow_state_name": "In Transit"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2024-02-13 15:23:52.591920",
+  "name": "Completed",
+  "style": "",
+  "workflow_state_name": "Completed"
  }
 ]
