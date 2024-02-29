@@ -73,6 +73,9 @@ def get_conditions(filters):
     user_roles = frappe.get_roles(frappe.session.user)
     if "Customer" in user_roles and "System Manager" not in user_roles:
         conditions += ' and req.owner = "{}"'.format(frappe.session.user)
+    if "Warehouse User" in user_roles and "System Manager" not in user_roles:
+        user = frappe.session.user
+        conditions += ' and dt.owner = "{}"'.format(user)
     return conditions
 
 
@@ -272,6 +275,13 @@ def update_delivery_stop_status(trips,value):
             trip_doc = frappe.get_doc("Delivery Trip",trip_split[0])
             if trip_doc.delivery_stops:
                 for stop in trip_doc.delivery_stops:
-                    if stop.get("name") == trip_split[1]:
-                        stop.status = value.get("status")
+                    if stop.status == "Scheduled" or "In Transit":
+                        if stop.get("name") == trip_split[1]:
+                            stop.status = value.get("status")
+                            stop.visited = 1
+                    else:
+                        frappe.throw(
+                            "Cannot Update Completed Trip",
+                            title= "Cannot Update"
+                        )
             trip_doc.save()

@@ -28,7 +28,7 @@ class UpdateDeliveryTrip(DeliveryTrip):
     def validate(self):
         if self._action == "submit" and not self.driver:
             frappe.throw(_("A driver must be set to submit."))
-        # self.validate_stop_addresses()  
+        # self.validate_stop_addresses()
 
     def before_submit(self):
         self.set_mushak_unique_number()
@@ -36,6 +36,8 @@ class UpdateDeliveryTrip(DeliveryTrip):
 
     def on_submit(self):
         # self.set_mushak_unique_number()
+        for stop in self.delivery_stops:
+            stop.status = "Scheduled"
         self.update_status()
         self.update_delivery_notes()
 

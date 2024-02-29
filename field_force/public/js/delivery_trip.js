@@ -62,3 +62,18 @@ frappe.ui.form.on('Delivery Trip', {
         window.open(url, '_blank');
 	},
 })
+
+frappe.ui.form.on('Delivery Stop', {
+    visited: function(frm,cdt,cdn) {
+        let item = locals[cdt][cdn];
+        console.log(item.visited)
+        if (item.visited == 1) {
+            console.log("ooo")
+            item.status = "Completed"
+        }else{
+            console.log("uuuu")
+            item.status = frm.doc.workflow_state
+        }
+        frm.refresh_field("delivery_stops")
+    }
+})
