@@ -278,7 +278,6 @@ def update_delivery_stop_status(trips,value):
                     if stop.status == "Scheduled" or "In Transit":
                         if stop.get("name") == trip_split[1]:
                             stop.status = value.get("status")
-                            stop.visited = 1
                     else:
                         frappe.throw(
                             "Cannot Update Completed Trip",
