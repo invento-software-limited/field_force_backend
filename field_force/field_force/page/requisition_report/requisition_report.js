@@ -44,7 +44,7 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
         let requisition = [];
         let checkboxes = document.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach(function (checkbox) {
-          if (checkbox.checked) {
+          if (checkbox.checked && checkbox.id !== "all-check") {
             requisition.push(checkbox.id);
           }
         });
@@ -282,7 +282,14 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 	  let table_header = `<thead><tr>`;
 
 	  headers.forEach(function (field, index) {
-		table_header += `<th scope="col" style="width:${field.width}px !important;">${field.label || ''}</th>`;
+	       if (field.label == "") {
+	            table_header += `<th style="padding-right: 4px;padding-left: 5px;">
+                <input type="checkbox" id="all-check" onclick="toggleCheckboxes()"
+                style="margin-right: 0px !important; accent-color: #00b2ff !important;"></th>`;
+	       }else{
+	            table_header += `<th scope="col" style="width:${field.width}px !important;">${field.label || ''}</th>`;
+	       }
+
 	  })
 
 	  table_header += `</tr>`;
@@ -307,7 +314,7 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 		  }
       else if (field.fieldname === 'check' && data['delivery_trip_created'] === 0 && data['workflow_state'] !== "Cancelled") {
 			  html += `<td style="padding-right: 4px;padding-left: 5px;">
-                    <input type="checkbox" id="${data.docname}" style="margin-right: 0px !important;"></td>`
+                    <input type="checkbox" id="${data.docname}" class="sub-checkbox" style="margin-right: 0px !important;"></td>`
 		  }
       else if (field.fieldname === 'delivery_trip_created') {
         let checked = data[field.fieldname] === 1 ? "checked" : "";
@@ -418,4 +425,20 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
     }
     format_D = format_D.replace("dd", day.toString().padStart(2,"0"));
     return format_D;
+}
+function toggleCheckboxes() {
+    var mainCheckbox = document.getElementById("all-check");
+    var checkboxes = document.getElementsByClassName("sub-checkbox");
+
+    // If main checkbox is checked, check all sub-checkboxes
+    if (mainCheckbox.checked) {
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = true;
+        }
+    } else {
+        // If main checkbox is unchecked, uncheck all sub-checkboxes
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = false;
+        }
+    }
 }

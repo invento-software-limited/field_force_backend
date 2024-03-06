@@ -60,6 +60,25 @@ frappe.ui.form.on('Requisition', {
     // if (frappe.user.has_role("Operation")){
     frm.set_df_property("expected_delivery_date", "read_only", true);
     // }
+        frm.set_query("shipping_address", function() {
+            return {
+                filters: {
+                    customer: frm.doc.customer
+                }
+            }
+        });
+	},
+	onload: function(frm) {
+	    if(frm.doc.customer) {
+	        frm.set_query("shipping_address", function() {
+                return {
+                    filters: {
+                        customer: frm.doc.customer,
+                        disabled: 0
+                    }
+                }
+            });
+	    }
 	},
 
 	refresh: function (frm){
@@ -231,7 +250,41 @@ frappe.ui.form.on('Requisition', {
 		if (frm.doc.customer) {
 			brand_commissions = get_brands_commissions(frm.doc.customer)
 		}
+		if (frm.doc.customer){
+		    frm.set_query("shipping_address", function() {
+                return {
+                    filters: {
+                        customer: frm.doc.customer,
+                        disabled: 0
+                    }
+                }
+            });
+            frappe.db.get_value("Address",{'customer': frm.doc.customer,'address_type' : 'Billing','is_primary_address': 1,'disabled' : 0 },
+            ["address_line1","city","country"], (r) => {
+            if (r.address_line1 && r.city && r.country) {
+                    console.log(r)
+                    let full_address = r.address_line1 +',' + r.city +',' +r.country
+                    frm.set_value("billing_address",full_address)
+                }else{
+                    console.log("kk")
+                    frm.set_value("billing_address","")
+                }
+            })
+
+		}
+
 	},
+    shipping_address: function(frm){
+        if (frm.doc.shipping_address) {
+                frappe.db.get_value("Address", frm.doc.shipping_address, ["address_line1","city","country"], (r) => {
+                let full_address = r.address_line1 +',' + r.city +',' +r.country
+                frm.set_value("address",full_address)
+            });
+        }else {
+           frm.set_value("address","")
+        }
+
+    },
   delivery_date: function(frm) {
 		$.each(frm.doc.items || [], function(i, d) {
 			if(!d.delivery_date) d.delivery_date = frm.doc.delivery_date;

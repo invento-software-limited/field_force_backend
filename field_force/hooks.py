@@ -149,8 +149,11 @@ doc_events = {
 		# "before_save": "field_force.field_force.hook_functions.user.before_save",
 		"on_update": "field_force.field_force.hook_functions.user.on_update"
 	},
+	"Address": {
+			"validate": "field_force.field_force.hook_functions.address.validate",
+		},
 
-}
+	}
 
 # override_doctype_class = {
 #     "Sales Order": "field_force.field_force.overridden_doctypes.sales_order.CustomSalesOrder",
