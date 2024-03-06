@@ -262,17 +262,25 @@ frappe.ui.form.on('Requisition', {
             frappe.db.get_value("Address",{'customer': frm.doc.customer,'address_type' : 'Billing','is_primary_address': 1,'disabled' : 0 },
             ["address_line1","city","country"], (r) => {
             if (r.address_line1 && r.city && r.country) {
-                    console.log(r)
                     let full_address = r.address_line1 +',' + r.city +',' +r.country
                     frm.set_value("billing_address",full_address)
                 }else{
-                    console.log("kk")
                     frm.set_value("billing_address","")
                 }
             })
 
 		}
-
+	},
+	company: function(frm){
+	    frappe.db.get_value("Address",{'customer': frm.doc.company,'address_type' : 'Billing','is_primary_address': 1,'disabled' : 0 },
+            ["address_line1","city","country"], (r) => {
+            if (r.address_line1 && r.city && r.country) {
+                    let full_address = r.address_line1 +',' + r.city +',' +r.country
+                    frm.set_value("company_address",full_address)
+                }else{
+                    frm.set_value("company_address","")
+                }
+            })
 	},
     shipping_address: function(frm){
         if (frm.doc.shipping_address) {

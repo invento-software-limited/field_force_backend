@@ -1086,9 +1086,9 @@
    "label": "Company Bin"
   },
   {
-   "fetch_from": "company.custom_company_address",
    "fieldname": "company_address",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Company Address"
   }
  ],
@@ -1096,7 +1096,7 @@
  "is_submittable": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2024-03-06 12:35:27.776499",
+ "modified": "2024-03-06 15:55:40.859104",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",

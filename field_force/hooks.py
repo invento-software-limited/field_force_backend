@@ -189,7 +189,10 @@ fixtures = [
     "Workflow State",
     "Workflow",
     "Workflow Action Master",
-    "UserType"
+    "UserType",
+	"Domain",
+	"Role",
+	"Custom DocPerm"
 ]
 
 # Testing
