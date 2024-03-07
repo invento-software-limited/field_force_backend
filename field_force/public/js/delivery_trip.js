@@ -61,17 +61,32 @@ frappe.ui.form.on('Delivery Trip', {
         url = url + `?doc_data=${frm.doc.name}`;
         window.open(url, '_blank');
 	},
+	after_workflow_action: function(frm) {
+		frappe.call({
+            method: 'field_force.field_force.hook_functions.delivery_trip.set_lead_time_and_action_user',
+            args: {
+                'doc_name': frm.doc.name
+            },
+        })
+        if (frm.doc.workflow_state == "Pending") {
+		    frm.set_value("created_at",frm.doc.creation)
+		    frm.set_value("created_by",frm.doc.owner)
+		}else if (frm.doc.workflow_state == "Scheduled") {
+		    frm.set_value("logistic_approval",frappe.datetime.now_datetime())
+		    frm.set_value("logistic_approved_by",frappe.session.user)
+		}
+    }
+
 })
 
 frappe.ui.form.on('Delivery Stop', {
     visited: function(frm,cdt,cdn) {
         let item = locals[cdt][cdn];
-        console.log(item.visited)
         if (item.visited == 1) {
-            console.log("ooo")
             item.status = "Completed"
+            item.custom_delivered_datetime = frappe.datetime.now_datetime()
+            frm.refresh_field("custom_delivered_datetime")
         }else{
-            console.log("uuuu")
             item.status = frm.doc.workflow_state
         }
         frm.refresh_field("delivery_stops")

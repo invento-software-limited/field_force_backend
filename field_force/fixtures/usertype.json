@@ -43,5 +43,14 @@
   "name": "Customer",
   "role_profile": "Customer",
   "type": "Customer"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "UserType",
+  "modified": "2024-03-07 14:16:55.930195",
+  "module_profile": null,
+  "name": "Logistic",
+  "role_profile": "Logistic",
+  "type": "Logistic"
  }
 ]

@@ -11,6 +11,7 @@ from frappe import publish_progress
 from frappe.core.api.file import create_new_folder
 from frappe.utils.file_manager import save_file
 from frappe.utils.weasyprint import PrintFormatGenerator
+from field_force.field_force.doctype.requisition.requisition import get_lead_time, get_timedelta_time_obj
 
 
 class UpdateDeliveryTrip(DeliveryTrip):
@@ -52,8 +53,16 @@ class UpdateDeliveryTrip(DeliveryTrip):
                 status = "Completed"
             elif any(visited_stops):
                 status = "In Transit"
-        self.db_set("workflow_state", status)     
-        self.db_set("status", status)
+        if status == "Completed":
+            self.db_set("workflow_state", status)
+            self.db_set("status", status)
+            self.db_set("completed_time", frappe.utils.now_datetime())
+            self.db_set("completed_by", frappe.session.user)
+            time_diff_in_seocend = get_lead_time(self.logistic_approval, frappe.utils.now_datetime())
+            self.db_set("completed_lead_time", time_diff_in_seocend)
+        else:
+            self.db_set("workflow_state", status)
+            self.db_set("status", status)
 
     def update_status(self):
         status = {0: "Draft", 1: "Scheduled", 2: "Cancelled"}[self.docstatus]
@@ -541,3 +550,20 @@ def get_requistion_for_delivery_trip(requisitions):
         data.append(data_dict)
 
     return data
+
+@frappe.whitelist()
+def set_lead_time_and_action_user(doc_name):
+    trip_doc = frappe.get_doc("Delivery Trip",doc_name)
+    if trip_doc.get("status") == "Pending":
+        trip_doc.db_set("created_at",trip_doc.creation)
+        trip_doc.db_set("created_by",trip_doc.owner)
+    elif trip_doc.get("status") == "Scheduled":
+        trip_doc.db_set("logistic_approval", frappe.utils.now_datetime())
+        trip_doc.db_set("logistic_approved_by", frappe.session.user)
+        time_diff_in_seocend = get_lead_time(trip_doc.creation,frappe.utils.now_datetime())
+        trip_doc.db_set("logistic_lead_time",time_diff_in_seocend)
+    elif trip_doc.get("status") == "Rejected":
+        trip_doc.db_set("logistic_rejected_time", frappe.utils.now_datetime())
+        trip_doc.db_set("logistic_rejected_by", frappe.session.user)
+        time_diff_in_seocend = get_lead_time(trip_doc.creation, frappe.utils.now_datetime())
+        trip_doc.db_set("logistic_lead_time", time_diff_in_seocend)
