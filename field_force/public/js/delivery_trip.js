@@ -68,13 +68,13 @@ frappe.ui.form.on('Delivery Trip', {
                 'doc_name': frm.doc.name
             },
         })
-        if (frm.doc.workflow_state == "Pending") {
-		    frm.set_value("created_at",frm.doc.creation)
-		    frm.set_value("created_by",frm.doc.owner)
-		}else if (frm.doc.workflow_state == "Scheduled") {
-		    frm.set_value("logistic_approval",frappe.datetime.now_datetime())
-		    frm.set_value("logistic_approved_by",frappe.session.user)
-		}
+    },
+    custom_in_transit: function(frm) {
+        if (frm.doc.delivery_stops) {
+            frm.doc.delivery_stops.forEach((r) => {
+                r.status = "In Transit"
+            })
+        }
     }
 
 })

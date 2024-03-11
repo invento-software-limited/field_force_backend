@@ -58,7 +58,7 @@ def get_conditions(filters):
     if filters.get("customer"):
         conditions += ' and ds.customer = "{}"'.format(filters.get("customer"))
     if filters.get("territory"):
-        conditions += ' and dt.territory = "{}"'.format(filters.get("territory"))
+        conditions += ' and ds.custom_territory = "{}"'.format(filters.get("territory"))
     if filters.get("driver"):
         conditions += ' and dt.driver = "{}"'.format(filters.get("driver"))
     if filters.get("status"):
@@ -91,7 +91,7 @@ def get_query_data(filters):
     customers = frappe.get_list("Customer", filters={"disabled": 0}, pluck='name')
     customers_in_tuple_str = '("' + '", "'.join(customers) + '")'
 
-    query = frappe.db.sql('''select dt.name as id, dt.driver_name, dt.driver, dt.territory, ds.requisition,
+    query = frappe.db.sql('''select dt.name as id, dt.driver_name, dt.driver, ds.custom_territory as territory, ds.requisition,
                         date(dt.departure_time) as departure_date, dt.vehicle, time(dt.departure_time) as departure_time,ds.requisition,
                          ds.status, ds.customer, ds.contact_person,ds.contact_number, ds.customer_primary_address, ds.total_qty,ds.name as ds_id
                         from `tabDelivery Stop` as ds left join `tabDelivery Trip` as dt on dt.name = ds.parent
