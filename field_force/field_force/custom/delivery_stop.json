@@ -1298,7 +1298,7 @@
    "description": null,
    "docstatus": 0,
    "dt": "Delivery Stop",
-   "fetch_from": null,
+   "fetch_from": "customer.territory",
    "fetch_if_empty": 0,
    "fieldname": "custom_territory",
    "fieldtype": "Link",

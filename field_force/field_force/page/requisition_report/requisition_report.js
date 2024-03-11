@@ -282,7 +282,7 @@ frappe.pages['requisition-report'].on_page_load = function (wrapper) {
 	  let table_header = `<thead><tr>`;
 
 	  headers.forEach(function (field, index) {
-	       if (field.label == "") {
+	       if (field.check == "yes") {
 	            table_header += `<th style="padding-right: 4px;padding-left: 5px;">
                 <input type="checkbox" id="all-check" onclick="toggleCheckboxes()"
                 style="margin-right: 0px !important; accent-color: #00b2ff !important;"></th>`;
