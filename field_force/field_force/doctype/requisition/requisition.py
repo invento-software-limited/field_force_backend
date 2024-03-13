@@ -55,9 +55,11 @@ class Requisition(Document):
 
     def on_cancel(self):
         subtract_achievement_amount(self)
+        send_notification_and_update_cancel(self.doctype,self.name,self.owner,self.ops_approved_by)
 
         if self.docstatus == 2:
             frappe.db.set_value(self.doctype, self.name, 'status', 'Cancelled')
+        self.ignore_linked_doctypes = ("Delivery Trip","Delivery Stop")
 
     def validate_delivery_date(self):
         # if str(self.transaction_date) < str(frappe.utils.today()):
@@ -581,7 +583,9 @@ def set_datetime_by_workflow_state(docname, state):
         "Pending for Customer": ("ops_approval_time", "ops_approved_by"),
         "Rejected by Customer": ("customer_rejection_time", "customer_rejected_by"),
         "Approved": ("customer_approval_time", "customer_approved_by"),
-        "Cancelled": ("cancelled_at", "cancelled_by")
+        "Cancelled By Customer": ("cancelled_at", "cancelled_by"),
+        "Cancelled By Ops": ("cancelled_at", "cancelled_by"),
+        "Cancelled": ("cancelled_at", "cancelled_by"),
     }
 
     datetime_field, user_field = workflow_states_datetime_fields.get(state)
@@ -649,3 +653,26 @@ def set_reason_rejection(doc, value, type):
         req_doc.db_set("operation_rejection_reason",value.get("reason"))
     elif type == "Customer":
         req_doc.db_set("customer_rejection_reason",value.get("reason"))
+
+
+def send_notification_and_update_cancel(doctype,doc_name,owner,ops_approved_by):
+    if doc_name:
+        if frappe.db.exists("Delivery Stop",{"requisition" : doc_name,"status" : "Scheduled"}):
+            frappe.throw("Cannot cancel because {req} is shceduled in Delivery Trip <a href='/app/delivery-trip/{dt}' target='_blank'>{dt}</a>".format(req=doc_name,
+                            dt=frappe.db.get_value("Delivery Stop",{"requisition" : doc_name,"status" : "Scheduled"},"parent")),title="Message")
+        else:
+            send_notification(doctype,doc_name,owner)
+            send_notification(doctype,doc_name,ops_approved_by)
+
+def send_notification(doctype,docname,receiver):
+    notification = frappe.new_doc('Notification Log')
+    notification.type = 'Alert'
+    notification.document_type = doctype
+    notification.document_name = docname
+    notification.subject = '{name}" is Cancelled By {user}'.format(
+        name=docname, user=frappe.session.user)
+    notification.email_content = 'Requisition <a href="/app/requisition/{name}" >{name}</a> is Cancelled By {user}'.format(
+        name=docname, user=frappe.session.user)
+    notification.from_user = frappe.session.user
+    notification.for_user = receiver
+    notification.insert(ignore_permissions=True)

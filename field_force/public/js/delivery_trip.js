@@ -69,14 +69,26 @@ frappe.ui.form.on('Delivery Trip', {
             },
         })
     },
+    vehicle: function(frm) {
+        if (frm.doc.vehicle) {
+            frappe.db.get_value("Vehicle",{'name': frm.doc.vehicle},
+            ['make','model'], (r) => {
+            if (r.model && r.make) {
+                    let full_address = r.model +',' + r.make
+                    frm.set_value("custom_vehicle_details",full_address)
+                }else{
+                    frm.set_value("billing_address","")
+                }
+            })
+        }
+    },
     custom_in_transit: function(frm) {
         if (frm.doc.delivery_stops) {
             frm.doc.delivery_stops.forEach((r) => {
                 r.status = "In Transit"
             })
         }
-    }
-
+    },
 })
 
 frappe.ui.form.on('Delivery Stop', {
@@ -88,6 +100,18 @@ frappe.ui.form.on('Delivery Stop', {
             frm.refresh_field("custom_delivered_datetime")
         }else{
             item.status = frm.doc.workflow_state
+        }
+        frm.refresh_field("delivery_stops")
+    },
+    status: function(frm,cdt,cdn) {
+        let item = locals[cdt][cdn];
+        if(item.status == "Pending") {
+            frappe.throw("Cannot update scheduled to pending")
+        }else if (item.status == "Completed"){
+            item.visited = 1
+            item.custom_delivered_datetime = frappe.datetime.now_datetime()
+        }else if (item.status == "Cancelled") {
+            item.visited = 0
         }
         frm.refresh_field("delivery_stops")
     }

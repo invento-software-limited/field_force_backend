@@ -120,6 +120,7 @@ frappe.ui.form.on('Requisition', {
   //  before_workflow_action: function(frm, state) {
   // },
 	before_workflow_action: function(frm) {
+
 		if (frm.doc.workflow_state === "Pending for Ops Team" && frm.selected_workflow_action === "Reject") {
 			let d = new frappe.ui.Dialog({
 				title: 'Operation Rejection Reason',
@@ -178,7 +179,7 @@ frappe.ui.form.on('Requisition', {
 
 			d.show();
 		}
-
+//        frappe.throw("tttttttt")
 	},
 	after_workflow_action: function(frm, state) {
 		set_datetime_by_workflow_state(frm);

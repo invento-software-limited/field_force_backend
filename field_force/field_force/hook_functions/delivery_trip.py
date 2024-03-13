@@ -32,13 +32,14 @@ class UpdateDeliveryTrip(DeliveryTrip):
         # self.validate_stop_addresses()
 
     def before_submit(self):
+        for stop in self.delivery_stops:
+            stop.status = "Scheduled"
         self.set_mushak_unique_number()
         self.get_requisition_files()
 
     def on_submit(self):
         # self.set_mushak_unique_number()
-        for stop in self.delivery_stops:
-            stop.status = "Scheduled"
+
         self.update_status()
         self.update_delivery_notes()
 
@@ -118,6 +119,8 @@ class UpdateDeliveryTrip(DeliveryTrip):
                         reg.delivery_trip_created = 1
                         reg.delivery_trip = self.name
                         reg.mushak_serial = mushak_serial
+                        reg.vehicle = self.custom_vehicle_details
+                        reg.mushak_date = self.departure_time
                         reg.save(ignore_permissions=True)
 
                         stop.mushak_serial = mushak_serial

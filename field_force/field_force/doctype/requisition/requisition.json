@@ -21,6 +21,7 @@
   "delivery_status",
   "urgent",
   "reason_of_urgency",
+  "vehicle",
   "column_break_9",
   "amended_from",
   "company",
@@ -32,6 +33,7 @@
   "po_no",
   "customer_po_file",
   "mushak_serial",
+  "mushak_date",
   "delivery_trip_created",
   "delivery_trip",
   "expire_date",
@@ -1091,13 +1093,25 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Company Address"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "vehicle",
+   "fieldtype": "Data",
+   "label": "Vehicle"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "mushak_date",
+   "fieldtype": "Datetime",
+   "label": "Mushak Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
  "make_attachments_public": 1,
- "modified": "2024-03-11 13:08:29.330704",
+ "modified": "2024-03-13 15:25:41.679357",
  "modified_by": "Administrator",
  "module": "Field Force",
  "name": "Requisition",
