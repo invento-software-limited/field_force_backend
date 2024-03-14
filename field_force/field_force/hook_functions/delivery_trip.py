@@ -47,9 +47,9 @@ class UpdateDeliveryTrip(DeliveryTrip):
         self.update_status_after_submit()
             
     def update_status_after_submit(self):
-        status = {0: "Draft", 1: "In Transit", 2: "Cancelled"}[self.docstatus]
+        status = {0: "Draft", 1: "In Transit"}[self.docstatus]
         if self.docstatus == 1:
-            visited_stops = [stop.visited for stop in self.delivery_stops]
+            visited_stops = [stop.visited for stop in self.delivery_stops if stop.status != "Cancelled"]
             if all(visited_stops):
                 status = "Completed"
             elif any(visited_stops):
