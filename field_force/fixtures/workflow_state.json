@@ -3,6 +3,24 @@
   "docstatus": 0,
   "doctype": "Workflow State",
   "icon": "",
+  "modified": "2024-03-14 09:47:50.709721",
+  "name": "Cancelled By Customer",
+  "style": "Danger",
+  "workflow_state_name": "Cancelled By Customer"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2024-03-14 09:48:00.999601",
+  "name": "Cancelled By Ops",
+  "style": "Danger",
+  "workflow_state_name": "Cancelled By Ops"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
   "modified": "2024-02-12 09:35:34.045521",
   "name": "Draft",
   "style": "",
