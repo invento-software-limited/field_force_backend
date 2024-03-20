@@ -151,7 +151,11 @@ def get_or_create_field_force_module_profile():
 def update_customers(self):
     if self.customers:
         for customer in self.customers:
+            updated = False
             customer_obj = frappe.get_doc("Customer", customer.customer)
+            if self.market and customer_obj.market != self.market:
+                customer_obj.market = self.market
+                updated = True
 
             if customer_obj.sales_person != self.name:
                 filters = {
@@ -164,7 +168,11 @@ def update_customers(self):
                     child_table_object.delete()
 
                 customer_obj.sales_person = self.name
+                updated = True
+
+            if updated:
                 customer_obj.save()
+
 
     if frappe.db.exists("Sales Person", self.name):
         delete_sales_person(self.name, self.customers)
